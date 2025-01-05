@@ -6,10 +6,10 @@ import (
 	"time"
 )
 
-func StoreSession(user_id int, session_id string, expires_at time.Time) error {
-	query := `INSERT OR REPLACE INTO sessions (user_id,session_id,expires_at) VALUES (?,?,?)`
+func StoreSession(userID int, tokenID string, expires_at time.Time) error {
+	query := `INSERT OR REPLACE INTO sessions (user_id, token_id, expires_at) VALUES (?,?,?)`
 
-	_, err := DB.Exec(query, user_id, session_id, expires_at)
+	_, err := DB.Exec(query, userID, tokenID, expires_at)
 	if err != nil {
 		return fmt.Errorf("%v", err)
 	}
@@ -24,21 +24,21 @@ func ValidSession(r *http.Request) (int, string, bool) {
 	}
 	var expiration time.Time
 	var user_id int
-	var username string
+	var nickname string
 	query := `
 		SELECT 
 			s.user_id,
 			s.expires_at, 
-			u.username 
+			u.nickname 
 		FROM sessions s 
 		INNER JOIN users u ON s.user_id = u.id 
 		WHERE session_id = ?
 	`
-	err = DB.QueryRow(query, cookie.Value).Scan(&user_id, &expiration, &username)
+	err = DB.QueryRow(query, cookie.Value).Scan(&user_id, &expiration, &nickname)
 	if err != nil || expiration.Before(time.Now()) {
 		return -1, "", false
 	}
-	return user_id, username, true
+	return user_id, nickname, true
 }
 
 func DeleteUserSession(userID int) error {

@@ -1,34 +1,33 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"forum/server/models"
+	"forum/server/utils"
 	"forum/server/validators"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	statusCode, _, email, username, password := validators.RegisterRequest(r)
+	user, password, statusCode, message := validators.RegisterRequest(r)
 	if statusCode != http.StatusOK {
-		w.WriteHeader(statusCode)
+		utils.JSONResponse(w, statusCode, message)
 		return
 	}
 
-	var valid bool
-	if _, _, valid = models.ValidSession(r); valid {
-		w.WriteHeader(302)
-		return
-	}
-
-	_, err := models.StoreUser(email, username, password)
+	_, err := models.StoreNewUser(user, password)
 	if err != nil {
-		if err.Error() == "UNIQUE constraint failed: users.username" || err.Error() == "UNIQUE constraint failed: users.email" {
-			w.WriteHeader(304)
+		if err.Error() == "UNIQUE constraint failed: users.nickname" {
+			utils.JSONResponse(w, http.StatusNotAcceptable, "nickname already exists")
+			return
+		} else if err.Error() == "UNIQUE constraint failed: users.email" {
+			utils.JSONResponse(w, http.StatusNotAcceptable, "email already exists")
 			return
 		}
-
-		w.WriteHeader(500)
+		log.Println(err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
-	w.WriteHeader(200)
+	utils.JSONResponse(w, http.StatusOK, "success")
 }

@@ -17,6 +17,10 @@ func IndexPostsRequest(r *http.Request) (int, string, string, int, int) {
 		return http.StatusMethodNotAllowed, "Invalid HTTP method", "", 0, 0
 	}
 
+	if r.Header.Get("Content-Type") != "application/json" {
+		return http.StatusBadRequest, "Content-Type must be application/json", "", 0, 0
+	}
+
 	err := r.ParseForm()
 	if err != nil {
 		return http.StatusBadRequest, "Failed to parse form data", "", 0, 0

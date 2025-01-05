@@ -2,73 +2,72 @@ package controllers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
 
 	"forum/server/models"
+	"forum/server/utils"
 	"forum/server/validators"
-
-	"github.com/gofrs/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	statusCode, _, username, password := validators.LoginRequest(r)
+	userRequest, statusCode, message := validators.LoginRequest(r)
 	if statusCode != http.StatusOK {
-		w.WriteHeader(statusCode)
-		return
-	}
-	if _, _, valid := models.ValidSession(r); valid {
-		w.WriteHeader(302)
+		utils.JSONResponse(w, statusCode, message)
 		return
 	}
 
 	// get user information from database
-	user_id, hashedPassword, err := models.GetUserInfo(username)
+	user_id, hashedPassword, err := models.GetUserPassword(userRequest)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			w.WriteHeader(404)
+			utils.JSONResponse(w, http.StatusNotFound, "User does not exist")
 			return
 		}
-		w.WriteHeader(500)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
 	// Verify the password
-	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)); err != nil {
-		w.WriteHeader(401)
+	if match := utils.CheckPasswordHash(userRequest.Password, hashedPassword); !match {
+		utils.JSONResponse(w, http.StatusUnauthorized, "Invalid password")
 		return
 	}
 
-	sessionId, err := uuid.NewV7()
+	var userResponse models.User
+
+	token, err := utils.GenerateToken()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Println("Failed to create session")
-		return
+		log.Println("Failed to create session: ", err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	err = models.StoreSession(user_id, sessionId.String(), time.Now().Add(10*time.Hour))
+	err = models.StoreSession(user_id, token, time.Now().Add(10*time.Hour))
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Println("Failed to create session")
+		log.Println("Failed to store session into the database: ", err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
-	// Set session ID as a cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:     "session_id",
-		Value:    sessionId.String(),
-		Expires:  time.Now().Add(10 * time.Hour),
-		HttpOnly: true,
-		Path:     "/",
-	})
+	userResponse, err = models.GetUserInfo(user_id)
+	if err != nil {
+		log.Println("Failed to fetch user's info: ", err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
+	userResponse.Token = token
+	
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(userResponse)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		utils.JSONResponse(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
@@ -77,21 +76,13 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	if valid {
 		err := models.DeleteUserSession(userID)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
 			log.Println("Error while logging out!")
+			utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 			return
 		}
-		http.SetCookie(w, &http.Cookie{
-			Name:     "session_id",
-			Value:    "",
-			Expires:  time.Now(),
-			HttpOnly: true,
-			Path:     "/",
-		})
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(http.StatusOK)
+		utils.JSONResponse(w, http.StatusOK, "success")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	utils.JSONResponse(w, http.StatusOK, "success")
 }

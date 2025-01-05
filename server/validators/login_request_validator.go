@@ -1,40 +1,63 @@
 package validators
 
 import (
+	"encoding/json"
 	"html"
 	"net/http"
 	"strings"
+
+	"forum/server/models"
+	"forum/server/utils"
 )
 
 // Validates a login request.
 // Returns:
+// - user: user information for login
 // - int: HTTP status code.
 // - string: Error or success message.
-// - string: username.
-// - string: password.
-func LoginRequest(r *http.Request) (int, string, string, string) {
-	// Check if the method is POST
+func LoginRequest(r *http.Request) (models.LoginRequest, int, string) {
 	if r.Method != http.MethodPost {
-		return http.StatusMethodNotAllowed, "Invalid HTTP method", "", ""
+		return models.LoginRequest{}, http.StatusMethodNotAllowed, "Invalid HTTP method"
 	}
 
-	// Parse form data
-	err := r.ParseForm()
-	if err != nil {
-		return http.StatusBadRequest, "Failed to parse form data", "", ""
+	if r.Header.Get("Content-Type") != "application/json" {
+		return models.LoginRequest{}, http.StatusBadRequest, "Content-Type must be application/json"
 	}
 
-	// Retrieve and sanitize inputs
-	username := strings.TrimSpace(html.EscapeString(r.FormValue("username")))
-	password := strings.TrimSpace(html.EscapeString(r.FormValue("password")))
+	var user models.LoginRequest
 
-	// Validate inputs
-	if len(username) < 4 {
-		return http.StatusBadRequest, "Username must be at least 4 characters long", "", ""
-	}
-	if len(password) < 6 {
-		return http.StatusBadRequest, "Password must be at least 6 characters long", "", ""
+	// Decode the JSON data
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		return models.LoginRequest{}, http.StatusBadRequest, "Invalid JSON data"
 	}
 
-	return http.StatusOK, "success", username, password
+	user.Nickname = html.EscapeString(strings.TrimSpace(user.Nickname))
+	user.Email = html.EscapeString(strings.TrimSpace(user.Email))
+	password := html.EscapeString(strings.TrimSpace(user.Password))
+
+	if (user.Nickname == "" && user.Email == "") || (user.Nickname != "" && user.Email != "") {
+		return models.LoginRequest{}, http.StatusBadRequest, "Either Nickname or Email is required"
+	}
+
+	// Validate Nickname
+	if user.Nickname != "" && len(user.Nickname) > 20 {
+		return models.LoginRequest{}, http.StatusBadRequest, "Nickname cannot exceed 20 characters"
+	}
+
+	// Validate Email (if provided)
+	if user.Email != "" {
+		if !utils.IsValidEmail(user.Email) || len(user.Nickname) > 100 {
+			return models.LoginRequest{}, http.StatusBadRequest, "Invalid email format"
+		}
+	}
+
+	// Validate Password
+	if user.Password == "" {
+		return models.LoginRequest{}, http.StatusBadRequest, "Password is required"
+	}
+	if len(password) > 128 {
+		return models.LoginRequest{}, http.StatusBadRequest, "Password cannot exceed 128 characters"
+	}
+
+	return user, http.StatusOK, "success"
 }

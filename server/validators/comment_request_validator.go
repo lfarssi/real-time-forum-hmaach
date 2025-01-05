@@ -17,6 +17,10 @@ func CreateCommentRequest(r *http.Request) (int, string, string, int) {
 		return http.StatusMethodNotAllowed, "Invalid HTTP method", "", 0
 	}
 
+	if r.Header.Get("Content-Type") != "application/json" {
+		return http.StatusBadRequest, "Content-Type must be application/json", "", 0
+	}
+
 	// Parse form data
 	if err := r.ParseForm(); err != nil {
 		return http.StatusBadRequest, "Failed to parse form data", "", 0

@@ -1,25 +1,25 @@
 -- Insert Users
-INSERT INTO users (email, username, password) VALUES
-('user1@example.com', 'User1', 'password1'),
-('user2@example.com', 'User2', 'password2'),
-('user3@example.com', 'User3', 'password3'),
-('user4@example.com', 'User4', 'password4'),
-('user5@example.com', 'User5', 'password5'),
-('user6@example.com', 'User6', 'password6'),
-('user7@example.com', 'User7', 'password7'),
-('user8@example.com', 'User8', 'password8'),
-('user9@example.com', 'User9', 'password9'),
-('user10@example.com', 'User10', 'password10'),
-('user11@example.com', 'User11', 'password11'),
-('user12@example.com', 'User12', 'password12'),
-('user13@example.com', 'User13', 'password13'),
-('user14@example.com', 'User14', 'password14'),
-('user15@example.com', 'User15', 'password15'),
-('user16@example.com', 'User16', 'password16'),
-('user17@example.com', 'User17', 'password17'),
-('user18@example.com', 'User18', 'password18'),
-('user19@example.com', 'User19', 'password19'),
-('user20@example.com', 'User20', 'password20');
+INSERT INTO users (first_name, last_name, nickname, email, age, gender, password) VALUES
+('John', 'Doe', 'user1', 'user1@example.com', 25, 'male', 'password1'),
+('Jane', 'Smith', 'user2', 'user2@example.com', 30, 'female', 'password2'),
+('Alice', 'Johnson', 'user3', 'user3@example.com', 22, 'female', 'password3'),
+('Bob', 'Brown', 'user4', 'user4@example.com', 27, 'male', 'password4'),
+('Charlie', 'Davis', 'user5', 'user5@example.com', 35, 'male', 'password5'),
+('Eve', 'Miller', 'user6', 'user6@example.com', 28, 'female', 'password6'),
+('Frank', 'Wilson', 'user7', 'user7@example.com', 24, 'male', 'password7'),
+('Grace', 'Moore', 'user8', 'user8@example.com', 31, 'female', 'password8'),
+('Hank', 'Taylor', 'user9', 'user9@example.com', 26, 'male', 'password9'),
+('Ivy', 'Anderson', 'user10', 'user10@example.com', 29, 'female', 'password10'),
+('Jack', 'Thomas', 'user11', 'user11@example.com', 32, 'male', 'password11'),
+('Kathy', 'Jackson', 'user12', 'user12@example.com', 33, 'female', 'password12'),
+('Louis', 'White', 'user13', 'user13@example.com', 30, 'male', 'password13'),
+('Mona', 'Harris', 'user14', 'user14@example.com', 34, 'female', 'password14'),
+('Nate', 'Martin', 'user15', 'user15@example.com', 22, 'male', 'password15'),
+('Olivia', 'Thompson', 'user16', 'user16@example.com', 25, 'female', 'password16'),
+('Paul', 'Garcia', 'user17', 'user17@example.com', 29, 'male', 'password17'),
+('Quincy', 'Martinez', 'user18', 'user18@example.com', 36, 'male', 'password18'),
+('Rita', 'Roberts', 'user19', 'user19@example.com', 40, 'female', 'password19'),
+('Sam', 'Walker', 'user20', 'user20@example.com', 41, 'male', 'password20');
 
 -- Insert Posts
 INSERT INTO posts (user_id, title, content) VALUES
