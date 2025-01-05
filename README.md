@@ -41,26 +41,27 @@ A real-time web forum application built with Go and WebSockets, enabling live us
 ## Project Structure
 
 ```
-forum/
+real-time-forum/
 ├── cmd/
-│   └── main.go           # Application entry point
+│   └── main.go           # Application entry point and server initialization
 ├── server/
-│   ├── api/              # Application routing
-│   ├── config/           # Configuration management
-│   ├── controllers/      # Request handling and business logic
-│   ├── database/         # Database interaction logic
-│   ├── models/           # Data structures and models
-│   ├── utils/            # Shared utility functions
-│   └── validators/       # validate coming requests
-├── web/ 
+│   ├── api/              # RESTful API routes and WebSocket endpoint definitions
+│   ├── config/           # Environment configurations and application settings
+│   ├── controllers/      # HTTP handlers and WebSocket message handlers
+│   ├── database/         # Database files (database.db, schema.sql, etc)
+│   ├── middlewares/      # Request middleware (auth, rate limiting, etc)
+│   ├── models/           # Data models and database query methods
+│   ├── utils/            # Helper functions
+│   └── validators/       # Request payload validation and sanitization
+├── web/
 │   ├── assets/
-│   │   ├── css/         # Stylesheets
-│   │   ├── js/          # Frontend JavaScript
-│   │   └── images/      # Static images
-│   └── index.html       # HTML template (single page)
-├── dockerfile           # Docker containerization
-├── go.mod              # Go module dependencies
-└── README.md           # Project documentation
+│   │   ├── css/           # Application styles and layout definitions
+│   │   ├── js/            # Frontend logic and WebSocket client implementation
+│   │   └── images/        # Static image resources
+│   └── index.html      # Single page application entry point
+├── dockerfile       # Container configuration for deployment
+├── go.mod           # Go dependencies and module configuration
+└── README.md        # Project documentation
 ```
 
 ## Technologies
