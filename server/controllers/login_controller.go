@@ -59,7 +59,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userResponse.Token = token
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(userResponse)
@@ -71,16 +71,11 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, _, valid := models.ValidSession(r)
-
-	if valid {
-		err := models.DeleteUserSession(userID)
-		if err != nil {
-			log.Println("Error while logging out!")
-			utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
-			return
-		}
-		utils.JSONResponse(w, http.StatusOK, "success")
+	userID := r.Context().Value("user_id").(int)
+	err := models.DeleteUserSession(userID)
+	if err != nil {
+		log.Println("Error while logging out!")
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 

@@ -14,13 +14,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		utils.JSONResponse(w, statusCode, message)
 		return
 	}
-
-	// Validate session
-	userID, _, valid := models.ValidSession(r)
-	if !valid {
-		utils.JSONResponse(w, http.StatusUnauthorized, "Unauthorized")
-		return
-	}
+	userID := r.Context().Value("user_id").(int)
 
 	// Store the comment using the models package
 	_, err := models.StoreComment(userID, postID, content)

@@ -73,12 +73,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		utils.JSONResponse(w, statusCode, message)
 		return
 	}
-
-	user_id, _, valid := models.ValidSession(r)
-	if !valid {
-		utils.JSONResponse(w, http.StatusUnauthorized, "Unauthorized")
-		return
-	}
+	userID := r.Context().Value("user_id").(int)
 
 	err := models.CheckCategories(categories)
 	if err != nil {
@@ -86,7 +81,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post_id, err := models.StorePost(user_id, title, content)
+	post_id, err := models.StorePost(userID, title, content)
 	if err != nil {
 		log.Println(err)
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
