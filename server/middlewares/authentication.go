@@ -8,8 +8,8 @@ import (
 	"forum/server/utils"
 )
 
-// AuthMiddleware checks if the user is authenticated by validating the session token.
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+// checks if the user is authenticated by validating the session token.
+func IsAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Extract token from Authorization header
 		token := r.Header.Get("Authorization")

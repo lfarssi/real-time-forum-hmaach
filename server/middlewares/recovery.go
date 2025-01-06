@@ -8,20 +8,17 @@ import (
 	"forum/server/utils"
 )
 
-func RecoveryMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// function that catch any panic
+// RecoveryMiddleware wraps an http.Handler to recover from panics
+func Recovery(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-
 				// log the panic and stack trace
 				message := "Caught panic: %v, Stack trace: %s"
 				log.Printf(message, err, string(debug.Stack()))
 				utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 			}
 		}()
-
-		// continue processing the request and call the next handler
 		next.ServeHTTP(w, r)
-	}
+	})
 }

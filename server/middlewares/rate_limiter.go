@@ -7,17 +7,16 @@ import (
 )
 
 type ClientRate struct {
-	Requests    int       
-	LastRequest time.Time 
+	Requests    int
+	LastRequest time.Time
 }
 
 type RateLimiter struct {
 	clients map[string]*ClientRate
 	mu      sync.Mutex
-	limit   int           
-	window  time.Duration // Time window for the rate limit
+	limit   int
+	window  time.Duration
 }
-
 
 func NewRateLimiter(limit int, window time.Duration) *RateLimiter {
 	return &RateLimiter{
@@ -62,13 +61,13 @@ func (rl *RateLimiter) isAllowed(clientIP string) bool {
 }
 
 // Middleware applies rate limiting to an HTTP handler.
-func (rl *RateLimiter) Middleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (rl *RateLimiter) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clientIP := r.RemoteAddr // Extract the client IP
 		if !rl.isAllowed(clientIP) {
 			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
 			return
 		}
 		next.ServeHTTP(w, r)
-	}
+	})
 }
