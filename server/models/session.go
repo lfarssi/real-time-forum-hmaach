@@ -25,7 +25,7 @@ func ValidSession(token string) (int, bool, string) {
 		expiration time.Time
 		userID     int
 	)
-	token = strings.TrimSpace(strings.Split(token, " ")[1])
+	token = strings.TrimSpace(strings.TrimPrefix(token, "Bearer "))
 
 	// Query the sessions table to get the user and expiration time
 	query := `

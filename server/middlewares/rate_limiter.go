@@ -11,7 +11,6 @@ type ClientRate struct {
 	LastRequest time.Time 
 }
 
-// RateLimiter is the rate-limiting structure.
 type RateLimiter struct {
 	clients map[string]*ClientRate
 	mu      sync.Mutex
@@ -19,7 +18,7 @@ type RateLimiter struct {
 	window  time.Duration // Time window for the rate limit
 }
 
-// NewRateLimiter initializes a new rate limiter.
+
 func NewRateLimiter(limit int, window time.Duration) *RateLimiter {
 	return &RateLimiter{
 		clients: make(map[string]*ClientRate),
@@ -37,7 +36,6 @@ func (rl *RateLimiter) isAllowed(clientIP string) bool {
 
 	// Check if the client already exists
 	if client, exists := rl.clients[clientIP]; exists {
-		// Check if the time window has expired
 		if now.Sub(client.LastRequest) > rl.window {
 			client.Requests = 1
 			client.LastRequest = now
