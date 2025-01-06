@@ -36,15 +36,15 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
-	statusCode, message, content, postID := validators.CreateCommentRequest(r)
+	comment, statusCode, message := validators.CreateCommentRequest(r)
 	if statusCode != http.StatusOK {
 		utils.JSONResponse(w, statusCode, message)
 		return
 	}
-	userID := r.Context().Value("user_id").(int)
+	comment.UserID = r.Context().Value("user_id").(int)
 
 	// Store the comment using the models package
-	_, err := models.StoreComment(userID, postID, content)
+	_, err := models.StoreComment(comment)
 	if err != nil {
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return

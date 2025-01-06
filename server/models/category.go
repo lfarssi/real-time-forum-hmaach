@@ -81,7 +81,7 @@ func FetchCategoriesByPostID(postID int) ([]Category, error) {
 	return categories, nil
 }
 
-func CheckCategories(ids []int) error {
+func CheckCategoriesExist(ids []int) error {
 	placeholders := strings.Repeat("?,", len(ids))
 	placeholders = placeholders[:len(placeholders)-1]
 

@@ -92,6 +92,16 @@ func FetchPosts(limit, page int) ([]Post, error) {
 	return posts, nil
 }
 
+func CheckPostExist(postID int) error {
+	var id int
+	err := DB.QueryRow("SELECT id FROM posts WHERE id = ?", postID).Scan(&id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func StorePost(post PostRequest) (int64, error) {
 	query := `INSERT INTO posts (user_id, title, content) VALUES (?,?,?)`
 

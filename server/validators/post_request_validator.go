@@ -90,7 +90,7 @@ func CreatePostRequest(r *http.Request) (models.PostRequest, int, string) {
 	}
 
 	// Check if categories exist in the database
-	if err := models.CheckCategories(post.Categories); err != nil {
+	if err := models.CheckCategoriesExist(post.Categories); err != nil {
 		return models.PostRequest{}, http.StatusBadRequest, "One or more category IDs are invalid"
 	}
 

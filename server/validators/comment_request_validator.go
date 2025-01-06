@@ -1,9 +1,14 @@
 package validators
 
 import (
+	"database/sql"
+	"encoding/json"
+	"html"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"forum/server/models"
 )
 
 // validates a request for fetching comments by post ID.
@@ -42,39 +47,45 @@ func GetCommentsRequest(r *http.Request) (int, string, int, int) {
 
 // Validates a request to create a comment.
 // Returns:
+// - models.CommentRequest: The parsed comment request.
 // - int: HTTP status code.
 // - string: Error or success message.
-// - string: Comment content.
-// - int: Post ID.
-func CreateCommentRequest(r *http.Request) (int, string, string, int) {
+func CreateCommentRequest(r *http.Request) (models.CommentRequest, int, string) {
 	if r.Method != http.MethodPost {
-		return http.StatusMethodNotAllowed, "Invalid HTTP method", "", 0
+		return models.CommentRequest{}, http.StatusMethodNotAllowed, "Request method must be POST"
 	}
 
 	if r.Header.Get("Content-Type") != "application/json" {
-		return http.StatusUnsupportedMediaType, "Content-Type must be application/json", "", 0
+		return models.CommentRequest{}, http.StatusUnsupportedMediaType, "Content-Type must be 'application/json'"
 	}
 
-	// Parse form data
-	if err := r.ParseForm(); err != nil {
-		return http.StatusBadRequest, "Failed to parse form data", "", 0
+	var comment models.CommentRequest
+	// Decode the JSON data
+	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
+		return models.CommentRequest{}, http.StatusBadRequest, "Invalid request body: unable to parse JSON data"
 	}
 
 	// Validate comment content
-	content := strings.TrimSpace(r.FormValue("comment"))
-	if content == "" {
-		return http.StatusBadRequest, "Comment content cannot be empty", "", 0
+	comment.Content = html.EscapeString(strings.TrimSpace(comment.Content))
+	if comment.Content == "" {
+		return models.CommentRequest{}, http.StatusBadRequest, "Comment content cannot be empty"
 	}
-	if len(content) > 1800 {
-		return http.StatusBadRequest, "Comment content exceeds the maximum length of 1800 characters", "", 0
+	if len(comment.Content) > 1800 {
+		return models.CommentRequest{}, http.StatusBadRequest, "Comment content exceeds the maximum allowed length of 1800 characters"
 	}
 
 	// Validate Post ID
-	postIDStr := r.FormValue("postid")
-	postID, err := strconv.Atoi(postIDStr)
-	if err != nil || postID <= 0 {
-		return http.StatusBadRequest, "Post ID must be a valid positive integer", "", 0
+	if comment.PostID <= 0 {
+		return models.CommentRequest{}, http.StatusBadRequest, "Post ID must be a positive integer"
 	}
 
-	return http.StatusOK, "success", content, postID
+	// Check if the post exists
+	if err := models.CheckPostExist(comment.PostID); err != nil {
+		if err == sql.ErrNoRows {
+			return models.CommentRequest{}, http.StatusBadRequest, "The specified post does not exist"
+		}
+		return models.CommentRequest{}, http.StatusInternalServerError, "An error occurred while verifying the post"
+	}
+
+	return comment, http.StatusOK, "Comment validated successfully"
 }

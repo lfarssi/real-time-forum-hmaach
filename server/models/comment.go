@@ -1,8 +1,10 @@
 package models
 
-import (
-	"fmt"
-)
+type CommentRequest struct {
+	UserID  int
+	PostID  int    `json:"post_id"`
+	Content string `json:"content"`
+}
 
 type Comment struct {
 	ID            int
@@ -68,15 +70,18 @@ func FetchCommentsByPostID(postID, limit, page int) ([]Comment, error) {
 	return comments, nil
 }
 
-func StoreComment(user_id, post_id int, content string) (int64, error) {
+func StoreComment(comment CommentRequest) (int64, error) {
 	query := `INSERT INTO comments (user_id, post_id, content) VALUES (?,?,?)`
 
-	result, err := DB.Exec(query, user_id, post_id, content)
+	result, err := DB.Exec(query, comment.UserID, comment.PostID, comment.Content)
 	if err != nil {
-		return 0, fmt.Errorf("%v", err)
+		return 0, err
 	}
 
-	commentID, _ := result.LastInsertId()
+	commentID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
 
 	return commentID, nil
 }
