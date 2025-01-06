@@ -19,7 +19,7 @@ func Routes() http.Handler {
 
 	// Routes that require authentication
 	mux.HandleFunc("/posts/create", middlewares.IsAuth(controllers.CreatePost))
-	mux.HandleFunc("/comment/create", middlewares.IsAuth(controllers.CreateComment))
+	mux.HandleFunc("/comments/create", middlewares.IsAuth(controllers.CreateComment))
 	mux.HandleFunc("/logout", middlewares.IsAuth(controllers.Logout))
 
 	// Create a rate limiter allowing 10 requests per minute
