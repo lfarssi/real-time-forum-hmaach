@@ -5,36 +5,42 @@ import (
 )
 
 type Comment struct {
-	ID        int
-	UserID    int
-	PostID    int
-	nickname  string
-	Content   string
-	Likes     int
-	Dislikes  int
-	CreatedAt string
+	ID            int
+	UserID        int
+	PostID        int
+	UserFirstName string
+	UserLastName  string
+	UserNickname  string
+	Content       string
+	CreatedAt     string
 }
 
-func FetchCommentsByPostID(postID int) ([]Comment, error) {
-	var comments []Comment
+func FetchCommentsByPostID(postID, limit, page int) ([]Comment, error) {
+	var (
+		comments []Comment
+		offset   = page * limit
+	)
+
 	query := `
 	SELECT
 		c.id,
 		c.user_id,
-		u.nickname,
+		u.first_name, 
+		u.last_name, 
+		u.nickname, 
 		c.content,
-		strftime('%m/%d/%Y %I:%M %p', c.created_at) AS formatted_created_at,
+		c.created_at
 	FROM
 		comments c
-	INNER JOIN users u 
-	ON c.user_id = u.id
+	INNER JOIN users u 	ON c.user_id = u.id
 	WHERE
 		c.post_id = ?
 	ORDER BY
 		c.created_at DESC
+	LIMIT ? OFFSET ?;
 	`
 
-	rows, err := DB.Query(query, postID)
+	rows, err := DB.Query(query, postID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +51,9 @@ func FetchCommentsByPostID(postID int) ([]Comment, error) {
 		err := rows.Scan(
 			&comment.ID,
 			&comment.UserID,
-			&comment.nickname,
+			&comment.UserFirstName,
+			&comment.UserLastName,
+			&comment.UserNickname,
 			&comment.Content,
 			&comment.CreatedAt,
 		)
@@ -54,7 +62,6 @@ func FetchCommentsByPostID(postID int) ([]Comment, error) {
 		}
 
 		comment.PostID = postID
-
 		comments = append(comments, comment)
 	}
 
@@ -72,15 +79,4 @@ func StoreComment(user_id, post_id int, content string) (int64, error) {
 	commentID, _ := result.LastInsertId()
 
 	return commentID, nil
-}
-
-// Count comments by post ID
-func CountCommentsByPostID(postID int) (int, error) {
-	var count int
-	query := "SELECT COUNT(id) FROM comments WHERE post_id = ?"
-	err := DB.QueryRow(query, postID).Scan(&count)
-	if err != nil {
-		return 0, fmt.Errorf("error counting comments: %v", err)
-	}
-	return count, nil
 }
