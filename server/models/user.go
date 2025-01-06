@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"forum/server/utils"
 )
 
@@ -85,7 +83,7 @@ func StoreNewUser(newUser RegistrationRequest, password string) (int64, error) {
 		newUser.Gender,
 		hashedPassword)
 	if err != nil {
-		return 0, fmt.Errorf("%v", err)
+		return 0, err
 	}
 
 	userID, _ := result.LastInsertId()

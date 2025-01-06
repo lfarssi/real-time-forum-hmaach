@@ -34,27 +34,23 @@ func IndexPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
-	statusCode, message, title, content, categories := validators.CreatePostRequest(r)
+	post, statusCode, message := validators.CreatePostRequest(r)
 	if statusCode != http.StatusOK {
 		utils.JSONResponse(w, statusCode, message)
 		return
 	}
-	userID := r.Context().Value("user_id").(int)
 
-	err := models.CheckCategories(categories)
-	if err != nil {
-		utils.JSONResponse(w, http.StatusBadRequest, "Invalid categories")
-		return
-	}
+	post.UserID = r.Context().Value("user_id").(int)
 
-	post_id, err := models.StorePost(userID, title, content)
+
+	postID, err := models.StorePost(post)
 	if err != nil {
 		log.Println(err)
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
-	for _, category := range categories {
-		_, err = models.StorePostCategory(post_id, category)
+	for _, category := range post.Categories {
+		_, err = models.StorePostCategory(postID, category)
 		if err != nil {
 			log.Println(err)
 			utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")

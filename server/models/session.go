@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -13,7 +12,7 @@ func StoreSession(userID int, tokenID string, expires_at time.Time) error {
 
 	_, err := DB.Exec(query, userID, tokenID, expires_at)
 	if err != nil {
-		return fmt.Errorf("%v", err)
+		return err
 	}
 
 	return nil

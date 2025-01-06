@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS posts_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     post_id BIGINT NOT NULL,
     category_id BIGINT NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES posts(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
     UNIQUE (post_id, category_id)
 );
 CREATE TABLE IF NOT EXISTS categories (

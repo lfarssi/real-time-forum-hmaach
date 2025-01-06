@@ -1,9 +1,15 @@
 package models
 
 import (
-	"fmt"
 	"log"
 )
+
+type PostRequest struct {
+	UserID     int
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	Categories []int  `json:"categories"`
+}
 
 type Post struct {
 	ID            int
@@ -86,28 +92,34 @@ func FetchPosts(limit, page int) ([]Post, error) {
 	return posts, nil
 }
 
-func StorePost(user_id int, title, content string) (int64, error) {
-	query := `INSERT INTO posts (user_id,title,content) VALUES (?,?,?)`
+func StorePost(post PostRequest) (int64, error) {
+	query := `INSERT INTO posts (user_id, title, content) VALUES (?,?,?)`
 
-	result, err := DB.Exec(query, user_id, title, content)
+	result, err := DB.Exec(query, post.UserID, post.Title, post.Content)
 	if err != nil {
-		return 0, fmt.Errorf("%v", err)
+		return 0, err
 	}
 
-	postID, _ := result.LastInsertId()
+	postID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
 
 	return postID, nil
 }
 
-func StorePostCategory(post_id int64, category_id int) (int64, error) {
-	query := `INSERT INTO post_category (post_id, category_id) VALUES (?,?)`
+func StorePostCategory(postID int64, categoryID int) (int64, error) {
+	query := `INSERT INTO posts_categories (post_id, category_id) VALUES (?,?)`
 
-	result, err := DB.Exec(query, post_id, category_id)
+	result, err := DB.Exec(query, postID, categoryID)
 	if err != nil {
-		return 0, fmt.Errorf("%v", err)
+		return 0, err
 	}
 
-	postcatID, _ := result.LastInsertId()
+	postcatID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
 
 	return postcatID, nil
 }
