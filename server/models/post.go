@@ -12,16 +12,16 @@ type PostRequest struct {
 }
 
 type Post struct {
-	ID            int
-	UserID        int
-	UserFirstName string
-	UserLastName  string
-	UserNickname  string
-	Title         string
-	Content       string
-	CreatedAt     string
-	CommentsCount int
-	Categories    []Category
+	ID            int        `json:"id"`
+	UserID        int        `json:"uder_id"`
+	UserFirstName string     `json:"user_first_name"`
+	UserLastName  string     `json:"user_last_name"`
+	UserNickname  string     `json:"user_nickname"`
+	Title         string     `json:"title"`
+	Content       string     `json:"content"`
+	CreatedAt     string     `json:"created_at"`
+	CommentsCount int        `json:"comments_count"`
+	Categories    []Category `json:"categories"`
 }
 
 func FetchPosts(limit, page int) ([]Post, error) {

@@ -7,9 +7,9 @@ import (
 )
 
 type Category struct {
-	ID         int
-	Label      string
-	PostsCount int
+	ID         int    `json:"id"`
+	Label      string `json:"label"`
+	PostsCount int    `json:"posts_count"`
 }
 
 func FetchCategories() ([]Category, error) {

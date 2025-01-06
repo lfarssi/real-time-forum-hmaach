@@ -1,20 +1,20 @@
 package models
 
 type CommentRequest struct {
-	UserID  int
+	UserID  int    `json:"user_id"`
 	PostID  int    `json:"post_id"`
 	Content string `json:"content"`
 }
 
 type Comment struct {
-	ID            int
-	UserID        int
-	PostID        int
-	UserFirstName string
-	UserLastName  string
-	UserNickname  string
-	Content       string
-	CreatedAt     string
+	ID            int    `json:"id"`
+	UserID        int    `json:"user_id"`
+	PostID        int    `json:"post_id"`
+	UserFirstName string `json:"user_first_name"`
+	UserLastName  string `json:"user_last_name"`
+	UserNickname  string `json:"user_nickname"`
+	Content       string `json:"content"`
+	CreatedAt     string `json:"created_at"`
 }
 
 func FetchCommentsByPostID(postID, limit, page int) ([]Comment, error) {

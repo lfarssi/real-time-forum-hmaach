@@ -31,7 +31,6 @@ type User struct {
 	Email     string `json:"email"`
 	Age       int    `json:"age"`
 	Gender    string `json:"gender"`
-	Token     string `json:"token"`
 }
 
 func GetUserInfo(id int) (User, error) {
