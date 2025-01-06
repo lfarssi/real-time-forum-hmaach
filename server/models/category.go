@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -36,6 +37,45 @@ func FetchCategories() ([]Category, error) {
 	for rows.Next() {
 		var category Category
 		rows.Scan(&category.ID, &category.Label, &category.PostsCount)
+		categories = append(categories, category)
+	}
+	return categories, nil
+}
+
+func FetchCategoriesByPostID(postID int) ([]Category, error) {
+	query := `
+	SELECT 
+		c.id,
+		c.label,
+		(
+			SELECT COUNT(pc.post_id)
+			FROM posts_categories pc
+			WHERE pc.category_id = c.id
+		) AS post_count
+	FROM
+		categories c
+	INNER JOIN posts_categories pc ON pc.category_id = c.id
+	WHERE pc.post_id = ?`
+
+	rows, err := DB.Query(query, postID)
+	if err != nil {
+		log.Println("Error executing query:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var categories []Category
+	for rows.Next() {
+		var category Category
+		err := rows.Scan(
+			&category.ID,
+			&category.Label,
+			&category.PostsCount,
+		)
+		if err != nil {
+			log.Println("Error scanning row:", err)
+			return nil, err
+		}
 		categories = append(categories, category)
 	}
 	return categories, nil

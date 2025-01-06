@@ -16,7 +16,7 @@ func Routes() http.Handler {
 
 	mux.HandleFunc("/", middlewares.RecoveryMiddleware(rateLimiter.Middleware(controllers.IndexAPIs)))
 	mux.HandleFunc("/posts", middlewares.RecoveryMiddleware(rateLimiter.Middleware(controllers.IndexPosts)))
-	mux.HandleFunc("/posts/{id}", middlewares.RecoveryMiddleware(rateLimiter.Middleware(controllers.ShowPost)))
+	mux.HandleFunc("/posts/{id}/comments", middlewares.RecoveryMiddleware(rateLimiter.Middleware(controllers.GetComments)))
 	mux.HandleFunc("/register", middlewares.RecoveryMiddleware(rateLimiter.Middleware(controllers.Register)))
 	mux.HandleFunc("/login", middlewares.RecoveryMiddleware(rateLimiter.Middleware(controllers.Login)))
 

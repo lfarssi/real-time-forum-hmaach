@@ -7,6 +7,9 @@ import (
 	"forum/server/utils"
 	"forum/server/validators"
 )
+func GetComments(w http.ResponseWriter, r *http.Request)  {
+	
+}
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	statusCode, message, content, postID := validators.CreateCommentRequest(r)

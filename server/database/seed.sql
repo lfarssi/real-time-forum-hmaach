@@ -60,7 +60,7 @@ INSERT INTO posts (user_id, title, content) VALUES
 (15, 'Post 35 Title', 'Content of post 35');
 
 -- Link Posts with Categories
-INSERT INTO post_category (post_id, category_id) VALUES
+INSERT INTO posts_categories (post_id, category_id) VALUES
 (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
 (6, 1), (7, 2), (8, 3), (9, 4), (10, 5),
 (11, 1), (12, 2), (13, 3), (14, 4), (15, 5),
@@ -86,17 +86,3 @@ INSERT INTO comments (user_id, post_id, content) VALUES
 (13, 13, 'Comment 13 on Post 13'),
 (14, 14, 'Comment 14 on Post 14'),
 (1, 15, 'Comment 15 on Post 15');
-
--- Insert Post Reactions (Likes and Dislikes)
-INSERT INTO post_reactions (user_id, post_id, reaction) VALUES
-(1, 1, 'like'), (2, 1, 'dislike'), (3, 2, 'like'), (4, 2, 'dislike'),
-(5, 3, 'like'), (6, 4, 'dislike'), (7, 5, 'like'), (8, 6, 'dislike'),
-(9, 7, 'like'), (10, 8, 'dislike'), (11, 9, 'like'), (12, 10, 'dislike'),
-(13, 11, 'like'), (14, 12, 'dislike'), (15, 13, 'like'), (16, 14, 'dislike');
-
--- Insert Comment Reactions (Likes and Dislikes)
-INSERT INTO comment_reactions (user_id, comment_id, reaction) VALUES
-(1, 1, 'like'), (2, 2, 'dislike'), (3, 3, 'like'), (4, 4, 'dislike'),
-(5, 5, 'like'), (6, 6, 'dislike'), (7, 7, 'like'), (8, 8, 'dislike'),
-(9, 9, 'like'), (10, 10, 'dislike'), (11, 11, 'like'), (12, 12, 'dislike'),
-(13, 13, 'like'), (14, 14, 'dislike'), (15, 15, 'like');

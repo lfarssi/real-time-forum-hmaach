@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"database/sql"
 	"encoding/json"
-	"errors"
 	"log"
 	"net/http"
 
@@ -13,58 +11,26 @@ import (
 )
 
 func IndexPosts(w http.ResponseWriter, r *http.Request) {
-	statusCode, message, actionType, categoryID, page := validators.IndexPostsRequest(r)
+	statusCode, message, page := validators.IndexPostsRequest(r)
 	if statusCode != http.StatusOK {
 		utils.JSONResponse(w, statusCode, message)
 		return
 	}
-	// userID := 11
 
 	var (
 		posts []models.Post
 		err   error
 	)
-	page *= 10
-
-	switch actionType {
-	case "index":
-		posts, err = models.FetchPosts(page)
-	case "category":
-		posts, err = models.FetchPostsByCategory(categoryID, page)
-	}
-
+	limit := 10
+	posts, err = models.FetchPosts(limit, page)
 	if err != nil {
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(posts)
-}
-
-func ShowPost(w http.ResponseWriter, r *http.Request) {
-	// Validate the request and extract the post ID
-	statusCode, message, postID := validators.ShowPostRequest(r)
-	if statusCode != http.StatusOK {
-		utils.JSONResponse(w, statusCode, message)
-		return
-	}
-
-	post, err := models.FetchPost(postID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			utils.JSONResponse(w, http.StatusNotFound, "Post not found")
-		} else {
-			log.Printf("Error fetching post with ID %d: %v", postID, err)
-			utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
-		}
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(post)
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
