@@ -23,7 +23,7 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	if r.Header.Get("Content-Type") != "application/json" {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Content-Type must be application/json"
+		return models.RegistrationRequest{}, "", http.StatusUnsupportedMediaType, "Content-Type must be application/json"
 	}
 
 	var user models.RegistrationRequest

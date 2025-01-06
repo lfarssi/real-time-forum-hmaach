@@ -18,7 +18,7 @@ func CreateCommentRequest(r *http.Request) (int, string, string, int) {
 	}
 
 	if r.Header.Get("Content-Type") != "application/json" {
-		return http.StatusBadRequest, "Content-Type must be application/json", "", 0
+		return http.StatusUnsupportedMediaType, "Content-Type must be application/json", "", 0
 	}
 
 	// Parse form data

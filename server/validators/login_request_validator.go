@@ -21,7 +21,7 @@ func LoginRequest(r *http.Request) (models.LoginRequest, int, string) {
 	}
 
 	if r.Header.Get("Content-Type") != "application/json" {
-		return models.LoginRequest{}, http.StatusBadRequest, "Content-Type must be application/json"
+		return models.LoginRequest{}, http.StatusUnsupportedMediaType, "Content-Type must be application/json"
 	}
 
 	var user models.LoginRequest

@@ -11,58 +11,28 @@ import (
 // returns:
 // - int: HTTP status code.
 // - string: Error or success message.
-// - int: category_id if the action type is fetch by 'category'.
-func IndexPostsRequest(r *http.Request) (int, string, string, int, int) {
+// - int: page of posts index
+func IndexPostsRequest(r *http.Request) (int, string, int) {
 	if r.Method != http.MethodGet {
-		return http.StatusMethodNotAllowed, "Invalid HTTP method", "", 0, 0
-	}
-
-	if r.Header.Get("Content-Type") != "application/json" {
-		return http.StatusBadRequest, "Content-Type must be application/json", "", 0, 0
+		return http.StatusMethodNotAllowed, "Invalid HTTP method", 0
 	}
 
 	err := r.ParseForm()
 	if err != nil {
-		return http.StatusBadRequest, "Failed to parse form data", "", 0, 0
+		return http.StatusBadRequest, "Failed to parse form data", 0
 	}
-
-	category := r.FormValue("category_id")
-	created := r.FormValue("created")
-	liked := r.FormValue("liked")
 
 	page := 0
 	pageStr := r.FormValue("page")
 	if pageStr != "" {
 		page, err = strconv.Atoi(r.FormValue("page"))
 		if err != nil || page < 1 {
-			return http.StatusBadRequest, "Invalid page number", "", 0, 0
+			return http.StatusBadRequest, "Invalid page number", 0
 		}
 		page-- // in the databse the page number should start from 0
 	}
 
-	limit := 10
-	limitStr := r.FormValue("limit")
-	if limitStr != "" {
-		limit, err = strconv.Atoi(limitStr)
-		if err != nil || limit < 1 {
-			return http.StatusBadRequest, "Invalid limit number", "", 0, 0
-		}
-	}
-	if category == "" && created == "" && liked == "" {
-		return http.StatusOK, "success", "index", 0, page
-	} else if category != "" && created == "" && liked == "" {
-		categoryID, err := strconv.Atoi(category)
-		if err != nil || categoryID < 1 {
-			return http.StatusBadRequest, "Invalid category ID", "", 0, page
-		}
-		return http.StatusOK, "success", "category", categoryID, page
-	} else if created != "" && category == "" && liked == "" {
-		return http.StatusOK, "success", "created", 0, page
-	} else if liked != "" && category == "" && created == "" {
-		return http.StatusOK, "success", "liked", 0, page
-	} else {
-		return http.StatusBadRequest, "Only one action type is allowed", "", 0, page
-	}
+	return http.StatusOK, "success", page
 }
 
 // validates a request to show a specific post.
@@ -101,9 +71,8 @@ func CreatePostRequest(r *http.Request) (int, string, string, string, []int) {
 		return http.StatusMethodNotAllowed, "Invalid HTTP method", "", "", nil
 	}
 
-	contentType := r.Header.Get("Content-Type")
-	if !strings.HasPrefix(contentType, "application/x-www-form-urlencoded") {
-		return http.StatusUnsupportedMediaType, "Unsupported content type", "", "", nil
+	if r.Header.Get("Content-Type") != "application/json" {
+		return http.StatusUnsupportedMediaType, "Content-Type must be application/json", "", "", nil
 	}
 
 	err := r.ParseForm()
