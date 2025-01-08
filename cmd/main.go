@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"os"
 	"text/template"
+	"time"
 
+	"forum/server/controllers"
+	"forum/server/middlewares"
 	"forum/server/models"
-	"forum/server/routes"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -31,6 +33,29 @@ func init() {
 	}
 }
 
+func routes() http.Handler {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", controllers.Index)
+	mux.HandleFunc("/assets/", controllers.ServeStaticFiles)
+	mux.HandleFunc("/api/register", controllers.Register)
+	mux.HandleFunc("/api/login", controllers.Login)
+
+	// Routes that require authentication
+	mux.HandleFunc("/api/posts", middlewares.IsAuth(controllers.IndexPosts))
+	mux.HandleFunc("/api/posts/{id}/comments", middlewares.IsAuth(controllers.GetComments))
+	mux.HandleFunc("/api/posts/create", middlewares.IsAuth(controllers.CreatePost))
+	mux.HandleFunc("/api/posts/react", middlewares.IsAuth(controllers.ReactToPost))
+	mux.HandleFunc("/api/comments/create", middlewares.IsAuth(controllers.CreateComment))
+	mux.HandleFunc("/api/logout", middlewares.IsAuth(controllers.Logout))
+
+	// Create a rate limiter allowing 10 requests per minute
+	rateLimiter := middlewares.NewRateLimiter(10, 1*time.Minute)
+
+	// Apply RecoveryMiddleware, CORS, and RateLimiter globally
+	return middlewares.CORS(middlewares.Recovery(rateLimiter.Middleware(mux)))
+}
+
 func main() {
 	if len(os.Args) != 1 {
 		log.Fatal("Too many arguments")
@@ -38,7 +63,7 @@ func main() {
 
 	server := http.Server{
 		Addr:    ":8080",
-		Handler: routes.Routes(),
+		Handler: routes(),
 	}
 
 	log.Println("Server starting on http://localhost:8080")
