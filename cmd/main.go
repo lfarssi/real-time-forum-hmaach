@@ -4,22 +4,30 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 
-	"forum/server/api"
 	"forum/server/models"
+	"forum/server/routes"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func init() {
-	// Connect to the database
-	err := models.Connect()
+	// Parse the template during initialization
+	_, err := template.ParseFiles("./web/index.html")
 	if err != nil {
-		log.Panic("Database connection error:", err)
+		log.Fatalf("Error parsing template: %v", err)
 	}
+
+	// Connect to the database
+	err = models.Connect()
+	if err != nil {
+		log.Fatalf("Database connection error: %v", err)
+	}
+
 	err = models.CreateTables()
 	if err != nil {
-		log.Fatal("error creating demo data:", err)
+		log.Fatalf("error creating demo data: %v", err)
 	}
 }
 
@@ -30,7 +38,7 @@ func main() {
 
 	server := http.Server{
 		Addr:    ":8080",
-		Handler: api.Routes(),
+		Handler: routes.Routes(),
 	}
 
 	log.Println("Server starting on http://localhost:8080")

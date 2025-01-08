@@ -6,15 +6,13 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	"forum/server/config"
 )
 
 var (
 	database     = "sqlite3"
-	databasePath = config.BasePath + "server/database/database.db"
-	schemaPath   = config.BasePath + "server/database/schema.sql"
-	seedPath     = config.BasePath + "server/database/seed.sql"
+	databasePath = "./server/database/database.db"
+	schemaPath   = "./server/database/schema.sql"
+	seedPath     = "./server/database/seed.sql"
 	DB           *sql.DB
 )
 

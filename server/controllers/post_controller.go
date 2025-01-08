@@ -60,3 +60,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, "success")
 }
+
+func ReactToPost(w http.ResponseWriter, r *http.Request)  {
+	
+}

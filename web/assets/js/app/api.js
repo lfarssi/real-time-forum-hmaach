@@ -1,18 +1,16 @@
-const BASE_URL = 'http://localhost:8080';
-
 // Public Routes
 export const getPosts = async (page = 1) => {
-    const response = await fetch(`${BASE_URL}/posts?page=${page}`);
+    const response = await fetch(`api/posts?page=${page}`);
     return response.json();
 };
 
 export const getComments = async (postId, page = 1) => {
-    const response = await fetch(`${BASE_URL}/posts/${postId}/comments?page=${page}`);
+    const response = await fetch(`api/posts/${postId}/comments?page=${page}`);
     return response.json();
 };
 
 export const registerUser = async (userData) => {
-    const response = await fetch(`${BASE_URL}/register`, {
+    const response = await fetch(`api/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -23,7 +21,7 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (credentials) => {
-    const response = await fetch(`${BASE_URL}/login`, {
+    const response = await fetch(`api/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +33,7 @@ export const loginUser = async (credentials) => {
 
 // Authenticated Routes
 export const createPost = async (postData, token) => {
-    const response = await fetch(`${BASE_URL}/posts/create`, {
+    const response = await fetch(`api/posts/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +45,7 @@ export const createPost = async (postData, token) => {
 };
 
 export const createComment = async (commentData, token) => {
-    const response = await fetch(`${BASE_URL}/comments/create`, {
+    const response = await fetch(`api/comments/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -59,7 +57,7 @@ export const createComment = async (commentData, token) => {
 };
 
 export const logoutUser = async (token) => {
-    const response = await fetch(`${BASE_URL}/logout`, {
+    const response = await fetch(`api/logout`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
