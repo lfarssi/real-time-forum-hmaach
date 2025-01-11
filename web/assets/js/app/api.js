@@ -1,14 +1,4 @@
 // Public Routes
-export const getPosts = async (page = 1) => {
-    const response = await fetch(`api/posts?page=${page}`);
-    return response.json();
-};
-
-export const getComments = async (postId, page = 1) => {
-    const response = await fetch(`api/posts/${postId}/comments?page=${page}`);
-    return response.json();
-};
-
 export const registerUser = async (userData) => {
     const response = await fetch(`api/register`, {
         method: 'POST',
@@ -32,6 +22,24 @@ export const loginUser = async (credentials) => {
 };
 
 // Authenticated Routes
+export const getPosts = async (page = 1, token) => {
+    const response = await fetch(`api/posts?page=${page}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    return response.json();
+};
+
+export const getComments = async (postId, page = 1, token) => {
+    const response = await fetch(`api/posts/${postId}/comments?page=${page}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    });
+    return response.json();
+};
+
 export const createPost = async (postData, token) => {
     const response = await fetch(`api/posts/create`, {
         method: 'POST',
