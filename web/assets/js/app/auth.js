@@ -82,14 +82,12 @@ export const handleLogout = () => {
             try {
                 const token = localStorage.getItem("token");
                 const response = await logoutUser(token);
+                console.log(response.message);
 
-                if (response.message === "success") {
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("token");
-                    showAuth();
-                } else {
-                    console.error(response.message);
-                }
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
+                showAuth();
+
             } catch (error) {
                 console.error(error);
             }
