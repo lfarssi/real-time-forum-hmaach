@@ -13,7 +13,7 @@ type PostRequest struct {
 
 type Post struct {
 	ID            int        `json:"id"`
-	UserID        int        `json:"uder_id"`
+	UserID        int        `json:"user_id"`
 	UserFirstName string     `json:"user_first_name"`
 	UserLastName  string     `json:"user_last_name"`
 	UserNickname  string     `json:"user_nickname"`
