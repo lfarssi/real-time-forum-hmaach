@@ -23,7 +23,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	user_id, hashedPassword, err := models.GetUserPassword(userRequest)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			utils.JSONResponse(w, http.StatusNotFound, "User does not exist")
+			utils.JSONResponse(w, http.StatusNotFound, "Invalid nickname or email")
 			return
 		}
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
@@ -60,7 +60,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{"user": userResponse, "token": token})
+	json.NewEncoder(w).Encode(map[string]interface{}{"message": "success", "user": userResponse, "token": token})
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {

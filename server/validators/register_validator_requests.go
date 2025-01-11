@@ -43,8 +43,8 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	passwordConfirmation := html.EscapeString(strings.TrimSpace(user.PasswordConfirmation))
 
 	// Validate First Name
-	if len(user.FirstName) < 2 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name must be at least 2 characters long"
+	if len(user.FirstName) == 0 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name is required"
 	}
 	if len(user.FirstName) > 50 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name cannot exceed 50 characters"
@@ -54,8 +54,8 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	// Validate Last Name
-	if len(user.LastName) < 2 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name must be at least 2 characters long"
+	if len(user.LastName) == 0 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name is required"
 	}
 	if len(user.LastName) > 50 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name cannot exceed 50 characters"
@@ -76,6 +76,9 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	// Validate nickname
+	if len(user.Nickname) == 0 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname is required"
+	}
 	if len(user.Nickname) < 4 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname must be at least 4 characters long"
 	}
@@ -87,16 +90,16 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	// Validate gender
-	if len(user.Gender) > 10 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Gender cannot exceed 10 characters"
+	if len(user.Gender) == 0 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Gender is required"
 	}
 	if user.Gender != "male" && user.Gender != "female" && user.Gender != "other" {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Invalid gender. Must be 'male', 'female', or 'other'"
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Invalid gender. Must be 'male' or 'female'"
 	}
 
 	// Validate age
-	if user.Age <= 0 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Invalid Age value"
+	if user.Age < 18 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Our policy requires age to be bigger than 18"
 	}
 	if user.Age > 120 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Age cannot exceed 120"
