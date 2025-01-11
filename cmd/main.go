@@ -31,6 +31,11 @@ func init() {
 	if err != nil {
 		log.Fatalf("error creating demo data: %v", err)
 	}
+
+	// err = models.CreateDemoData()
+	// if err != nil {
+	// 	log.Fatalf("error creating demo data: %v", err)
+	// }
 }
 
 func routes() http.Handler {
@@ -50,7 +55,7 @@ func routes() http.Handler {
 	mux.HandleFunc("/api/logout", middlewares.IsAuth(controllers.Logout))
 
 	// Create a rate limiter allowing 10 requests per minute
-	rateLimiter := middlewares.NewRateLimiter(10, 1*time.Minute)
+	rateLimiter := middlewares.NewRateLimiter(100, 1*time.Minute)
 
 	// Apply RecoveryMiddleware, CORS, and RateLimiter globally
 	return middlewares.CORS(middlewares.Recovery(rateLimiter.Middleware(mux)))
