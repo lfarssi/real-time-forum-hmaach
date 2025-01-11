@@ -21,6 +21,8 @@ type Post struct {
 	Title         string     `json:"title"`
 	Content       string     `json:"content"`
 	CreatedAt     string     `json:"created_at"`
+	LikesCount    int        `json:"likes_count"`
+	DislikesCount int        `json:"dislike_count"`
 	CommentsCount int        `json:"comments_count"`
 	Categories    []Category `json:"categories"`
 }
@@ -37,30 +39,36 @@ func FetchPosts(limit, page int) ([]Post, error) {
 		offset = page * limit
 	)
 
+	// 'COALESCE' is used to replace NULL values with 0 in a concise way.
 	query := `
-	SELECT
-		p.id,
-		p.user_id,
-		u.first_name, 
-		u.last_name, 
-		u.nickname, 
-		p.title,
-		p.content,
-		p.created_at,
-		(
-			SELECT
-				COUNT(c.id)
-			FROM
-				comments c
-			WHERE
-				c.post_id = p.id
-		) AS comments_count
-	FROM
-		posts p
-	INNER JOIN users u ON p.user_id = u.id
-	ORDER BY
-		p.created_at DESC
-	LIMIT ? OFFSET ?;`
+		SELECT 
+			p.id,
+			p.user_id,
+			u.first_name,
+			u.last_name,
+			u.nickname,
+			p.title,
+			p.content,
+			p.created_at,
+			COALESCE(like_count, 0) AS likes_count,
+			COALESCE(dislike_count, 0) AS dislikes_count,
+			COALESCE(comments_count, 0) AS comments_count
+		FROM posts p
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT JOIN (
+					SELECT post_id, 
+						SUM(reaction = 'like') AS like_count,
+						SUM(reaction = 'dislike') AS dislike_count
+					FROM post_reactions
+					GROUP BY post_id
+				) reactions ON reactions.post_id = p.id
+		LEFT JOIN (
+					SELECT post_id, COUNT(id) AS comments_count
+					FROM comments
+					GROUP BY post_id
+				) comments ON comments.post_id = p.id
+		ORDER BY p.created_at DESC
+		LIMIT ? OFFSET ?;`
 
 	rows, err := DB.Query(query, limit, offset)
 	if err != nil {
@@ -80,6 +88,8 @@ func FetchPosts(limit, page int) ([]Post, error) {
 			&post.Title,
 			&post.Content,
 			&post.CreatedAt,
+			&post.LikesCount,
+			&post.DislikesCount,
 			&post.CommentsCount,
 		)
 		if err != nil {
