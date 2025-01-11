@@ -4,15 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Real Time Forum</title>
+    <style>
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border: red 1px solid;
+            margin-bottom: 20px;
+        }
+
+        .form>* {
+            padding: 5px;
+            width: 80%;
+        }
+
+        .error {
+            color: red;
+            font-size: 15px;
+            height: 15px;
+            padding: 0;
+        }
+
+        #feed {
+            display: none;
+            border: green 1px solid;
+        }
+
+        #auth-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container" id="container"> 
-        salam
+    <div class="container" id="container">
+        <div id="auth-container">
+            <div id="login-container" class="form">
+                <input type="text" id="login-identifier" placeholder="Nickname or Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <span id="login-error" class="error"></span>
+                <button id="login-submit">Log in</button>
+            </div>
+            <div id="register-container" class="form">
+                <input type="text" id="register-first-name" placeholder="First Name">
+                <input type="text" id="register-last-name" placeholder="Last Name">
+                <input type="text" id="register-identifier" placeholder="Email">
+                <input type="text" id="register-nickname" placeholder="Nickname">
+                <select id="register-gender" name="gender">
+                    <option value="" selected disabled>--Select your Gender--</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <input type="number" id="register-age" placeholder="Age">
+                <input type="password" id="register-password" placeholder="Password">
+                <span id="register-error" class="error"></span>
+                <button id="register-submit">Register</button>
+            </div>
+        </div>
+
+        <div id="feed">
+            <div class="user-display"></div>
+        </div>
     </div>
-    <script type="module" src="./assets/js/main.js"></script>
+    <script type="module" src="/assets/js/main.js"></script>
 </body>
 
 </html>

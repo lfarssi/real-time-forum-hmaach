@@ -1,25 +1,27 @@
+import { showAuth, handleRegistration, handleLogin } from './app/auth.js';
+import { showFeed } from './app/feed.js';
 import {
-    getPosts,
     getComments,
     createPost,
     createComment
 } from './app/api.js';
-import {
-    submitRegistration,
-    submitLogin,
-    submitLogout
-} from './app/auth.js';
 
-const token = localStorage.getItem('token')
+addEventListener('DOMContentLoaded', () => {
+    // Check if user and token exist
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const token = localStorage.getItem("token");
 
-async function loadPosts() {
-    try {
-        const posts = await getPosts(1);
-        console.log("posts: ", posts);
-    } catch (error) {
-        console.log(error);
+    if (user && token) {
+        showFeed(user);
+    } else {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        showAuth();
     }
-}
+
+    handleRegistration();
+    handleLogin();
+});
 
 async function loadComments() {
     try {
@@ -56,58 +58,3 @@ async function submitComment() {
         console.log(error);
     }
 }
-
-if (!localStorage.getItem('token') || !localStorage.getItem('user')) {
-    const container = document.getElementById('container');
-    const loginForm = document.createElement("div");
-    loginForm.innerHTML = `
-        <div id="login">
-            <input type="text" id="login-identifier" placeholder="Nickname or Email">
-            <input type="password" id="login-password" placeholder="Password">
-            <button id="login-submit">Log in</button>
-        </div>
-    `;
-    container.appendChild(loginForm);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-} else {
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    const container = document.getElementById('container');
-    const userDisplay = document.createElement("div");
-    userDisplay.innerHTML = `
-        <h2>Welcome, ${user.first_name} ${user.last_name}!</h2>
-        <p><strong>Nickname:</strong> ${user.nickname}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-        <p><strong>Age:</strong> ${user.age}</p>
-        <p><strong>Gender:</strong> ${user.gender}</p>
-        <button id="logout-submit">Log out</button>
-    `;
-    container.appendChild(userDisplay);
-}
-
-const loginForm = document.getElementById("login-submit")
-if (loginForm) {
-    loginForm.addEventListener("click", (e) => {
-        const credentials = {
-            "nickname": document.getElementById("login-identifier").value,
-            "password": document.getElementById("login-password").value
-        }
-        submitLogin(credentials)
-    })
-}
-
-const logoutBtn = document.getElementById("logout-submit")
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", (e) => {
-        submitLogout()
-    })
-}
-
-loadPosts()
-loadComments()
-// submitPost()
-// submitComment()
-// submitRegistration()
-// submitLogin()
-// submitLogout()

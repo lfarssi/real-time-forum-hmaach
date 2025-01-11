@@ -1,3 +1,13 @@
-*{
+* {
     background-color: aqua;
+}
+
+.container {
+    border: red solid 1px;
+}
+
+.form {
+    display: none;
+    flex-direction: column;
+    border: red 1px solid;
 }
