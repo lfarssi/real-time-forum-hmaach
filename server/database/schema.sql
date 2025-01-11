@@ -1,7 +1,7 @@
 PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id BIGINT UNIQUE NOT NULL,
+    user_id INTEGER UNIQUE NOT NULL,
     token TEXT NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 CREATE TABLE IF NOT EXISTS posts_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_id BIGINT NOT NULL,
-    category_id BIGINT NOT NULL,
+    post_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
     UNIQUE (post_id, category_id)
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id BIGINT NOT NULL,
+    user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -40,10 +40,21 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id BIGINT NOT NULL,
-    post_id BIGINT NOT NULL,
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS post_reactions (
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    reaction TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    UNIQUE (user_id, post_id),
+    CHECK (reaction IN ('like', 'dislike'))
 );

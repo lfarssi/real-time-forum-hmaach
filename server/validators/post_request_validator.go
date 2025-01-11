@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"database/sql"
 	"encoding/json"
 	"html"
 	"net/http"
@@ -94,5 +95,50 @@ func CreatePostRequest(r *http.Request) (models.PostRequest, int, string) {
 		return models.PostRequest{}, http.StatusBadRequest, "One or more category IDs are invalid"
 	}
 
-	return post, http.StatusOK, "Post request validated successfully"
+	return post, http.StatusOK, "success"
+}
+
+// validates a request to react to a post.
+// Returns:
+// - models.Reaction: The validated reaction request structure.
+// - int: HTTP status code.
+// - string: Error or success message.
+func ReactToPostRequest(r *http.Request) (models.Reaction, int, string) {
+	// Check HTTP method
+	if r.Method != http.MethodPost {
+		return models.Reaction{}, http.StatusMethodNotAllowed, "Only POST method is allowed"
+	}
+
+	// Check Content-Type header
+	if r.Header.Get("Content-Type") != "application/json" {
+		return models.Reaction{}, http.StatusUnsupportedMediaType, "Content-Type must be 'application/json'"
+	}
+
+	var reaction models.Reaction
+
+	// Decode the JSON data
+	if err := json.NewDecoder(r.Body).Decode(&reaction); err != nil {
+		return models.Reaction{}, http.StatusBadRequest, "Invalid JSON data: unable to parse request body"
+	}
+
+	// Sanitize and validate title
+	reaction.Type = html.EscapeString(strings.TrimSpace(reaction.Type))
+	if reaction.Type == "" || (reaction.Type != "like" && reaction.Type != "dislike") {
+		return models.Reaction{}, http.StatusBadRequest, "Invalid reaction type: must be 'like' or 'dislike'"
+	}
+
+	// Validate Post ID
+	if reaction.PostID <= 0 {
+		return models.Reaction{}, http.StatusBadRequest, "Post ID must be a positive integer"
+	}
+
+	// Check if the post exists
+	if err := models.CheckPostExist(reaction.PostID); err != nil {
+		if err == sql.ErrNoRows {
+			return models.Reaction{}, http.StatusBadRequest, "The specified post does not exist"
+		}
+		return models.Reaction{}, http.StatusInternalServerError, "An error occurred while verifying the post"
+	}
+
+	return reaction, http.StatusOK, "success"
 }

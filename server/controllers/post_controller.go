@@ -61,6 +61,19 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	utils.JSONResponse(w, http.StatusOK, "success")
 }
 
-func ReactToPost(w http.ResponseWriter, r *http.Request)  {
-	
+func ReactToPost(w http.ResponseWriter, r *http.Request) {
+	reaction, status, message := validators.ReactToPostRequest(r)
+	if status != http.StatusOK {
+		utils.JSONResponse(w, status, message)
+		return
+	}
+	reaction.UserID = r.Context().Value("user_id").(int)
+	err := models.ReactToPost(reaction)
+	if err != nil {
+		log.Println(err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, "success")
 }

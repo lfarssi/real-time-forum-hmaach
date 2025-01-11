@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"log"
 )
 
@@ -22,6 +23,12 @@ type Post struct {
 	CreatedAt     string     `json:"created_at"`
 	CommentsCount int        `json:"comments_count"`
 	Categories    []Category `json:"categories"`
+}
+
+type Reaction struct {
+	UserID int
+	PostID int    `json:"post_id"`
+	Type   string `json:"reaction"`
 }
 
 func FetchPosts(limit, page int) ([]Post, error) {
@@ -132,4 +139,39 @@ func StorePostCategory(postID int64, categoryID int) (int64, error) {
 	}
 
 	return postcatID, nil
+}
+
+func ReactToPost(reaction Reaction) error {
+	var oldReaction string
+
+	query := `SELECT reaction FROM post_reactions WHERE post_id = ? AND user_id = ?;`
+	err := DB.QueryRow(query, reaction.PostID, reaction.UserID).Scan(&oldReaction)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			query := `INSERT INTO post_reactions (post_id, user_id, reaction) VALUES (?, ?, ?)`
+			_, err = DB.Exec(query, reaction.PostID, reaction.UserID, reaction.Type)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	} else {
+		if oldReaction == reaction.Type {
+			query := `DELETE FROM post_reactions WHERE post_id = ? AND user_id = ?`
+			_, err = DB.Exec(query, reaction.PostID, reaction.UserID)
+			if err != nil {
+				return err
+			}
+		} else {
+			query := `UPDATE post_reactions SET reaction = ? WHERE post_id = ? AND user_id = ?`
+			_, err = DB.Exec(query, reaction.Type, reaction.PostID, reaction.UserID)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
