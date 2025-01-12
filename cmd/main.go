@@ -47,12 +47,16 @@ func routes() http.Handler {
 	mux.HandleFunc("/api/login", controllers.Login)
 
 	// Routes that require authentication
+	mux.HandleFunc("/api/users", middlewares.IsAuth(controllers.IndexUsers))
 	mux.HandleFunc("/api/posts", middlewares.IsAuth(controllers.IndexPosts))
 	mux.HandleFunc("/api/posts/{id}/comments", middlewares.IsAuth(controllers.GetComments))
 	mux.HandleFunc("/api/posts/create", middlewares.IsAuth(controllers.CreatePost))
 	mux.HandleFunc("/api/posts/react", middlewares.IsAuth(controllers.ReactToPost))
 	mux.HandleFunc("/api/comments/create", middlewares.IsAuth(controllers.CreateComment))
 	mux.HandleFunc("/api/logout", middlewares.IsAuth(controllers.Logout))
+
+	// WebSocket endpoint
+	mux.HandleFunc("/ws", middlewares.IsAuthWebSocket(controllers.HandleWebSocket))
 
 	// Create a rate limiter allowing 10 requests per minute
 	rateLimiter := middlewares.NewRateLimiter(100, 1*time.Minute)

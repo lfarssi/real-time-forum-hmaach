@@ -33,6 +33,40 @@ type User struct {
 	Gender    string `json:"gender"`
 }
 
+func GetUsers(userID int) ([]User, error) {
+	var users []User
+	query := `
+		SELECT 	
+			id, first_name, last_name, nickname, email, age, gender 
+		FROM 
+			users 
+		WHERE NOT id = ?
+		ORDER BY 
+			created_at DESC`
+	rows, err := DB.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		err = rows.Scan(
+			&user.ID,
+			&user.FirstName,
+			&user.LastName,
+			&user.Nickname,
+			&user.Email,
+			&user.Age,
+			&user.Gender)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
 func GetUserInfo(id int) (User, error) {
 	var user User
 	user.ID = id

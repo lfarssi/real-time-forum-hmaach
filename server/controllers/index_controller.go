@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"text/template"
 
+	"forum/server/models"
 	"forum/server/utils"
 )
 
@@ -30,6 +33,32 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
+}
+
+func IndexUsers(w http.ResponseWriter, r *http.Request) {
+	// Check if the request method is GET
+	if r.Method != http.MethodGet {
+		utils.JSONResponse(w, http.StatusMethodNotAllowed, "Method Not Allowed")
+		return
+	}
+
+	// Fetch users from the database and return them as JSON
+	userID := r.Context().Value("user_id").(int)
+	users, err := models.GetUsers(userID)
+	if err != nil {
+		log.Println("Failed to fetch users: ", err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
+	var connectedIDs []int
+	for id := range ConnectedUsers {
+		connectedIDs = append(connectedIDs, id)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{"users": users, "connected": connectedIDs})
 }
 
 // ServeStaticFiles returns a handler function for serving static files

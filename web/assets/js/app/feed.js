@@ -1,5 +1,9 @@
 import { handleLogout } from "./auth.js"
-import { getPosts } from "./api.js"
+import { getUsers, getPosts } from "./api.js"
+import { setupWebSocket } from "./websocket.js"
+import { updateUserStatus } from "./utils.js"
+
+let ws
 
 export const showFeed = (user) => {
     const authContainer = document.getElementById("auth-container");
@@ -21,8 +25,55 @@ export const showFeed = (user) => {
         `;
         handleLogout();
     }
+    ws = setupWebSocket()
+    loadUsers()
     loadPosts()
+
+    const send = document.getElementById('ws-send')
+    send.addEventListener('click', () => {
+        const message = document.getElementById('ws-message')
+        ws.send(message.value);
+        message.value = '';
+    })
 };
+
+async function loadUsers() {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await getUsers(token);
+        const userListContainer = document.getElementById("user-list");
+        userListContainer.innerHTML = "";
+
+        if (!response.users || response.users.length === 0) {
+            userListContainer.innerText = "No response.users to display";
+            return;
+        }
+
+        response.users.forEach(user => {
+            const userElement = document.createElement("div");
+
+            userElement.classList.add("user");
+            userElement.setAttribute("data-user-id", user.id); // Unique identifier for the user
+
+            userElement.innerHTML = `
+                <p>
+                    <strong>${user.first_name} ${user.last_name}</strong>
+                    (@${user.nickname})
+                    <span class="user-status"></span>
+                </p>
+            `;
+
+            userListContainer.appendChild(userElement);
+        });
+
+        if (response.connected && Array.isArray(response.connected) && response.connected.length > 0) {
+            updateUserStatus(response.connected);
+        }
+    } catch (error) {
+        console.error("Error loading users:", error);
+    }
+}
+
 
 async function loadPosts() {
     try {

@@ -22,6 +22,15 @@ export const loginUser = async (credentials) => {
 };
 
 // Authenticated Routes
+export const getUsers = async (token) => {
+    const response = await fetch(`api/users`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    return response.json();
+};
+
 export const getPosts = async (page = 1, token) => {
     const response = await fetch(`api/posts?page=${page}`, {
         headers: {

@@ -8,3 +8,19 @@ export const writeMessage = (elementID, message) => {
     }, 2000);
 }
 
+export const updateUserStatus = (connectedUsers) => {
+    const userListContainer = document.getElementById("user-list");
+    const allUserElements = userListContainer.querySelectorAll('.user');
+
+    allUserElements.forEach(userElement => {
+        const userID = userElement.getAttribute('data-user-id');
+        if (userID) {
+            if (connectedUsers.includes(parseInt(userID))) {
+                console.log(parseInt(userID))
+                userElement.querySelector('span').classList.add('online')
+            } else {
+                userElement.querySelector('span').classList.remove('online')
+            }
+        }
+    });
+};
