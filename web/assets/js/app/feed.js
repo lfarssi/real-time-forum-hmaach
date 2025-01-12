@@ -49,7 +49,9 @@ async function loadPosts() {
                 <p><strong>Comments:</strong> ${post.comments_count}</p>
                 <p><strong>Created at:</strong> ${new Date(post.created_at).toLocaleString()}</p>
                 <p>${post.content}</p>
-                <p>Comments :${post.comments_count}</p>
+                <p><strong>Comments:</strong> ${post.comments_count}</p>
+                <p><strong>Likes:</strong> ${post.likes_count}</p>
+                <p><strong>Dislikes:</strong> ${post.dislikes_count}</p>
             `;
 
             postContainer.appendChild(postElement);

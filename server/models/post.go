@@ -22,7 +22,7 @@ type Post struct {
 	Content       string     `json:"content"`
 	CreatedAt     string     `json:"created_at"`
 	LikesCount    int        `json:"likes_count"`
-	DislikesCount int        `json:"dislike_count"`
+	DislikesCount int        `json:"dislikes_count"`
 	CommentsCount int        `json:"comments_count"`
 	Categories    []Category `json:"categories"`
 }
