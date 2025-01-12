@@ -52,6 +52,7 @@ async function loadPosts() {
                 <p><strong>Comments:</strong> ${post.comments_count}</p>
                 <p><strong>Likes:</strong> ${post.likes_count}</p>
                 <p><strong>Dislikes:</strong> ${post.dislikes_count}</p>
+                <p><strong>Is reacted by you:</strong> ${post.is_reacted}</p>
             `;
 
             postContainer.appendChild(postElement);

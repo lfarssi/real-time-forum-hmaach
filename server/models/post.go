@@ -23,6 +23,7 @@ type Post struct {
 	CreatedAt     string     `json:"created_at"`
 	LikesCount    int        `json:"likes_count"`
 	DislikesCount int        `json:"dislikes_count"`
+	IsReacted     int        `json:"is_reacted"`
 	CommentsCount int        `json:"comments_count"`
 	Categories    []Category `json:"categories"`
 }
@@ -33,13 +34,12 @@ type Reaction struct {
 	Type   string `json:"reaction"`
 }
 
-func FetchPosts(limit, page int) ([]Post, error) {
+func FetchPosts(userID, limit, page int) ([]Post, error) {
 	var (
 		posts  []Post
 		offset = page * limit
 	)
 
-	// 'COALESCE' is used to replace NULL values with 0 in a concise way.
 	query := `
 		SELECT 
 			p.id,
@@ -50,27 +50,34 @@ func FetchPosts(limit, page int) ([]Post, error) {
 			p.title,
 			p.content,
 			p.created_at,
-			COALESCE(like_count, 0) AS likes_count,
-			COALESCE(dislike_count, 0) AS dislikes_count,
-			COALESCE(comments_count, 0) AS comments_count
+			COALESCE(reactions.like_count, 0) AS likes_count,
+			COALESCE(reactions.dislike_count, 0) AS dislikes_count,
+			COALESCE(reactions.is_reacted, 0) AS is_reacted,
+			COALESCE(comments.comments_count, 0) AS comments_count
 		FROM posts p
 		LEFT JOIN users u ON p.user_id = u.id
 		LEFT JOIN (
-					SELECT post_id, 
+					SELECT 
+						post_id, 
 						SUM(reaction = 'like') AS like_count,
-						SUM(reaction = 'dislike') AS dislike_count
+						SUM(reaction = 'dislike') AS dislike_count,
+						MAX(CASE 
+								WHEN user_id = ? AND reaction = 'like' THEN 1
+								WHEN user_id = ? AND reaction = 'dislike' THEN -1
+								ELSE 0 
+							END) AS is_reacted
 					FROM post_reactions
 					GROUP BY post_id
-				) reactions ON reactions.post_id = p.id
+				  ) reactions ON reactions.post_id = p.id
 		LEFT JOIN (
 					SELECT post_id, COUNT(id) AS comments_count
 					FROM comments
 					GROUP BY post_id
-				) comments ON comments.post_id = p.id
+				  ) comments ON comments.post_id = p.id
 		ORDER BY p.created_at DESC
 		LIMIT ? OFFSET ?;`
 
-	rows, err := DB.Query(query, limit, offset)
+	rows, err := DB.Query(query, userID, userID, limit, offset)
 	if err != nil {
 		log.Println("Error executing query:", err)
 		return nil, err
@@ -90,6 +97,7 @@ func FetchPosts(limit, page int) ([]Post, error) {
 			&post.CreatedAt,
 			&post.LikesCount,
 			&post.DislikesCount,
+			&post.IsReacted,
 			&post.CommentsCount,
 		)
 		if err != nil {

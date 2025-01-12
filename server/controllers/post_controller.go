@@ -18,11 +18,13 @@ func IndexPosts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var (
-		posts []models.Post
-		err   error
+		posts  []models.Post
+		err    error
+		userID = r.Context().Value("user_id").(int)
 	)
+	
 	limit := 10
-	posts, err = models.FetchPosts(limit, page)
+	posts, err = models.FetchPosts(userID, limit, page)
 	if err != nil {
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
@@ -41,7 +43,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	post.UserID = r.Context().Value("user_id").(int)
-
 
 	postID, err := models.StorePost(post)
 	if err != nil {
