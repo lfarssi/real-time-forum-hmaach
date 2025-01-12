@@ -26,7 +26,7 @@ export const handleRegistration = async () => {
                 "gender": document.getElementById("register-gender")?.value,
                 "age": parseInt(document.getElementById("register-age")?.value, 10),
                 "password": document.getElementById("register-password").value,
-                "password_confirmation": document.getElementById("register-password").value,
+                "password_confirmation": document.getElementById("register-password-confirmation").value,
             };
 
             try {

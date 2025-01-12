@@ -106,14 +106,20 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	// Validate password
-	if password != passwordConfirmation {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Passwords do not match"
+	if len(password) == 0 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password is required"
 	}
 	if len(password) < 6 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password must be at least 6 characters long"
 	}
-	if len(password) > 128 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password cannot exceed 128 characters"
+	if len(password) > 100 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password cannot exceed 100 characters"
+	}
+	if len(passwordConfirmation) == 0 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password confirmation is required"
+	}
+	if password != passwordConfirmation {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Passwords do not match"
 	}
 	if !utils.ContainsSpecialChar(password) {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password must contain at least one special character"
