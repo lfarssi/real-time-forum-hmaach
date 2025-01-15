@@ -47,7 +47,6 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
-
 CREATE TABLE IF NOT EXISTS post_reactions (
     user_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,
@@ -57,4 +56,12 @@ CREATE TABLE IF NOT EXISTS post_reactions (
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     UNIQUE (user_id, post_id),
     CHECK (reaction IN ('like', 'dislike'))
+);
+CREATE TABLE IF NOT EXISTS messages (
+    sender INTEGER NOT NULL,
+    receiver INTEGER NOT NULL,
+    message text NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver) REFERENCES users(id) ON DELETE CASCADE
 );
