@@ -14,13 +14,11 @@ import (
 
 // Index handles the root route and serves the index.html template
 func Index(w http.ResponseWriter, r *http.Request) {
-	// Check if the requested path is not the root path
 	if r.URL.Path != "/" {
 		utils.JSONResponse(w, http.StatusNotFound, "Page Not Found")
 		return
 	}
 
-	// Check if the request method is GET
 	if r.Method != http.MethodGet {
 		utils.JSONResponse(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 		return
@@ -28,13 +26,13 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	// Execute the pre-parsed template
 	t, _ := template.ParseFiles("./web/index.html")
-	err := t.Execute(w, nil)
-	if err != nil {
+	if err := t.Execute(w, nil); err != nil {
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 }
 
+// IndexUsers handles the root route and serves the index.html template
 func IndexUsers(w http.ResponseWriter, r *http.Request) {
 	// Check if the request method is GET
 	if r.Method != http.MethodGet {

@@ -15,25 +15,19 @@ import (
 )
 
 func init() {
-	// Parse the template during initialization
-	_, err := template.ParseFiles("./web/index.html")
-	if err != nil {
+	if _, err := template.ParseFiles("./web/index.html"); err != nil {
 		log.Fatalf("Error parsing template: %v", err)
 	}
 
-	// Connect to the database
-	err = models.Connect()
-	if err != nil {
+	if err := models.Connect(); err != nil {
 		log.Fatalf("Database connection error: %v", err)
 	}
 
-	err = models.CreateTables()
-	if err != nil {
+	if err := models.CreateTables(); err != nil {
 		log.Fatalf("error creating demo data: %v", err)
 	}
 
-	// err = models.CreateDemoData()
-	// if err != nil {
+	// if err := models.CreateDemoData(); err != nil {
 	// 	log.Fatalf("error creating demo data: %v", err)
 	// }
 }
@@ -53,16 +47,15 @@ func routes() http.Handler {
 	mux.HandleFunc("/api/posts/create", middlewares.IsAuth(controllers.CreatePost))
 	mux.HandleFunc("/api/posts/react", middlewares.IsAuth(controllers.ReactToPost))
 	mux.HandleFunc("/api/comments/create", middlewares.IsAuth(controllers.CreateComment))
+	mux.HandleFunc("/api/conversation/{sender}", middlewares.IsAuth(controllers.GetConvertation))
 	mux.HandleFunc("/api/logout", middlewares.IsAuth(controllers.Logout))
 
 	// WebSocket endpoint
 	mux.HandleFunc("/ws", middlewares.IsAuthWebSocket(controllers.HandleWebSocket))
 
-	// Create a rate limiter allowing 10 requests per minute
 	rateLimiter := middlewares.NewRateLimiter(100, 1*time.Minute)
 
-	// Apply RecoveryMiddleware, CORS, and RateLimiter globally
-	return middlewares.CORS(middlewares.Recovery(rateLimiter.Middleware(mux)))
+	return middlewares.Recovery(rateLimiter.Middleware(mux))
 }
 
 func main() {
