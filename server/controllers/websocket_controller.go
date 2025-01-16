@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -13,9 +14,7 @@ import (
 
 var (
 	upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
+		CheckOrigin: func(r *http.Request) bool { return true },
 	}
 	ConnectedUsers = make(map[int]*Connection)
 	mu             sync.Mutex
@@ -45,15 +44,9 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	broadcastUserList()
 
 	for {
-		messageType, data, err := conn.ReadMessage()
+		err := handleChat(userID, conn)
 		if err != nil {
-			log.Println("WebSocket read message failed:", err)
-			break
-		}
-
-		err = conn.WriteMessage(messageType, data)
-		if err != nil {
-			log.Println("WebSocket write message failed:", err)
+			log.Println(err)
 			break
 		}
 	}
@@ -63,6 +56,43 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	mu.Unlock()
 
 	broadcastUserList()
+}
+
+func handleChat(userID int, conn *websocket.Conn) error {
+	_, data, err := readMessage(userID, conn)
+	log.Println(string(data))
+	if err != nil {
+		return fmt.Errorf("WebSocket read message failed: %v", err)
+	}
+
+	err = sendMessage(data, conn)
+	if err != nil {
+		return fmt.Errorf("WebSocket write message failed: %v", err)
+	}
+	return nil
+}
+
+func sendMessage(message []byte, dist *websocket.Conn) error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	err := dist.WriteMessage(websocket.TextMessage, message)
+	if err != nil {
+		return fmt.Errorf("error sending message: %v", err)
+	}
+	return nil
+}
+
+func readMessage(senderID int, conn *websocket.Conn) (int, []byte, error) {
+	mu.Lock()
+	defer mu.Unlock()
+	log.Println(senderID)
+
+	dataType, data, err := conn.ReadMessage()
+	if err != nil {
+		return 0, nil, fmt.Errorf("error read message: %v", err)
+	}
+	return dataType, data, nil
 }
 
 func broadcastUserList() {
