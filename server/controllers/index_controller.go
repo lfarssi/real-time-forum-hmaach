@@ -61,15 +61,17 @@ func IndexUsers(w http.ResponseWriter, r *http.Request) {
 
 // ServeStaticFiles returns a handler function for serving static files
 func ServeStaticFiles(w http.ResponseWriter, r *http.Request) {
-	// Get clean file path and prevent directory traversal
+	if r.Method != http.MethodGet {
+		utils.JSONResponse(w, http.StatusMethodNotAllowed, "Method Not Allowed")
+		return
+	}
+
 	filePath := filepath.Clean("./web" + r.URL.Path)
 
-	// block access to dirictories
 	if info, err := os.Stat(filePath); err != nil || info.IsDir() {
 		utils.JSONResponse(w, http.StatusNotFound, "Page not found")
 		return
 	}
 
-	// Serve the file
 	http.ServeFile(w, r, filePath)
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"html"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"forum/server/models"
@@ -17,7 +18,6 @@ import (
 // - int: HTTP status code.
 // - string: Error or success message.
 func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, string) {
-	// Check if the method is POST
 	if r.Method != http.MethodPost {
 		return models.RegistrationRequest{}, "", http.StatusMethodNotAllowed, "Invalid HTTP method"
 	}
@@ -27,8 +27,6 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	var user models.RegistrationRequest
-
-	// Decode the JSON data
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Invalid JSON data"
 	}
@@ -40,60 +38,44 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	user.Nickname = html.EscapeString(strings.TrimSpace(user.Nickname))
 	user.Gender = html.EscapeString(strings.TrimSpace(user.Gender))
 	password := html.EscapeString(strings.TrimSpace(user.Password))
-	passwordConfirmation := html.EscapeString(strings.TrimSpace(user.PasswordConfirmation))
 
 	// Validate First Name
-	if len(user.FirstName) == 0 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name is required"
+	if len(user.FirstName) < 3 && len(user.FirstName) > 20 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name must be between 3 and 20 characters long"
 	}
-	if len(user.FirstName) > 50 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name cannot exceed 50 characters"
-	}
-	if strings.ContainsAny(user.FirstName, "1234567890") {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name cannot contain numbers"
+	if valid, err := regexp.MatchString(`(?i)^[a-z]+$`, user.FirstName); err != nil || !valid {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name can only contain characters"
 	}
 
 	// Validate Last Name
-	if len(user.LastName) == 0 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name is required"
+	if len(user.LastName) < 3 && len(user.LastName) > 20 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name must be between 3 and 20 characters long"
 	}
-	if len(user.LastName) > 50 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name cannot exceed 50 characters"
-	}
-	if strings.ContainsAny(user.LastName, "1234567890") {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name cannot contain numbers"
+	if valid, err := regexp.MatchString(`(?i)^[a-z]+$`, user.LastName); err != nil || !valid {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Last name can only contain characters"
 	}
 
 	// Validate email
-	if len(user.Email) > 100 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Email cannot exceed 100 characters"
+	if len(user.Email) < 5 && len(user.Email) > 50 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Email must be between 5 and 50 characters long"
 	}
-	if user.Email == "" {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Email is required"
-	}
-	if !utils.IsValidEmail(user.Email) {
+	if isValid, err := regexp.MatchString(`(?i)^[a-z0-9]+\.?[a-z0-9]+@[a-z0-9]+\.[a-z]+$`, user.Email); err != nil || !isValid {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Invalid email format"
 	}
 
 	// Validate nickname
-	if len(user.Nickname) == 0 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname is required"
+	if len(user.Nickname) < 3 && len(user.Nickname) > 20 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname must be between 3 and 20 characters long"
 	}
-	if len(user.Nickname) < 4 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname must be at least 4 characters long"
-	}
-	if len(user.Nickname) > 20 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname cannot exceed 20 characters"
-	}
-	if strings.Contains(user.Nickname, " ") {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname cannot contain spaces"
+	if isValid, err := regexp.MatchString(`^[a-z0-9.-_]+$`, user.Email); err != nil || !isValid {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname must be in lowercase letter"
 	}
 
 	// Validate gender
 	if len(user.Gender) == 0 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Gender is required"
 	}
-	if user.Gender != "male" && user.Gender != "female" && user.Gender != "other" {
+	if user.Gender != "male" && user.Gender != "female" {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Invalid gender. Must be 'male' or 'female'"
 	}
 
@@ -106,23 +88,8 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	}
 
 	// Validate password
-	if len(password) == 0 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password is required"
-	}
-	if len(password) < 6 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password must be at least 6 characters long"
-	}
-	if len(password) > 100 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password cannot exceed 100 characters"
-	}
-	if len(passwordConfirmation) == 0 {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password confirmation is required"
-	}
-	if password != passwordConfirmation {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Passwords do not match"
-	}
-	if !utils.ContainsSpecialChar(password) {
-		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password must contain at least one special character"
+	if len(password) < 6 && len(password) > 50 {
+		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password must be between 6 and 50 characters long"
 	}
 	if !utils.ContainsUppercase(password) {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Password must contain at least one uppercase letter"

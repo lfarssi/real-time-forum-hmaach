@@ -2,6 +2,7 @@ package models
 
 import (
 	"forum/server/utils"
+	"time"
 )
 
 // represents the data for user registration.
@@ -13,14 +14,12 @@ type RegistrationRequest struct {
 	Gender               string `json:"gender"`
 	Age                  int    `json:"age"`
 	Password             string `json:"password"`
-	PasswordConfirmation string `json:"password_confirmation"`
 }
 
 // represents the data for user login.
 type LoginRequest struct {
-	Nickname string `json:"nickname"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Identifier string `json:"identifier"`
+	Password   string `json:"password"`
 }
 
 type User struct {
@@ -31,6 +30,26 @@ type User struct {
 	Email     string `json:"email"`
 	Age       int    `json:"age"`
 	Gender    string `json:"gender"`
+}
+
+func GenerateSession(userId int) (User, string, error) {
+	var user User
+	token, err := utils.GenerateToken()
+	if err != nil {
+		return User{}, "", err
+	}
+
+	err = StoreSession(userId, token, time.Now().Add(10*time.Hour))
+	if err != nil {
+		return User{}, "", err
+	}
+
+	user, err = GetUserInfo(userId)
+	if err != nil {
+		return User{}, "", err
+	}
+
+	return user, token, nil
 }
 
 func GetUsers(userID int) ([]User, error) {
@@ -84,16 +103,10 @@ func GetUserInfo(id int) (User, error) {
 }
 
 func GetUserPassword(user LoginRequest) (int, string, error) {
-	var (
-		userID   int
-		password string
-		err      error
-	)
-	if user.Email != "" {
-		err = DB.QueryRow("SELECT id, password FROM users WHERE email = ?", user.Email).Scan(&userID, &password)
-	} else {
-		err = DB.QueryRow("SELECT id, password FROM users WHERE nickname =?", user.Nickname).Scan(&userID, &password)
-	}
+	var userID int
+	var password string
+
+	err := DB.QueryRow("SELECT id, password FROM users WHERE email = ? OR nickname = ?", user.Identifier, user.Identifier).Scan(&userID, &password)
 	if err != nil {
 		return 0, "", err
 	}
@@ -106,7 +119,7 @@ func StoreNewUser(newUser RegistrationRequest, password string) (int64, error) {
 		return 0, err
 	}
 
-	query := `INSERT INTO users (first_name, last_name, nickname, email,age, gender, password) VALUES (?,?,?,?,?,?,?)`
+	query := `INSERT INTO users (first_name, last_name, nickname, email, age, gender, password) VALUES (?,?,?,?,?,?,?)`
 	result, err := DB.Exec(query,
 		newUser.FirstName,
 		newUser.LastName,
@@ -119,7 +132,10 @@ func StoreNewUser(newUser RegistrationRequest, password string) (int64, error) {
 		return 0, err
 	}
 
-	userID, _ := result.LastInsertId()
+	userId, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
 
-	return userID, nil
+	return userId, nil
 }

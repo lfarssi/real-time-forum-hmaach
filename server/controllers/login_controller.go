@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 
 	"forum/server/models"
 	"forum/server/utils"
@@ -20,7 +19,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user information from database
-	user_id, hashedPassword, err := models.GetUserPassword(userRequest)
+	userID, hashedPassword, err := models.GetUserPassword(userRequest)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			utils.JSONResponse(w, http.StatusNotFound, "Invalid nickname or email")
@@ -31,29 +30,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify the password
-	if match := utils.CheckPasswordHash(userRequest.Password, hashedPassword); !match {
-		utils.JSONResponse(w, http.StatusUnauthorized, "Invalid password")
+	if !utils.ComparePassword(userRequest.Password, hashedPassword) {
+		utils.JSONResponse(w, http.StatusUnauthorized, "incorrect password")
 		return
 	}
-
-	var userResponse models.User
-
-	token, err := utils.GenerateToken()
+	userResponse, token, err := models.GenerateSession(userID)
 	if err != nil {
-		log.Println("Failed to create session: ", err)
-		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
-	}
-
-	err = models.StoreSession(user_id, token, time.Now().Add(10*time.Hour))
-	if err != nil {
-		log.Println("Failed to store session into the database: ", err)
-		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
-		return
-	}
-
-	userResponse, err = models.GetUserInfo(user_id)
-	if err != nil {
-		log.Println("Failed to fetch user's info: ", err)
+		log.Println(err)
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
