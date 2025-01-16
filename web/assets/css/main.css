@@ -1,0 +1,192 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+:root {
+    --main-green: #4ade80;
+    --main-green-hover: #22c55e;
+    --main-red: #ff3c3c;
+    --bg-dark: #111827;
+    --bg-dark-second: #171f31;
+    --bg-card: #1f2937;
+    --text-primary: #f3f4f6;
+    --text-secondary: #c0c4cc;
+    --card-border: #374151;
+    --hover-bg: #272f3d;
+    --max-width: 1300px;
+    /* sizes */
+    --sidebar-width: 320px;
+    --header-height: 65px;
+    /* status */
+    --online-color: #22c55e;
+    --offline-color: #9f9999;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+/* ------ register page ------ */
+#form-container {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-dark);
+}
+
+#form-container .container {
+    position: relative;
+    max-width: 600px;
+    border-radius: 12px;
+    padding: 20px 30px 120px;
+    background-color: var(--bg-dark-second);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+#form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 40px;
+}
+
+#form-container h2 {
+    font-size: 30px;
+    text-align: center;
+    color: var(--main-green);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#form-container h2:hover {
+    color: var(--main-green-hover);
+}
+
+#form-container input,
+select {
+    font-size: 15px;
+    height: 45px;
+    padding: 0 12px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid var(--card-border);
+    font-weight: 400;
+    color: var(--text-primary);
+    background-color: var(--bg-card);
+    transition: all 0.2s ease;
+}
+
+#form-container input::placeholder {
+    color: var(--text-secondary);
+}
+
+#form-container select {
+    cursor: pointer;
+}
+
+#form-container select option {
+    color: var(--text-primary);
+}
+
+#form-container .flex {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+#form-container .split {
+    width: calc(50% - 6px);
+}
+
+#form-container input[type="submit"] {
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 20px;
+    background-color: var(--main-green);
+    color: white;
+    border: none;
+}
+
+#form-container input[type="submit"]:hover {
+    background-color: var(--main-green-hover);
+}
+
+#form-container input:focus,
+select:focus {
+    border-color: var(--main-green);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.1);
+}
+
+#form-container .login {
+    position: absolute;
+    left: 50%;
+    bottom: -86%;
+    transform: translateX(-50%);
+    width: calc(100% + 220px);
+    padding: 20px 140px;
+    border-radius: 50%;
+    height: 100%;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--card-border);
+    transition: all 0.6s ease;
+}
+
+#form-container .login h2 {
+    opacity: 0.6;
+}
+
+#form-container.active .login {
+    bottom: -13%;
+    border-radius: 35%;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#form-container.active .login h2 {
+    opacity: 1;
+}
+
+#form-container.active .register {
+    opacity: 0.6;
+}
+
+/* Error states */
+#form-container input:invalid:not(:placeholder-shown) {
+    border-color: var(--main-red);
+}
+
+@media screen and (max-width: 520px) {
+    #form-container .container {
+        width: 90%;
+        padding: 20px 20px 120px;
+    }
+
+    #form-container .login {
+        width: calc(100% + 160px);
+        padding: 20px 100px;
+    }
+
+    #form-container .flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #form-container .split {
+        width: 100%;
+    }
+}

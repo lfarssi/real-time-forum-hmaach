@@ -1,10 +1,6 @@
 import { showAuth, handleRegistration, handleLogin } from './app/auth.js';
 import { showFeed } from './app/feed.js';
-import {
-    getComments,
-    createPost,
-    createComment
-} from './app/api.js';
+import { getComments, createPost, createComment } from './app/api.js';
 
 addEventListener('DOMContentLoaded', () => {
     // Check if user and token exist

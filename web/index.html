@@ -5,51 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script type="module" src="/assets/js/main.js"></script>
     <title>Real Time Forum</title>
 </head>
 
 <body>
-    <div class="container" id="container">
-        <div id="auth-container">
-            <div id="login-container" class="form">
-                <input type="text" id="login-identifier" placeholder="Nickname or Email">
-                <input type="password" id="login-password" placeholder="Password">
-                <span id="login-error" class="error"></span>
-                <button id="login-submit">Log in</button>
-            </div>
-            <div id="register-container" class="form">
-                <input type="text" id="register-first-name" placeholder="First Name">
-                <input type="text" id="register-last-name" placeholder="Last Name">
-                <input type="text" id="register-identifier" placeholder="Email">
-                <input type="text" id="register-nickname" placeholder="Nickname">
-                <select id="register-gender" name="gender">
-                    <option value="" selected disabled>--Select your Gender--</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-                <input type="number" id="register-age" placeholder="Age">
-                <input type="password" id="register-password" placeholder="Password">
-                <input type="password" id="register-password-confirmation" placeholder="Password Confirmation">
-                <span id="register-error" class="error"></span>
-                <button id="register-submit">Register</button>
-            </div>
-        </div>
-
-        <input type="text" id="ws-message">
-        <button id="ws-send">Send</button>
-        <span id="ws-result"></span>
-        <div id="feed">
-            <div id="user-display"></div>
-            <div id="user-list-container">
-                <h3>Users</h3>
-                <div id="user-list"></div>
-            </div>
-            <div id="posts-container"></div>
-        </div>
-    </div>
-    <script type="module" src="/assets/js/main.js"></script>
 </body>
-
 </html>

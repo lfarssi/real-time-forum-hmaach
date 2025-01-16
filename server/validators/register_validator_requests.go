@@ -43,7 +43,8 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	if len(user.FirstName) < 3 && len(user.FirstName) > 20 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name must be between 3 and 20 characters long"
 	}
-	if valid, err := regexp.MatchString(`(?i)^[a-z]+$`, user.FirstName); err != nil || !valid {
+	
+	if valid, err := regexp.MatchString(`^[a-zA-Z]+$`, user.FirstName); err != nil || !valid {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "First name can only contain characters"
 	}
 
@@ -67,7 +68,7 @@ func RegisterRequest(r *http.Request) (models.RegistrationRequest, string, int, 
 	if len(user.Nickname) < 3 && len(user.Nickname) > 20 {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname must be between 3 and 20 characters long"
 	}
-	if isValid, err := regexp.MatchString(`^[a-z0-9.-_]+$`, user.Email); err != nil || !isValid {
+	if isValid, err := regexp.MatchString(`^[a-z0-9]+$`, user.Email); err != nil || !isValid {
 		return models.RegistrationRequest{}, "", http.StatusBadRequest, "Nickname must be in lowercase letter"
 	}
 
