@@ -7,7 +7,9 @@ import (
 	"net/http"
 	"sync"
 
+	"forum/server/models"
 	"forum/server/utils"
+	"forum/server/validators"
 
 	"github.com/gorilla/websocket"
 )
@@ -47,9 +49,8 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	broadcastUserList()
 
-	// Wait for disconnection
 	for {
-		_, _, err := conn.ReadMessage()
+		err = handleChat(userID, conn)
 		if err != nil {
 			// if the user disconnected
 			break
@@ -64,7 +65,73 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	broadcastUserList()
 }
 
-// broadcastUserList sends the updated list of connected user IDs to all clients
+func handleChat(userID int, conn *websocket.Conn) error {
+	for {
+		_, data, err := conn.ReadMessage()
+		if err != nil {
+			utils.SendErrorMessage(conn, "Internal Server Srror")
+			return fmt.Errorf("WebSocket read message failed: %v", err)
+		}
+
+		// Validate the chat message
+		message, err := validators.ChatMessageRequest(data)
+		if err != nil {
+			utils.SendErrorMessage(conn, err.Error())
+			continue
+		}
+
+		// Get sender information
+		sender, err := models.GetUserInfo(userID)
+		if err != nil {
+			log.Printf("Failed to get sender info for user %d: %v\n", userID, err)
+			utils.SendErrorMessage(conn, "Internal Server Srror")
+			continue
+		}
+
+		message.SenderID = sender.ID
+		message.Sender = sender.Nickname
+
+		// Send the message to the receiver
+		err = sendMessage(message)
+		if err != nil {
+			if err.Error() == "not found" {
+				utils.SendErrorMessage(conn, "Receiver not connected")
+			} else {
+				log.Printf("Error sending message to receiver: %v\n", err)
+				utils.SendErrorMessage(conn, "Failed to send message")
+			}
+			continue
+		}
+	}
+}
+
+func sendMessage(message models.Message) error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	receiver, exists := ConnectedUsers[message.ReceiverID]
+	if !exists {
+		return fmt.Errorf("not found")
+	}
+
+	messageJSON, err := json.Marshal(message)
+	if err != nil {
+		return fmt.Errorf("error marshalling message: %v", err)
+	}
+
+	// Send the message to the receiver
+	err = receiver.Conn.WriteMessage(websocket.TextMessage, messageJSON)
+	if err != nil {
+		// Close the connection and remove the user from the connected users map
+		receiver.Conn.Close()
+		delete(ConnectedUsers, message.ReceiverID)
+
+		return fmt.Errorf("receiver disconnected: %v", err)
+	}
+
+	return nil
+}
+
 func broadcastUserList() {
 	mu.Lock()
 	defer mu.Unlock()
@@ -83,8 +150,12 @@ func broadcastUserList() {
 				filteredUserIDs = append(filteredUserIDs, id)
 			}
 		}
-
-		message, err := json.Marshal(filteredUserIDs)
+		// Marshal the filtered list into JSON format and send it to the current connection
+		data := map[string]interface{}{
+			"type":  "users-status",
+			"users": filteredUserIDs,
+		}
+		message, err := json.Marshal(data)
 		if err != nil {
 			log.Printf("Error marshalling user list for user %d: %v\n", userID, err)
 			continue
@@ -97,41 +168,4 @@ func broadcastUserList() {
 			delete(ConnectedUsers, userID)
 		}
 	}
-}
-
-func handleChat(userID int, conn *websocket.Conn) error {
-	_, data, err := readMessage(userID, conn)
-	log.Println(string(data))
-	if err != nil {
-		return fmt.Errorf("WebSocket read message failed: %v", err)
-	}
-
-	err = sendMessage(data, conn)
-	if err != nil {
-		return fmt.Errorf("WebSocket write message failed: %v", err)
-	}
-	return nil
-}
-
-func sendMessage(message []byte, dist *websocket.Conn) error {
-	mu.Lock()
-	defer mu.Unlock()
-
-	err := dist.WriteMessage(websocket.TextMessage, message)
-	if err != nil {
-		return fmt.Errorf("error sending message: %v", err)
-	}
-	return nil
-}
-
-func readMessage(senderID int, conn *websocket.Conn) (int, []byte, error) {
-	mu.Lock()
-	defer mu.Unlock()
-	log.Println(senderID)
-
-	dataType, data, err := conn.ReadMessage()
-	if err != nil {
-		return 0, nil, fmt.Errorf("error read message: %v", err)
-	}
-	return dataType, data, nil
 }

@@ -24,3 +24,20 @@ export const updateUserStatus = (connectedUsers) => {
         }
     });
 };
+
+export const showNotification = (type, message) => {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close">&times;</button>
+    `;
+
+    document.body.appendChild(notification);
+
+    const closeButton = notification.querySelector('.notification-close');
+    closeButton.addEventListener('click', () => {
+        notification.remove();
+    });
+}

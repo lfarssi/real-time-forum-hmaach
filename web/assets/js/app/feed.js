@@ -1,6 +1,6 @@
 import { handleLogout } from "./auth.js"
 import { getUsers, getPosts } from "./api.js"
-import { setupWebSocket } from "./websocket.js"
+import { setupWebSocket, sendMessage } from "./websocket.js"
 import { updateUserStatus } from "./utils.js"
 
 let ws
@@ -11,11 +11,18 @@ export const showFeed = (user) => {
     feedContainer.id = 'feed-container';
 
     feedContainer.innerHTML = `
-        <input type="text" id="ws-message">
-        <button id="ws-send">Send</button>
-        <span id="ws-result"></span>
-        <div id="feed">
-            <div id="user-display"></div>
+    <div id="feed">
+    <div id="user-display"></div>
+    <div class="chat-container">
+        <div class="message-form">
+            <label for="ws-receiver" class="form-label">To:</label>
+            <input type="text" id="ws-receiver" class="form-input" placeholder="Receiver ID">
+            <label for="ws-message" class="form-label">Message:</label>
+            <input type="text" id="ws-message" class="form-input" placeholder="Type your message">
+            <button id="ws-send-message" class="send-button">Send</button>
+        </div>
+    </div>
+    <span id="ws-result"></span>
             <div id="user-list-container">
                 <h3>Users</h3>
                 <div id="user-list"></div>
@@ -50,16 +57,7 @@ export const showFeed = (user) => {
     loadPosts();
 
     // Add event listener for WebSocket messages
-    const send = document.getElementById('ws-send');
-    if (send) {
-        send.addEventListener('click', () => {
-            const message = document.getElementById('ws-message');
-            if (message) {
-                ws.send(message.value);
-                message.value = '';
-            }
-        });
-    }
+    handleChatMessages()
 };
 
 async function loadUsers() {
@@ -135,5 +133,20 @@ async function loadPosts() {
         });
     } catch (error) {
         console.error("Error loading posts:", error);
+    }
+}
+
+const handleChatMessages = () => {
+    const send = document.getElementById('ws-send-message');
+    if (send) {
+        send.addEventListener('click', () => {
+            const receiver = document.getElementById('ws-receiver');
+            const message = document.getElementById('ws-message');
+            if (receiver && message) {
+                sendMessage(parseInt(receiver.value), message.value);
+                message.value = '';
+                receiver.value = '';
+            }
+        });
     }
 }
