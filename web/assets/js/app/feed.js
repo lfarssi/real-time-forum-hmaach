@@ -1,139 +1,136 @@
-import { handleLogout } from "./auth.js"
-import { getUsers, getPosts } from "./api.js"
-import { setupWebSocket } from "./websocket.js"
-import { updateUserStatus } from "./utils.js"
+import { getPosts } from './api.js';
+import { handleLogout } from './auth.js';
+import { showErrorPage, formatTime } from './utils.js';
+import { setupWebSocket } from './websocket.js';
 
-let ws
+export const showFeed = () => {
+    document.body.innerHTML = `
+        <div id="header-container">
+            <header>
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="title">Forum</div>
+                <div class="header-btns">
+                    <div class="new-post-btn">
+                        <i class="fa-sharp fa-solid fa-plus"></i>
+                        <span>new post</span>
+                    </div>
+                    <div class="logout-btn">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>log out</span>
+                    </div>
+                </div>
+            </header>
+        </div>
 
-export const showFeed = (user) => {
-    document.body.innerHTML = ``;
-    const feedContainer = document.createElement('div');
-    feedContainer.id = 'feed-container';
+        <div id="body-container">
+            <aside id="sidebar" class="sidebar">
+                <input type="search" placeholder="search for user...">
+                <div class="members-list"></div>
+            </aside>
 
-    feedContainer.innerHTML = `
-        <input type="text" id="ws-message">
-        <button id="ws-send">Send</button>
-        <span id="ws-result"></span>
-        <div id="feed">
-            <div id="user-display"></div>
-            <div id="user-list-container">
-                <h3>Users</h3>
-                <div id="user-list"></div>
-            </div>
-            <div id="posts-container"></div>
+            <main>
+                <div class="post-container"></div>
+            </main>
         </div>
     `;
-    document.body.appendChild(feedContainer);
-    // Setup WebSocket and load data
-    ws = setupWebSocket();
 
-    // Display user info if logged in
-    if (user) {
-        const userDisplayContainer = document.getElementById('user-display');
-        const userDisplay = document.createElement('div');
-        userDisplay.id = "user-info";
-        userDisplay.innerHTML = `
-            <h2>Welcome, ${user.first_name} ${user.last_name}!</h2>
-            <p><strong>Nickname:</strong> ${user.nickname}</p>
-            <p><strong>Email:</strong> ${user.email}</p>
-            <p><strong>Age:</strong> ${user.age}</p>
-            <p><strong>Gender:</strong> ${user.gender}</p>
-            <button id="logout-submit">Log out</button>
-        `;
-        userDisplayContainer.appendChild(userDisplay);
-
-        // Setup logout functionality
-        handleLogout(ws);
-    }
-
-    loadUsers();
+    // Initialize components
+    setupSidebar();
+    setupEventListeners();
+    setupWebSocket();
     loadPosts();
+};
 
-    // Add event listener for WebSocket messages
-    const send = document.getElementById('ws-send');
-    if (send) {
-        send.addEventListener('click', () => {
-            const message = document.getElementById('ws-message');
-            if (message) {
-                ws.send(message.value);
-                message.value = '';
-            }
-        });
+const setupSidebar = () => {
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const body = document.body;
+
+    // Create and append overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.getElementById('body-container').appendChild(overlay);
+
+    const toggleSidebar = () => {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        body.classList.toggle('sidebar-open');
+    };
+
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900 && sidebar.classList.contains('active')) {
+            toggleSidebar();
+        }
+    });
+};
+
+const setupEventListeners = () => {
+    const homeBtn = document.querySelector('.title')
+    homeBtn.addEventListener('click', showFeed);
+
+    const logoutBtn = document.querySelector('.logout-btn');
+    logoutBtn.addEventListener('click', handleLogout);
+
+    const newPostBtn = document.querySelector('.new-post-btn');
+    newPostBtn.addEventListener('click', () => showCreatePost);
+
+    const searchInput = document.querySelector('#sidebar input[type="search"]');
+    // searchInput.addEventListener('input', handleSearch);
+};
+
+const loadPosts = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const posts = await getPosts(1, token);
+        renderPosts(posts);
+    } catch (error) {
+        showErrorPage(error);
     }
 };
 
-async function loadUsers() {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await getUsers(token);
-        const userListContainer = document.getElementById("user-list");
-        userListContainer.innerHTML = "";
-
-        if (!response.users || response.users.length === 0) {
-            userListContainer.innerText = "No response.users to display";
-            return;
-        }
-
-        response.users.forEach(user => {
-            const userElement = document.createElement("div");
-
-            userElement.classList.add("user");
-            userElement.setAttribute("data-user-id", user.id);
-
-            userElement.innerHTML = `
-                <p>
-                    <strong>${user.first_name} ${user.last_name}</strong>
-                    (@${user.nickname})
-                    <span class="user-status"></span>
-                </p>
-            `;
-
-            userListContainer.appendChild(userElement);
-        });
-
-        if (response.connected && Array.isArray(response.connected) && response.connected.length > 0) {
-            updateUserStatus(response.connected);
-        }
-    } catch (error) {
-        console.error("Error loading users:", error);
-    }
-}
-
-
-async function loadPosts() {
-    try {
-        const token = localStorage.getItem("token");
-        const posts = await getPosts(1, token);
-        const postContainer = document.getElementById("posts-container");
-
-        postContainer.innerHTML = ""; // Clear any existing content
-
-        if (!posts || posts.length === 0) {
-            postContainer.innerText = "No posts available";
-            return;
-        }
-
-        posts.forEach(post => {
-            const postElement = document.createElement("div");
-
-            postElement.classList.add("post")
-
-            postElement.innerHTML = `
-                <h3>${post.title}</h3>
-                <p><strong>Author:</strong> ${post.user_first_name} ${post.user_last_name} (@${post.user_nickname})</p>
-                <p><strong>Category:</strong> ${post.categories.map(cat => cat.label).join(", ")}</p>
-                <p><strong>Comments:</strong> ${post.comments_count}</p>
-                <p><strong>Created at:</strong> ${new Date(post.created_at).toLocaleString()}</p>
-                <p>${post.content}</p>
-                <p><strong>Comments:</strong> ${post.comments_count}</p>
-                <p><strong>Likes:</strong> ${post.likes_count}</p>
-                <p><strong>Dislikes:</strong> ${post.dislikes_count}</p>
-                <p><strong>Is reacted by you:</strong> ${post.is_reacted}</p>
-            `;
-
-            postContainer.appendChild(postElement);
-        });
-    } catch (error) {
-        console.error("Error loading posts:", error);
-    }
-}
+const renderPosts = (posts) => {
+    const postContainer = document.querySelector('.post-container');
+    posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.innerHTML = `
+        <div class="user-info">
+            <img src="https://ui-avatars.com/api/?name=${post.nickname}" alt="profile">
+            <div>
+                <div class="username">${post.nickname}</div>
+                <div class="timestamp">${formatTime(post.created_at)}</div>
+            </div>
+        </div>
+        <div class="post-content">
+            <h3 onclick="openPost(${post.id})">${post.title}</h3>
+            <p>${post.content}</p>
+        </div>
+        <div class="tags-reactions">
+            <div class="tags">
+                ${post.categories.map(category => `<span>${category.label}</span>`).join('')}
+            </div>
+            <div class="reactions">
+                <div>
+                    <i class="fa-solid fa-thumbs-up ${post.is_reacted === 1 ? 'like' : ''}"></i>
+                    <span>${post.likes_count}</span>
+                </div>
+                <div>
+                    <i class="fa-solid fa-thumbs-down ${post.is_reacted === -1 ? 'dislike' : ''}"></i>
+                    <span>${post.dislikes_count}</span>
+                </div>
+                <div>
+                    <i class="fa-solid fa-comment-dots"></i>
+                    <span>${post.comments_count}</span>
+                </div>
+            </div>
+        </div>
+        `
+        postContainer.append(postDiv)
+    });
+};

@@ -47,11 +47,11 @@ export const showAuth = () => {
     </div>
     `;
     document.body.appendChild(formContainer);
-    toggleForm();
+    setupFormToggle();
     FormSubmission();
 };
 
-const toggleForm = () => {
+const setupFormToggle = () => {
     const formContainer = document.querySelector("#form-container");
     const registerHeader = document.querySelector(".register h2");
     const loginHeader = document.querySelector(".login h2");
@@ -79,7 +79,6 @@ const FormSubmission = () => {
             registerMsg.textContent = '';
 
             const formData = getFormData(form)
-
             try {
                 const response = await authUser(formData, form.action);
                 if (response.status === 200 && response.user && response.token) {
@@ -110,22 +109,14 @@ const FormSubmission = () => {
     });
 };
 
-export const handleLogout = (ws) => {
-    const logoutBtn = document.getElementById("logout-submit");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await logoutUser(token);
-                console.log(response.message);
-                ws.close();
-                localStorage.removeItem("user");
-                localStorage.removeItem("token");
-                showAuth();
-
-            } catch (error) {
-                console.error(error);
-            }
-        });
+export const handleLogout = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        await logoutUser(token);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        showAuth();
+    } catch (error) {
+        showErrorPage(error);
     }
 };

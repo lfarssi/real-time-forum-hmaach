@@ -15,9 +15,9 @@ type PostRequest struct {
 type Post struct {
 	ID            int        `json:"id"`
 	UserID        int        `json:"user_id"`
-	UserFirstName string     `json:"user_first_name"`
-	UserLastName  string     `json:"user_last_name"`
-	UserNickname  string     `json:"user_nickname"`
+	UserFirstName string     `json:"first_name"`
+	UserLastName  string     `json:"last_name"`
+	UserNickname  string     `json:"nickname"`
 	Title         string     `json:"title"`
 	Content       string     `json:"content"`
 	CreatedAt     string     `json:"created_at"`

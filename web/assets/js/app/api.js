@@ -9,6 +9,16 @@ export const authUser = async (formData, path) => {
     return response.json();
 };
 
+export const logoutUser = async (token) => {
+    const response = await fetch(`api/logout`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    return response.json();
+};
+
 // Authenticated Routes
 export const getUsers = async (token) => {
     const response = await fetch(`api/users`, {
@@ -61,12 +71,4 @@ export const createComment = async (commentData, token) => {
     return response.json();
 };
 
-export const logoutUser = async (token) => {
-    const response = await fetch(`api/logout`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-    return response.json();
-};
+

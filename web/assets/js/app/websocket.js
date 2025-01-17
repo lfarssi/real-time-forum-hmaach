@@ -1,4 +1,3 @@
-import { updateUserStatus } from "./utils.js";
 
 export const setupWebSocket = () => {
     const token = localStorage.getItem('token');

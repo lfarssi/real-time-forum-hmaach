@@ -1,2 +1,3 @@
 .vscode/
 server/database/database.db
+web/assets/js/func.js
