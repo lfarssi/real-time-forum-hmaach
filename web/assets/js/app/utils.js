@@ -5,7 +5,7 @@ export const writeMessage = (elementID, message) => {
     }
     setTimeout(() => {
         element.textContent = ''
-    }, 2000);
+    }, 5000);
 }
 
 export const updateUserStatus = (connectedUsers) => {

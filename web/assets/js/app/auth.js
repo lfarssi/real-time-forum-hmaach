@@ -3,6 +3,7 @@ import { writeMessage } from './utils.js';
 import { showFeed } from './feed.js';
 
 export const showAuth = () => {
+    document.body.innerHTML = ``
     const formContainer = document.createElement('div')
     formContainer.id = 'form-container'
     formContainer.innerHTML = `
@@ -39,7 +40,7 @@ export const showAuth = () => {
             <form id="login-form" name="formLogin" action="/auth/login" method="post">
                 <input type="text" name="identifier" placeholder="Email or nickname" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <p id="alertMsg" ></p>
+                <p id="login-error" ></p>
                 <input type="submit" value="Login">
             </form>
         </div>
@@ -68,7 +69,6 @@ const toggleForm = () => {
 const FormSubmission = () => {
     const registerForm = document.querySelector('#register-form');
     const loginForm = document.querySelector('#login-form');
-    const alertMsg = document.getElementById('alertMsg');
 
     [registerForm, loginForm].forEach(form => {
         form.addEventListener('submit', async (e) => {
@@ -85,33 +85,22 @@ const FormSubmission = () => {
                 }
             });
 
-            console.log(formObject);
-
             try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formObject)
-                });
-                if (response.ok) {
-                    alertMsg.classList.add('success')
-                    alertMsg.textContent = response.message
-                    showFeed()
+                const response = await loginUser(formObject);
+                if (response.message === "success" && response.user && response.token) {
+                    // Clear existing user  and token
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token");
+
+                    // Save new user data and token
+                    localStorage.setItem("user", JSON.stringify(response.user));
+                    localStorage.setItem("token", response.token);
+                    showFeed(response.user);
                 } else {
-                    const resp = await response.json();
-                    
-                    if (response.status === 500) {
-                        internalServerError()
-                    } else {
-                        alertMsg.classList.remove('success')
-                        alertMsg.classList.add('failed')
-                        alertMsg.textContent = resp.message
-                    }
+                    throw response.message;
                 }
             } catch (error) {
-                alert('Connection error. Please try again.');
+                writeMessage("login-error", error);
             }
         });
     });
