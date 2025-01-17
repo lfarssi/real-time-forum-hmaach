@@ -24,6 +24,8 @@ export const showFeed = (user) => {
         </div>
     `;
     document.body.appendChild(feedContainer);
+    // Setup WebSocket and load data
+    ws = setupWebSocket();
 
     // Display user info if logged in
     if (user) {
@@ -41,11 +43,9 @@ export const showFeed = (user) => {
         userDisplayContainer.appendChild(userDisplay);
 
         // Setup logout functionality
-        handleLogout();
+        handleLogout(ws);
     }
 
-    // Setup WebSocket and load data
-    ws = setupWebSocket();
     loadUsers();
     loadPosts();
 

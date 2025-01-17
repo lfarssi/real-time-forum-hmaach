@@ -55,7 +55,7 @@ const toggleForm = () => {
     const formContainer = document.querySelector("#form-container");
     const registerHeader = document.querySelector(".register h2");
     const loginHeader = document.querySelector(".login h2");
-    
+
     // Toggle between login and register forms
     loginHeader.addEventListener("click", () => {
         formContainer.classList.add("active");
@@ -182,7 +182,7 @@ export const handleLogin = async () => {
 };
 
 
-export const handleLogout = () => {
+export const handleLogout = (ws) => {
     const logoutBtn = document.getElementById("logout-submit");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
@@ -190,7 +190,7 @@ export const handleLogout = () => {
                 const token = localStorage.getItem("token");
                 const response = await logoutUser(token);
                 console.log(response.message);
-
+                ws.close();
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
                 showAuth();
