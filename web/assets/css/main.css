@@ -169,13 +169,9 @@ select:focus {
     border-color: var(--main-red);
 }
 
-#login-error{
-    display: block;
+#register-error,
+#login-error {
     color: var(--main-red);
-    font-size: 14px;
-    margin-top: 10px;
-    margin-left: 5px;
-    min-height: 25px;
 }
 
 /* feed style */

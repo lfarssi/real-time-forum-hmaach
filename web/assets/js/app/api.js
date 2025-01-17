@@ -1,22 +1,10 @@
-// Public Routes
-export const registerUser = async (userData) => {
-    const response = await fetch(`api/register`, {
+export const authUser = async (formData, path) => {
+    const response = await fetch(path, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
-    });
-    return response.json();
-};
-
-export const loginUser = async (credentials) => {
-    const response = await fetch(`api/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify(formData),
     });
     return response.json();
 };

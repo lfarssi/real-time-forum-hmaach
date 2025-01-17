@@ -24,3 +24,20 @@ export const updateUserStatus = (connectedUsers) => {
         }
     });
 };
+
+export const showErrorPage = () => {
+}
+
+// get FormData and convert it to an object
+export const getFormData = (form) => {
+    const formData = new FormData(form);
+    const formObject = {};
+    formData.forEach((value, key) => {
+        if (key === 'age') {
+            formObject[key] = Number(value);
+        } else {
+            formObject[key] = value;
+        }
+    });
+    return formObject
+}

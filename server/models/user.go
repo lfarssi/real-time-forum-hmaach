@@ -7,19 +7,19 @@ import (
 
 // represents the data for user registration.
 type RegistrationRequest struct {
-	FirstName            string `json:"first_name"`
-	LastName             string `json:"last_name"`
-	Email                string `json:"email"`
-	Nickname             string `json:"nickname"`
-	Gender               string `json:"gender"`
-	Age                  int    `json:"age"`
-	Password             string `json:"password"`
+	FirstName string
+	LastName  string
+	Email     string
+	Nickname  string
+	Gender    string
+	Age       int
+	Password  string
 }
 
 // represents the data for user login.
 type LoginRequest struct {
-	Identifier string `json:"identifier"`
-	Password   string `json:"password"`
+	Identifier string
+	Password   string
 }
 
 type User struct {

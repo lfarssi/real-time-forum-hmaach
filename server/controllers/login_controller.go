@@ -43,7 +43,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{"message": "success", "user": userResponse, "token": token})
+	json.NewEncoder(w).Encode(map[string]interface{}{"message": "success", "user": userResponse, "token": token, "status": 200})
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {

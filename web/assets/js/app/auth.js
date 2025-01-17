@@ -1,11 +1,11 @@
-import { registerUser, loginUser, logoutUser } from './api.js'
-import { writeMessage } from './utils.js';
+import { authUser, logoutUser } from './api.js'
 import { showFeed } from './feed.js';
+import { getFormData, showErrorPage } from './utils.js'
 
 export const showAuth = () => {
-    document.body.innerHTML = ``
-    const formContainer = document.createElement('div')
-    formContainer.id = 'form-container'
+    document.body.innerHTML = ``;
+    const formContainer = document.createElement('div');
+    formContainer.id = 'form-container';
     formContainer.innerHTML = `
     <div class="container">
         <div class="register">
@@ -30,14 +30,14 @@ export const showAuth = () => {
                 </div>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <p id="alertMsg" ></p>
+                <p id="register-error" ></p>
                 <input type="submit" value="Register">
             </form>
         </div>
 
         <div class="login">
             <h2>Login</h2>
-            <form id="login-form" name="formLogin" action="/auth/login" method="post">
+            <form id="login-form" name="formLogin" action="/api/login" method="post">
                 <input type="text" name="identifier" placeholder="Email or nickname" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <p id="login-error" ></p>
@@ -45,10 +45,10 @@ export const showAuth = () => {
             </form>
         </div>
     </div>
-    `
-    document.body.appendChild(formContainer)
-    toggleForm()
-    FormSubmission()
+    `;
+    document.body.appendChild(formContainer);
+    toggleForm();
+    FormSubmission();
 };
 
 const toggleForm = () => {
@@ -64,123 +64,51 @@ const toggleForm = () => {
     registerHeader.addEventListener("click", () => {
         formContainer.classList.remove("active");
     });
-}
+};
 
 const FormSubmission = () => {
     const registerForm = document.querySelector('#register-form');
     const loginForm = document.querySelector('#login-form');
+    const loginMsg = document.querySelector('#login-error');
+    const registerMsg = document.querySelector('#register-error');
 
     [registerForm, loginForm].forEach(form => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            loginMsg.textContent = '';
+            registerMsg.textContent = '';
 
-            // Convert FormData to an object
-            const formData = new FormData(form);
-            const formObject = {};
-            formData.forEach((value, key) => {
-                if (key === 'age') {
-                    formObject[key] = Number(value);
-                } else {
-                    formObject[key] = value;
-                }
-            });
+            const formData = getFormData(form)
 
             try {
-                const response = await loginUser(formObject);
-                if (response.message === "success" && response.user && response.token) {
-                    // Clear existing user  and token
+                const response = await authUser(formData, form.action);
+                if (response.status === 200 && response.user && response.token) {
+                    // Clear existing user and token
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
-
                     // Save new user data and token
                     localStorage.setItem("user", JSON.stringify(response.user));
                     localStorage.setItem("token", response.token);
                     showFeed(response.user);
                 } else {
-                    throw response.message;
+                    throw response;
                 }
             } catch (error) {
-                writeMessage("login-error", error);
+                if (form.id === 'register-form' && error.status === 400) {
+                    registerMsg.textContent = error.message
+                } else if (form.id === 'login-form') {
+                    if (error.status === 500) {
+                        showErrorPage(error)
+                    } else {
+                        loginMsg.textContent = error.message
+                    }
+                } else {
+                    showErrorPage(error)
+                }
             }
         });
     });
-}
-
-const internalServerError = () => {
-}
-
-const togglePassword = () => {
-    fieldPw = document.querySelector("input[name='password']");
-    eye = document.querySelector('#registerForm i');
-    if (fieldPw.type === 'password') {
-        fieldPw.type = 'text';
-        eye.classList = ['eye-off-icon'];
-    } else {
-        fieldPw.type = 'password';
-        eye.classList = ['eye-icon'];
-    }
-}
-
-export const handleRegistration = async () => {
-    const registerForm = document.getElementById("register-submit");
-    if (registerForm) {
-        registerForm.addEventListener("click", async (e) => {
-            const user = {
-                "first_name": document.getElementById("register-first-name")?.value,
-                "last_name": document.getElementById("register-last-name")?.value,
-                "email": document.getElementById("register-identifier").value,
-                "nickname": document.getElementById("register-nickname")?.value,
-                "gender": document.getElementById("register-gender")?.value,
-                "age": parseInt(document.getElementById("register-age")?.value, 10),
-                "password": document.getElementById("register-password").value,
-                "password_confirmation": document.getElementById("register-password-confirmation").value,
-            };
-
-            try {
-                const response = await registerUser(user);
-                if (response.ok) {
-                    writeMessage("register-error", "Registration successful")
-                } else {
-                    throw response.message;
-                }
-            } catch (error) {
-                writeMessage("register-error", error)
-            }
-        });
-    }
 };
-
-
-export const handleLogin = async () => {
-    const loginForm = document.getElementById("login-submit");
-    if (loginForm) {
-        loginForm.addEventListener("click", async () => {
-            const credentials = {
-                "nickname": document.getElementById("login-identifier").value,
-                "password": document.getElementById("login-password").value
-            };
-            try {
-                const response = await loginUser(credentials);
-                if (response.message === "success" && response.user && response.token) {
-                    // Clear existing user  and token
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("token");
-
-                    // Save new user data and token
-                    localStorage.setItem("user", JSON.stringify(response.user));
-                    localStorage.setItem("token", response.token);
-
-                    showFeed(response.user);
-                } else {
-                    throw response.message;
-                }
-            } catch (error) {
-                writeMessage("login-error", error);
-            }
-        });
-    }
-};
-
 
 export const handleLogout = (ws) => {
     const logoutBtn = document.getElementById("logout-submit");

@@ -1,4 +1,4 @@
-import { showAuth, handleRegistration, handleLogin } from './app/auth.js';
+import { showAuth } from './app/auth.js';
 import { showFeed } from './app/feed.js';
 import { getComments, createPost, createComment } from './app/api.js';
 
@@ -14,9 +14,6 @@ addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("token");
         showAuth();
     }
-
-    handleRegistration();
-    handleLogin();
 });
 
 async function loadComments() {
