@@ -1,5 +1,6 @@
 import { getPosts } from './api.js';
 import { showErrorPage, formatTime } from './utils.js';
+import { showPostDetail } from './post_page.js';
 
 export const showFeed = async () => {
     document.querySelector('main').innerHTML = ''
@@ -30,7 +31,7 @@ const renderPosts = (posts) => {
             </div>
         </div>
         <div class="post-content">
-            <h3 onclick="openPost(${post.id})">${post.title}</h3>
+            <h3>${post.title}</h3>
             <p>${post.content}</p>
         </div>
         <div class="tags-reactions">
@@ -53,6 +54,12 @@ const renderPosts = (posts) => {
             </div>
         </div>
         `
+        const title = postDiv.querySelector('.post-content h3');
+        const commentIcon = postDiv.querySelector('.fa-comment-dots');
+
+        title.addEventListener('click', () => showPostDetail(post));
+        commentIcon.addEventListener('click', () => showPostDetail(post));
+
         postContainer.append(postDiv)
     });
 };

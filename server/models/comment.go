@@ -10,9 +10,9 @@ type Comment struct {
 	ID            int    `json:"id"`
 	UserID        int    `json:"user_id"`
 	PostID        int    `json:"post_id"`
-	UserFirstName string `json:"user_first_name"`
-	UserLastName  string `json:"user_last_name"`
-	UserNickname  string `json:"user_nickname"`
+	UserFirstName string `json:"first_name"`
+	UserLastName  string `json:"last_name"`
+	UserNickname  string `json:"nickname"`
 	Content       string `json:"content"`
 	CreatedAt     string `json:"created_at"`
 }
