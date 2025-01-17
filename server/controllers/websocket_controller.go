@@ -26,6 +26,7 @@ type Connection struct {
 	UserID int
 }
 
+// HandleWebSocket manages a WebSocket connection for a user
 func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -37,25 +38,65 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Context().Value("user_id").(int)
 
+	// Register the connection
+	connection := &Connection{Conn: conn, UserID: userID}
+
 	mu.Lock()
-	ConnectedUsers[userID] = &Connection{Conn: conn, UserID: userID}
+	ConnectedUsers[userID] = connection
 	mu.Unlock()
 
 	broadcastUserList()
 
+	// Wait for disconnection
 	for {
-		err := handleChat(userID, conn)
+		_, _, err := conn.ReadMessage()
 		if err != nil {
-			log.Println(err)
+			// if the user disconnected
 			break
 		}
 	}
 
+	// Clean up on disconnection
 	mu.Lock()
 	delete(ConnectedUsers, userID)
 	mu.Unlock()
 
 	broadcastUserList()
+}
+
+// broadcastUserList sends the updated list of connected user IDs to all clients
+func broadcastUserList() {
+	mu.Lock()
+	defer mu.Unlock()
+
+	var userIDs []int
+	for userID := range ConnectedUsers {
+		userIDs = append(userIDs, userID)
+	}
+
+	// Broadcast to all connections
+	for userID, connection := range ConnectedUsers {
+		// Create a filtered list excluding the current user's ID
+		filteredUserIDs := make([]int, 0, len(userIDs)-1)
+		for _, id := range userIDs {
+			if id != userID {
+				filteredUserIDs = append(filteredUserIDs, id)
+			}
+		}
+
+		message, err := json.Marshal(filteredUserIDs)
+		if err != nil {
+			log.Printf("Error marshalling user list for user %d: %v\n", userID, err)
+			continue
+		}
+
+		err = connection.Conn.WriteMessage(websocket.TextMessage, message)
+		if err != nil {
+			// if there was an error it means that the user is disconnected
+			connection.Conn.Close()
+			delete(ConnectedUsers, userID)
+		}
+	}
 }
 
 func handleChat(userID int, conn *websocket.Conn) error {
@@ -93,26 +134,4 @@ func readMessage(senderID int, conn *websocket.Conn) (int, []byte, error) {
 		return 0, nil, fmt.Errorf("error read message: %v", err)
 	}
 	return dataType, data, nil
-}
-
-func broadcastUserList() {
-	mu.Lock()
-	defer mu.Unlock()
-
-	var userIDs []int
-	for userID := range ConnectedUsers {
-		userIDs = append(userIDs, userID)
-	}
-	message, err := json.Marshal(userIDs)
-	if err != nil {
-		log.Println("Error marshalling user IDs:", err)
-		return
-	}
-
-	for _, connection := range ConnectedUsers {
-		err := connection.Conn.WriteMessage(websocket.TextMessage, message)
-		if err != nil {
-			log.Println("Error broadcasting user list:", err)
-		}
-	}
 }
