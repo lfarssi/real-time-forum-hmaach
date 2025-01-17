@@ -51,7 +51,7 @@ func CreateTables() error {
 		query := `INSERT INTO categories (label) VALUES
             ('Technology'), ('Sport'),
             ('Business'),	('Health'),
-            ('News'), ('devlopement');`
+            ('News');`
 
 		if _, err = DB.Exec(query); err != nil {
 			return fmt.Errorf("failed to insert categories into database: %v", err)

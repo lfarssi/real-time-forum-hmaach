@@ -1,5 +1,6 @@
 import { authUser, logoutUser } from './api.js'
 import { showFeed } from './feed.js';
+import { setupLayout } from './layout.js';
 import { getFormData, showErrorPage } from './utils.js'
 
 export const showAuth = () => {
@@ -88,7 +89,8 @@ const FormSubmission = () => {
                     // Save new user data and token
                     localStorage.setItem("user", JSON.stringify(response.user));
                     localStorage.setItem("token", response.token);
-                    showFeed(response.user);
+                    setupLayout();
+                    showFeed();
                 } else {
                     throw response;
                 }

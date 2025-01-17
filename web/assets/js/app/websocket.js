@@ -1,4 +1,3 @@
-
 export const setupWebSocket = () => {
     const token = localStorage.getItem('token');
     let ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
