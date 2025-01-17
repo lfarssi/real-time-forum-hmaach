@@ -15,18 +15,12 @@ import (
 )
 
 var (
-	upgrader = websocket.Upgrader{
+	ConnectedUsers = make(map[int]*websocket.Conn)
+	upgrader       = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool { return true },
 	}
-	ConnectedUsers = make(map[int]*Connection)
-	mu             sync.Mutex
+	mu sync.Mutex
 )
-
-// Connection and user management
-type Connection struct {
-	Conn   *websocket.Conn
-	UserID int
-}
 
 // HandleWebSocket manages a WebSocket connection for a user
 func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +35,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id").(int)
 
 	// Register the connection
-	connection := &Connection{Conn: conn, UserID: userID}
+	var connection *websocket.Conn = conn
 
 	mu.Lock()
 	ConnectedUsers[userID] = connection
@@ -115,7 +109,7 @@ func sendMessage(message models.Message) error {
 	mu.Lock()
 	defer mu.Unlock()
 
-	receiver, exists := ConnectedUsers[message.ReceiverID]
+	receiverConn, exists := ConnectedUsers[message.ReceiverID]
 	if !exists {
 		return fmt.Errorf("not found")
 	}
@@ -126,10 +120,10 @@ func sendMessage(message models.Message) error {
 	}
 
 	// Send the message to the receiver
-	err = receiver.Conn.WriteMessage(websocket.TextMessage, messageJSON)
+	err = receiverConn.WriteMessage(websocket.TextMessage, messageJSON)
 	if err != nil {
 		// Close the connection and remove the user from the connected users map
-		receiver.Conn.Close()
+		receiverConn.Close()
 		delete(ConnectedUsers, message.ReceiverID)
 
 		return fmt.Errorf("receiver disconnected: %v", err)
@@ -142,20 +136,22 @@ func broadcastUserList() {
 	mu.Lock()
 	defer mu.Unlock()
 
-	var userIDs []int
+	// Prepare a list of all user IDs
+	userIDs := make([]int, 0, len(ConnectedUsers))
 	for userID := range ConnectedUsers {
 		userIDs = append(userIDs, userID)
 	}
 
 	// Broadcast to all connections
 	for userID, connection := range ConnectedUsers {
-		// Create a filtered list excluding the current user's ID
+		// Use a single loop to prepare a filtered list excluding the current user's ID
 		filteredUserIDs := make([]int, 0, len(userIDs)-1)
 		for _, id := range userIDs {
 			if id != userID {
 				filteredUserIDs = append(filteredUserIDs, id)
 			}
 		}
+
 		// Marshal the filtered list into JSON format and send it to the current connection
 		data := map[string]interface{}{
 			"type":  "users-status",
@@ -167,10 +163,10 @@ func broadcastUserList() {
 			continue
 		}
 
-		err = connection.Conn.WriteMessage(websocket.TextMessage, message)
+		err = connection.WriteMessage(websocket.TextMessage, message)
 		if err != nil {
 			// if there was an error it means that the user is disconnected
-			connection.Conn.Close()
+			connection.Close()
 			delete(ConnectedUsers, userID)
 		}
 	}

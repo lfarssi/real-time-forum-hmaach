@@ -3,8 +3,6 @@ import { getUsers, getPosts } from "./api.js"
 import { setupWebSocket, sendMessage } from "./websocket.js"
 import { updateUserStatus } from "./utils.js"
 
-let ws
-
 export const showFeed = (user) => {
     document.body.innerHTML = ``;
     const feedContainer = document.createElement('div');
@@ -31,8 +29,6 @@ export const showFeed = (user) => {
         </div>
     `;
     document.body.appendChild(feedContainer);
-    // Setup WebSocket and load data
-    ws = setupWebSocket();
 
     // Display user info if logged in
     if (user) {
@@ -50,11 +46,14 @@ export const showFeed = (user) => {
         userDisplayContainer.appendChild(userDisplay);
 
         // Setup logout functionality
-        handleLogout(ws);
+        handleLogout();
     }
 
     loadUsers();
     loadPosts();
+    
+    // Setup WebSocket and load data
+    setupWebSocket();
 
     // Add event listener for WebSocket messages
     handleChatMessages()

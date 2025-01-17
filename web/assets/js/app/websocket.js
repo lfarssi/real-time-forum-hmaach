@@ -13,7 +13,6 @@ export const setupWebSocket = () => {
     ws.onmessage = function (event) {
         try {
             const data = JSON.parse(event.data);
-            // console.log(data);
 
             if (data.type === 'users-status' && Array.isArray(data.users)) {
                 updateUserStatus(data.users);
@@ -23,13 +22,11 @@ export const setupWebSocket = () => {
             } else if (data.type === 'error') {
                 showNotification("error", data.message)
             }
-        } catch (e) {
-            console.error('Error parsing WebSocket message:', e);
+        } catch (error) {
+            showNotification("error", error)
+            console.error('Error parsing WebSocket message:', error);
         }
     };
-
-
-    return ws;
 };
 
 export const sendMessage = (receiver, message) => {
@@ -39,4 +36,8 @@ export const sendMessage = (receiver, message) => {
         content: message
     }
     ws.send(JSON.stringify(data));
+}
+
+export const closeWebsocket = () => {
+    ws.close();
 }

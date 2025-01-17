@@ -19,8 +19,5 @@ func SendErrorMessage(conn *websocket.Conn, errorMessage string) {
 		return
 	}
 
-	err = conn.WriteMessage(websocket.TextMessage, messageJSON)
-	if err != nil {
-		log.Printf("Error sending error response: %v\n", err)
-	}
+	conn.WriteMessage(websocket.TextMessage, messageJSON)
 }
