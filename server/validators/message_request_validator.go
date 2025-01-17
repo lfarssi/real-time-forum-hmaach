@@ -4,20 +4,22 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"html"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"forum/server/models"
 )
 
-func ChatMessageRequest(data []byte) (models.Message, error) {
+func ChatMessageRequest(userID int, data []byte) (models.Message, error) {
 	var message models.Message
 
 	err := json.NewDecoder(bytes.NewReader(data)).Decode(&message)
 	if err != nil {
 		return models.Message{}, fmt.Errorf("invalid JSON data: unable to parse request body")
+	}
+
+	if userID == message.ReceiverID {
+		return models.Message{}, fmt.Errorf("invalid receiver ID")
 	}
 
 	// validate message content
@@ -79,45 +81,4 @@ func GetConvertationRequest(r *http.Request) (int, string, int, int) {
 	}
 
 	return http.StatusOK, "success", senderID, page
-}
-
-// validates a request to create a new post.
-// Returns:
-// - models.MessageRequest: The validated post request structure.
-// - int: HTTP status code.
-// - string: Error or success message.
-func SendMessageRequest(r *http.Request) (models.MessageRequest, int, string) {
-	// Check HTTP method
-	if r.Method != http.MethodPost {
-		return models.MessageRequest{}, http.StatusMethodNotAllowed, "Only POST method is allowed"
-	}
-
-	// Check Content-Type header
-	if r.Header.Get("Content-Type") != "application/json" {
-		return models.MessageRequest{}, http.StatusUnsupportedMediaType, "Content-Type must be 'application/json'"
-	}
-
-	var message models.MessageRequest
-
-	// Decode the JSON data
-	if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
-		return models.MessageRequest{}, http.StatusBadRequest, "Invalid JSON data: unable to parse request body"
-	}
-
-	// Sanitize and validate title
-	message.Text = html.EscapeString(strings.TrimSpace(message.Text))
-	if message.Text == "" {
-		return models.MessageRequest{}, http.StatusBadRequest, "The title field is required and cannot be empty"
-	}
-	if len(message.Text) > 1000 {
-		return models.MessageRequest{}, http.StatusBadRequest, "The message must not exceed 1000 characters"
-	}
-
-	// validate message sender id
-	_, err := models.GetUserInfo(message.Sender)
-	if err != nil {
-		return models.MessageRequest{}, http.StatusBadRequest, "Invalid sender ID"
-	}
-
-	return message, http.StatusOK, "success"
 }

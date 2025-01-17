@@ -74,7 +74,7 @@ func handleChat(userID int, conn *websocket.Conn) error {
 		}
 
 		// Validate the chat message
-		message, err := validators.ChatMessageRequest(data)
+		message, err := validators.ChatMessageRequest(userID, data)
 		if err != nil {
 			utils.SendErrorMessage(conn, err.Error())
 			continue
@@ -91,15 +91,21 @@ func handleChat(userID int, conn *websocket.Conn) error {
 		message.SenderID = sender.ID
 		message.Sender = sender.Nickname
 
+		err = models.SendMessage(message)
+		if err != nil {
+			log.Println("Failed to save message in database: ", err)
+			utils.SendErrorMessage(conn, "Internal Server Srror")
+			continue
+		}
+
 		// Send the message to the receiver
 		err = sendMessage(message)
 		if err != nil {
 			if err.Error() == "not found" {
-				utils.SendErrorMessage(conn, "Receiver not connected")
-			} else {
-				log.Printf("Error sending message to receiver: %v\n", err)
-				utils.SendErrorMessage(conn, "Failed to send message")
+				continue
 			}
+			log.Printf("Error sending message to receiver: %v\n", err)
+			utils.SendErrorMessage(conn, "Failed to send message")
 			continue
 		}
 	}

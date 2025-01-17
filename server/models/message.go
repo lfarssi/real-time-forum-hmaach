@@ -1,19 +1,13 @@
 package models
 
-// Consistent ID types
-type MessageRequest struct {
-	Sender   int    `json:"sender"`
-	Receiver int    `json:"receiver"`
-	Text     string `json:"message"`
-}
-
 type Message struct {
-	ReceiverID int    `json:"receiver_id"`
-	Receiver   string `json:"receiver"`
 	SenderID   int    `json:"sender_id"`
 	Sender     string `json:"sender"`
-	Text       string `json:"message"`
-	SentAt     string `json:"sent_at"`
+	ReceiverID int    `json:"receiver_id"`
+	Receiver   string `json:"receiver,omitempty"`
+	Type       string `json:"type,omitempty"`
+	Content    string `json:"content"`
+	SentAt     string `json:"sent_at,omitempty"`
 }
 
 func GetMessages(receiver, sender, limit, page int) ([]Message, error) {
@@ -45,7 +39,7 @@ func GetMessages(receiver, sender, limit, page int) ([]Message, error) {
 	for rows.Next() {
 		var message Message
 		err := rows.Scan(
-			&message.Text,
+			&message.Content,
 			&message.Receiver,
 			&message.Sender,
 			&message.SentAt,
@@ -68,12 +62,12 @@ func GetMessages(receiver, sender, limit, page int) ([]Message, error) {
 	return messages, nil
 }
 
-func SendMessage(message MessageRequest) error {
+func SendMessage(message Message) error {
 	query := `
         INSERT INTO messages (sender, receiver, message, sent_at) 
         VALUES (?, ?, ?, CURRENT_TIMESTAMP)`
 
-	_, err := DB.Exec(query, message.Sender, message.Receiver, message.Text)
+	_, err := DB.Exec(query, message.SenderID, message.ReceiverID, message.Content)
 	if err != nil {
 		return err
 	}
