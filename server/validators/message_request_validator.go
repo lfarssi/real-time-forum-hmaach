@@ -1,7 +1,9 @@
 package validators
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"html"
 	"net/http"
 	"strconv"
@@ -9,6 +11,36 @@ import (
 
 	"forum/server/models"
 )
+
+func ChatMessageRequest(data []byte) (models.Message, error) {
+	var message models.Message
+
+	err := json.NewDecoder(bytes.NewReader(data)).Decode(&message)
+	if err != nil {
+		return models.Message{}, fmt.Errorf("invalid JSON data: unable to parse request body")
+	}
+
+	// validate message content
+	if len(message.Content) == 0 {
+		return models.Message{}, fmt.Errorf("message content cannot be empty")
+	}
+	if len(message.Content) > 1000 {
+		return models.Message{}, fmt.Errorf("message must not exceed 1000 characters")
+	}
+
+	// validate message receiver id
+	if message.ReceiverID < 0 {
+		return models.Message{}, fmt.Errorf("invalid receiver ID")
+	}
+	_, err = models.GetUserInfo(message.ReceiverID)
+	if err != nil {
+		return models.Message{}, fmt.Errorf("invalid receiver ID")
+	}
+
+	message.Type = "message"
+
+	return message, nil
+}
 
 // validates a request for fetching a conversation.
 // returns:
