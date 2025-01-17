@@ -33,7 +33,6 @@ body {
     flex-direction: column;
     background-color: var(--bg-dark);
     color: var(--text-primary);
-    overflow: hidden;
 }
 
 /* ------ register page ------ */
@@ -168,6 +167,37 @@ select:focus {
 /* Error states */
 #form-container input:invalid:not(:placeholder-shown) {
     border-color: var(--main-red);
+}
+
+#login-error{
+    display: block;
+    color: var(--main-red);
+    font-size: 14px;
+    margin-top: 10px;
+    margin-left: 5px;
+    min-height: 25px;
+}
+
+/* feed style */
+.post {
+    background-color: var(--bg-dark-second);
+    border: 1px solid #000;
+    margin: 10px 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.user-status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid grey;
+}
+
+.online {
+    background-color: green;
+    border: none !important;
 }
 
 @media screen and (max-width: 520px) {

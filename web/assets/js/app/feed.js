@@ -6,35 +6,60 @@ import { updateUserStatus } from "./utils.js"
 let ws
 
 export const showFeed = (user) => {
-    const authContainer = document.getElementById("auth-container");
-    const feed = document.getElementById("feed");
+    document.body.innerHTML = ``;
+    const feedContainer = document.createElement('div');
+    feedContainer.id = 'feed-container';
 
-    authContainer.style.display = "none";
-    feed.style.display = "block";
+    feedContainer.innerHTML = `
+        <input type="text" id="ws-message">
+        <button id="ws-send">Send</button>
+        <span id="ws-result"></span>
+        <div id="feed">
+            <div id="user-display"></div>
+            <div id="user-list-container">
+                <h3>Users</h3>
+                <div id="user-list"></div>
+            </div>
+            <div id="posts-container"></div>
+        </div>
+    `;
+    document.body.appendChild(feedContainer);
 
+    // Display user info if logged in
     if (user) {
-        const userDisplay = document.getElementById("user-display");
-        userDisplay.innerHTML = "";
+        const userDisplayContainer = document.getElementById('user-display');
+        const userDisplay = document.createElement('div');
+        userDisplay.id = "user-info";
         userDisplay.innerHTML = `
-        <h2>Welcome, ${user.first_name} ${user.last_name}!</h2>
-        <p><strong>Nickname:</strong> ${user.nickname}</p>
-        <p><strong>Email:</strong> ${user.email}</p>
-        <p><strong>Age:</strong> ${user.age}</p>
-        <p><strong>Gender:</strong> ${user.gender}</p>
-        <button id="logout-submit">Log out</button>
+            <h2>Welcome, ${user.first_name} ${user.last_name}!</h2>
+            <p><strong>Nickname:</strong> ${user.nickname}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Age:</strong> ${user.age}</p>
+            <p><strong>Gender:</strong> ${user.gender}</p>
+            <button id="logout-submit">Log out</button>
         `;
+        userDisplayContainer.appendChild(userDisplay);
+
+        // Setup logout functionality
         handleLogout();
     }
-    ws = setupWebSocket()
-    loadUsers()
-    loadPosts()
 
-    const send = document.getElementById('ws-send')
-    send.addEventListener('click', () => {
-        const message = document.getElementById('ws-message')
-        ws.send(message.value);
-        message.value = '';
-    })
+    // Setup WebSocket and load data
+    ws = setupWebSocket();
+    loadUsers();
+    loadPosts();
+
+    // Add event listener for WebSocket messages
+    const send = document.getElementById('ws-send');
+    if (send) {
+        send.addEventListener('click', () => {
+            const message = document.getElementById('ws-message');
+            if (message) {
+                ws.send(message.value);
+                message.value = '';
+            }
+        });
+    }
 };
 
 async function loadUsers() {
@@ -53,7 +78,7 @@ async function loadUsers() {
             const userElement = document.createElement("div");
 
             userElement.classList.add("user");
-            userElement.setAttribute("data-user-id", user.id); // Unique identifier for the user
+            userElement.setAttribute("data-user-id", user.id);
 
             userElement.innerHTML = `
                 <p>
