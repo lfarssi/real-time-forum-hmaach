@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"forum/server/utils"
 )
 
 var (
@@ -60,6 +62,15 @@ func CreateTables() error {
 
 // CreateDemoData generates and inserts fake data into the database
 func CreateDemoData() error {
+	// Insert two users
+	if err := InsertUser(DB,1, "Hamza", "Maach", "hamza123", "hamza@example.com", "Male", "123456789"); err != nil {
+		log.Println(err)
+	}
+
+	if err := InsertUser(DB, 2, "Sarah", "Doe", "sarah123", "sarah@example.com", "Female", "123456789"); err != nil {
+		log.Println(err)
+	}
+
 	content, err := os.ReadFile(seedPath)
 	if err != nil {
 		return fmt.Errorf("failed to read seed.sql file: %v", err)
@@ -70,5 +81,23 @@ func CreateDemoData() error {
 		return err
 	}
 
+	return nil
+}
+
+// InsertUser inserts a user into the users table
+func InsertUser(db *sql.DB, id int, firstName, lastName, nickname, email, gender, password string) error {
+	// Hash the password before inserting
+	hashedPassword, err := utils.HashPassword(password)
+	if err != nil {
+		return fmt.Errorf("could not hash password: %v", err)
+	}
+
+	// Prepare the SQL query
+	query := `INSERT INTO users (id, first_name, last_name, nickname, email, age, gender, password) 
+			  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+	_, err = db.Exec(query, id, firstName, lastName, nickname, email, 30, gender, hashedPassword)
+	if err != nil {
+		return fmt.Errorf("could not insert user: %v", err)
+	}
 	return nil
 }
