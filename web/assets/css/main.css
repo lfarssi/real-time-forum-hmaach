@@ -17,7 +17,7 @@
     --header-height: 65px;
     /* status */
     --online-color: #22c55e;
-    --offline-color: #9f9999;
+    --offline-color: #dadada;
 }
 
 * {
@@ -416,7 +416,7 @@ main {
     scrollbar-color: var(--card-border) var(--bg-dark);
 }
 
-.member {
+.user {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -424,13 +424,13 @@ main {
     cursor: pointer;
 }
 
-.member:hover {
+.user:hover {
     background-color: var(--bg-card);
     color: var(--main-green);
     border-radius: 6px;
 }
 
-.member>div {
+.user>div {
     height: 40px;
     width: 40px;
     position: relative;
@@ -450,7 +450,7 @@ main {
     background-color: var(--online-color);
 }
 
-.user-status.offline {
+.user-status {
     background-color: var(--offline-color);
 }
 

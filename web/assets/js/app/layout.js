@@ -1,6 +1,8 @@
+import { getUsers } from "./api.js";
 import { handleLogout } from "./auth.js";
 import { showCreatePost } from "./create_post.js";
 import { showFeed } from "./feed.js";
+import { updateUserStatus } from "./utils.js";
 
 export const setupLayout = () => {
     document.body.innerHTML = `
@@ -26,7 +28,7 @@ export const setupLayout = () => {
         <div id="body-container">
             <aside id="sidebar" class="sidebar">
                 <input type="search" placeholder="search for user...">
-                <div class="members-list"></div>
+                <div class="members-list" id="user-list"></div>
             </aside>
 
             <main>
@@ -35,6 +37,7 @@ export const setupLayout = () => {
     `;
     // Initialize components
     setupSidebar();
+    loadUsers();
     setupEventListeners();
 }
 
@@ -78,3 +81,40 @@ const setupEventListeners = () => {
     const searchInput = document.querySelector('#sidebar input[type="search"]');
     // searchInput.addEventListener('input', handleSearch);
 };
+
+const loadUsers = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await getUsers(token);
+        const userListContainer = document.querySelector(".members-list");
+        userListContainer.innerHTML = "";
+
+        if (!response.users || response.users.length === 0) {
+            userListContainer.innerText = "No response.users to display";
+            return;
+        }
+
+        response.users.forEach(user => {
+            
+            const userElement = document.createElement("div");
+            userElement.classList.add("user");
+            userElement.setAttribute("data-user-id", user.id);
+
+            userElement.innerHTML = `
+                <div>
+                    <img src="https://ui-avatars.com/api/?name=${user.first_name+user.last_name}" alt="profile">
+                    <div class="user-status"></div>
+                </div>
+                <span>${user.nickname}</span>
+            `;
+
+            userListContainer.appendChild(userElement);
+        });
+
+        if (response.connected && Array.isArray(response.connected) && response.connected.length > 0) {
+            updateUserStatus(response.connected);
+        }
+    } catch (error) {
+        console.error("Error loading users:", error);
+    }
+}
