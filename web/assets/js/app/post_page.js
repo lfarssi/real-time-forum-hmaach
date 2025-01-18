@@ -105,6 +105,9 @@ const setupCommentForm = (postId) => {
                 document.querySelector('.comments-list').innerHTML = '';
                 renderComments(comments);
                 commentInput.value = '';
+
+                const totalComments = document.querySelector('.main-post').querySelector('.fa-comment-dots').nextElementSibling;
+                totalComments.textContent = parseInt(totalComments.textContent) + 1;
             } else {
                 throw response;
             }
