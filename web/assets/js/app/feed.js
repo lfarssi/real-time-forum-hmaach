@@ -14,6 +14,7 @@ export const showFeed = async () => {
         renderPosts(posts);
     } catch (error) {
         showErrorPage(error);
+
     }
 };
 

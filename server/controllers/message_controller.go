@@ -44,22 +44,3 @@ func GetConvertation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{"sender": sender, "messages": messages})
 }
-
-func SendMessage(w http.ResponseWriter, r *http.Request) {
-	message, statusCode, errorMessage := validators.SendMessageRequest(r)
-	if statusCode != http.StatusOK {
-		utils.JSONResponse(w, statusCode, errorMessage)
-		return
-	}
-
-	message.Receiver = r.Context().Value("user_id").(int)
-
-	err := models.SendMessage(message)
-	if err != nil {
-		log.Println("Failed to send message: ", err)
-		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
-		return
-	}
-
-	utils.JSONResponse(w, http.StatusOK, "success")
-}

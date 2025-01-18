@@ -2,6 +2,7 @@ import { authUser, logoutUser } from './api.js'
 import { showFeed } from './feed.js';
 import { setupLayout } from './layout.js';
 import { getFormData, showErrorPage } from './utils.js'
+import { closeWebsocket } from './websocket.js';
 
 export const showAuth = () => {
     document.body.innerHTML = ``;
@@ -118,6 +119,7 @@ export const handleLogout = async () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         showAuth();
+        closeWebsocket()
     } catch (error) {
         showErrorPage(error);
     }

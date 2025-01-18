@@ -3,7 +3,6 @@ import { showFeed } from './app/feed.js';
 import { setupLayout } from './app/layout.js';
 
 addEventListener('DOMContentLoaded', () => {
-    // Check if user and token exist
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const token = localStorage.getItem("token");
 

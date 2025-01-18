@@ -63,11 +63,15 @@ func CreateTables() error {
 // CreateDemoData generates and inserts fake data into the database
 func CreateDemoData() error {
 	// Insert two users
-	if err := InsertUser(DB,1, "Hamza", "Maach", "hamza123", "hamza@example.com", "Male", "123456789"); err != nil {
+	if err := InsertUser(DB,1, "Hamza", "Maach", "hamza123", "hamza@example.com", "male", "123456789"); err != nil {
 		log.Println(err)
 	}
 
-	if err := InsertUser(DB, 2, "Sarah", "Doe", "sarah123", "sarah@example.com", "Female", "123456789"); err != nil {
+	if err := InsertUser(DB, 2, "Sarah", "Doe", "sarah123", "sarah@example.com", "female", "123456789"); err != nil {
+		log.Println(err)
+	}
+
+	if err := InsertUser(DB, 3, "Yassine", "Elmach", "yassine123", "yassine@example.com", "male", "123456789"); err != nil {
 		log.Println(err)
 	}
 
