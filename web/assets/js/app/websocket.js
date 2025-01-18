@@ -1,5 +1,5 @@
 import { showNotification, updateUserStatus } from "./utils.js";
-import { appendMessage } from './chat.js';
+import { appendMessage, chatID } from './chat.js';
 
 let ws
 
@@ -20,7 +20,8 @@ export const setupWebSocket = () => {
             } else if (data.type === 'message') {
                 // Check if we're in the chat with this sender
                 const currentChat = document.querySelector('.chat-main');
-                if (currentChat) {
+                
+                if (currentChat && data.sender_id === chatID) {
                     appendMessage(data);
                 } else {
                     const notification = `New message from ${data.sender}: ${data.content}`;

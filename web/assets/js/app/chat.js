@@ -2,8 +2,8 @@ import { getConvertation } from './api.js';
 import { formatTime, showErrorPage } from './utils.js';
 import { sendMessage } from './websocket.js';
 
-let currentReceiver = null;
-export const showDirectMessages = async (receiverID) => {
+export let chatID = null;
+export const showDirectMessages = async (id) => {
     const mainContainer = document.querySelector('main');
     mainContainer.innerHTML = `
         <div class="chat-main">
@@ -28,10 +28,10 @@ export const showDirectMessages = async (receiverID) => {
             </div>
         </div>
     `;
-
     setupMessageForm();
-    if (receiverID) {
-        await loadConversation(receiverID);
+    if (id) {
+        chatID = id
+        await loadConversation();
     }
 };
 
@@ -44,9 +44,9 @@ const setupMessageForm = () => {
         const input = messageForm.querySelector('input');
         const message = input.value.trim();
 
-        if (message && currentReceiver) {
+        if (message && chatID) {
             // Send message via WebSocket
-            sendMessage(currentReceiver, message);
+            sendMessage(chatID, message);
 
             // Add message to UI
             appendMessage({content: message, sender_id: JSON.parse(localStorage.getItem('user')).id, sent_at: new Date().toISOString()});
@@ -57,11 +57,10 @@ const setupMessageForm = () => {
     });
 };
 
-export const loadConversation = async (receiverID) => {
+export const loadConversation = async () => {
     try {
-        currentReceiver = receiverID;
         const token = localStorage.getItem('token');
-        const response = await getConvertation(receiverID, token);
+        const response = await getConvertation(chatID, token);
         if (response.sender) {
             // Update recipient info
             document.getElementById('recipient-name').textContent = response.sender.nickname;
