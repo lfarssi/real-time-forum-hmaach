@@ -1,25 +1,58 @@
+import { showNotification, updateUserStatus } from "./utils.js";
+
+let ws
+
 export const setupWebSocket = () => {
     const token = localStorage.getItem('token');
-    let ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
+    ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
 
     ws.onopen = function () {
         console.log('WebSocket is open');
     };
 
     ws.onmessage = function (event) {
-        const result = document.getElementById('ws-result');
-        result.innerText = 'Received: ' + event.data;
-
         try {
             const data = JSON.parse(event.data);
-            // console.log(data);
-            if (Array.isArray(data)) {
-                updateUserStatus(data);
+
+            if (data.type === 'users-status' && Array.isArray(data.users)) {
+                updateUserStatus(data.users);
+            } else if (data.type === 'message') {
+                const notification = `New message from ${data.sender}: ${data.content}`
+                showNotification("message", notification)
+            } else if (data.type === 'error') {
+                showNotification("error", data.message)
             }
-        } catch (e) {
-            console.error('Error parsing WebSocket message:', e);
+        } catch (error) {
+            showNotification("error", error)
+            console.error('Error parsing WebSocket message:', error);
         }
     };
-
-    return ws;
 };
+
+export const sendMessage = (receiver, message) => {
+    const data = {
+        receiver_id: receiver,
+        type: 'message',
+        content: message
+    }
+    ws.send(JSON.stringify(data));
+}
+
+export const closeWebsocket = () => {
+    ws.close();
+}
+
+const handleChatMessages = () => {
+    const send = document.getElementById('ws-send-message');
+    if (send) {
+        send.addEventListener('click', () => {
+            const receiver = document.getElementById('ws-receiver');
+            const message = document.getElementById('ws-message');
+            if (receiver && message) {
+                sendMessage(parseInt(receiver.value), message.value);
+                message.value = '';
+                receiver.value = '';
+            }
+        });
+    }
+}
