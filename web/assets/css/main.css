@@ -224,52 +224,6 @@ select:focus {
 .notification-close:hover {
     color: #ccc;
 }
-/* -------------------------------- */
-
-/* General Container */
-.chat-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Form Styles */
-.message-form {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding: 10px;
-    background: #ffffff;
-    border-radius: 8px;
-    width: 80%;
-}
-
-/* Input Styles */
-.form-label {
-    font-size: 14px;
-    color: #333333;
-    font-weight: bold;
-}
-
-.form-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    color: #333333;
-}
-
-
-/* Button Styles */
-.send-button {
-    padding: 10px;
-    font-size: 14px;
-    color: #ffffff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
 @media screen and (max-width: 520px) {
     #form-container .container {

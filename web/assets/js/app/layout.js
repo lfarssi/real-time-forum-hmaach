@@ -6,6 +6,8 @@ import { showFeed } from "./feed.js";
 import { updateUserStatus } from "./utils.js";
 
 export const setupLayout = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
     document.body.innerHTML = `
         <div id="header-container">
             <header>
@@ -20,7 +22,7 @@ export const setupLayout = () => {
                     </div>
                     <div class="logout-btn">
                         <i class="fa-solid fa-power-off"></i>
-                        <span>log out</span>
+                        <span>log out ${user.nickname}</span>
                     </div>
                 </div>
             </header>
@@ -78,9 +80,6 @@ const setupEventListeners = () => {
 
     const newPostBtn = document.querySelector('.new-post-btn');
     newPostBtn.addEventListener('click', showCreatePost);
-
-    const searchInput = document.querySelector('#sidebar input[type="search"]');
-    // searchInput.addEventListener('input', handleSearch);
 };
 
 const loadUsers = async () => {
