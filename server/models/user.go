@@ -1,8 +1,9 @@
 package models
 
 import (
-	"forum/server/utils"
 	"time"
+
+	"forum/server/utils"
 )
 
 // represents the data for user registration.
@@ -23,13 +24,19 @@ type LoginRequest struct {
 }
 
 type User struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Nickname  string `json:"nickname"`
-	Email     string `json:"email"`
-	Age       int    `json:"age"`
-	Gender    string `json:"gender"`
+	ID          int         `json:"id"`
+	FirstName   string      `json:"first_name"`
+	LastName    string      `json:"last_name"`
+	Nickname    string      `json:"nickname"`
+	Email       string      `json:"email"`
+	Age         int         `json:"age"`
+	Gender      string      `json:"gender"`
+	LastMessage LastMessage `json:"last_message,omitempty"`
+}
+type LastMessage struct {
+	Content  string `json:"message"`
+	SenderID string `json:"sender_id"`
+	SentAt   string `json:"sent_at"`
 }
 
 func GenerateSession(userId int) (User, string, error) {
@@ -55,13 +62,26 @@ func GenerateSession(userId int) (User, string, error) {
 func GetUsers(userID int) ([]User, error) {
 	var users []User
 	query := `
-		SELECT 	
-			id, first_name, last_name, nickname, email, age, gender 
-		FROM 
-			users 
-		WHERE NOT id = ?
-		ORDER BY 
-			created_at DESC`
+	SELECT
+		u.id,
+		u.first_name,
+		u.last_name,
+		u.nickname,
+		u.email,
+		u.age,
+		u.gender,
+		COALESCE(m.message, ""),
+		COALESCE(m.sender, 0),
+		COALESCE(m.sent_at, "")
+	FROM
+		users u
+		LEFT JOIN messages m ON (u.id = m.sender OR u.id = m.receiver)
+	WHERE
+		u.id != ?
+	GROUP BY
+		u.id
+	ORDER BY
+		COALESCE(m.sent_at, u.created_at) DESC`
 	rows, err := DB.Query(query, userID)
 	if err != nil {
 		return nil, err
@@ -77,7 +97,10 @@ func GetUsers(userID int) ([]User, error) {
 			&user.Nickname,
 			&user.Email,
 			&user.Age,
-			&user.Gender)
+			&user.Gender,
+			&user.LastMessage.Content,
+			&user.LastMessage.SenderID,
+			&user.LastMessage.SentAt)
 		if err != nil {
 			return nil, err
 		}
