@@ -1,0 +1,14 @@
+----- hamza ---
+update users list if new user registered
+sort user's list based the last message
+improve errors handling (backend)
+handle no script
+
+----- yassine ---
+update notifications handling
+improve errors handling
+handling not found routes
+pagination (poosts, commnets, mesages)
+add the name of the logged in user
+remove token if the status is 403
+display little part of the past title and content

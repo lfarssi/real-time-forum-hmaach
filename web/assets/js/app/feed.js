@@ -34,7 +34,7 @@ const renderPosts = (posts) => {
         </div>
         <div class="post-content">
             <h3>${post.title}</h3>
-            <p>${post.content}</p>
+            <p><pre>${post.content}</pre></p>
         </div>
         <div class="tags-reactions">
             <div class="tags">
