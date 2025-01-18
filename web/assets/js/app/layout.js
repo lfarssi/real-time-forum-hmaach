@@ -1,5 +1,6 @@
 import { getUsers } from "./api.js";
 import { handleLogout } from "./auth.js";
+import { showDirectMessages } from "./chat.js";
 import { showCreatePost } from "./create_post.js";
 import { showFeed } from "./feed.js";
 import { updateUserStatus } from "./utils.js";
@@ -95,7 +96,6 @@ const loadUsers = async () => {
         }
 
         response.users.forEach(user => {
-            
             const userElement = document.createElement("div");
             userElement.classList.add("user");
             userElement.setAttribute("data-user-id", user.id);
@@ -109,6 +109,8 @@ const loadUsers = async () => {
             `;
 
             userListContainer.appendChild(userElement);
+
+            userElement.addEventListener('click', () => showDirectMessages(user.id))
         });
 
         if (response.connected && Array.isArray(response.connected) && response.connected.length > 0) {

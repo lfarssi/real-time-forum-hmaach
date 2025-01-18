@@ -13,16 +13,7 @@ export const getFormData = (form) => {
 }
 
 export const showErrorPage = (error) => {
-    document.body.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 20px;">
-            <h1 style="color: var(--main-red);">Error</h1>
-            <p style="color: var(--text-primary);">${error.message}</p>
-            <button onclick="showFeed()" 
-                    style="padding: 10px 20px; background: var(--main-green); border: none; border-radius: 5px; color: white; cursor: pointer;">
-                Retry
-            </button>
-        </div>
-    `;
+    showNotification('error', error)
 }
 
 export const formatTime = (time) => {
@@ -43,16 +34,6 @@ export const formatTime = (time) => {
     } else {
         return date.toLocaleDateString();
     }
-}
-
-export const writeMessage = (elementID, message) => {
-    const element = document.getElementById(elementID);
-    if (element) {
-        element.textContent = message;
-    }
-    setTimeout(() => {
-        element.textContent = ''
-    }, 5000);
 }
 
 export const updateUserStatus = (connectedUsers) => {

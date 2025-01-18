@@ -19,7 +19,6 @@ export const logoutUser = async (token) => {
     return response.json();
 };
 
-// Authenticated Routes
 export const getUsers = async (token) => {
     const response = await fetch(`api/users`, {
         headers: {
@@ -79,6 +78,15 @@ export const reactToPost = async (reactionData, token) => {
             'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(reactionData),
+    });
+    return response.json();
+};
+
+export const getConvertation = async (senderId, token) => {
+    const response = await fetch(`api/conversation/${senderId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
     });
     return response.json();
 };
