@@ -1,6 +1,7 @@
 // post_detail.js
 import { getComments, createComment } from './api.js';
 import { showErrorPage, formatTime } from './utils.js';
+import { handleReaction } from './feed.js'
 
 export const showPostDetail = async (post) => {
     const mainContainer = document.querySelector('main');
@@ -49,13 +50,16 @@ export const showPostDetail = async (post) => {
             <div class="comments-list"></div>
         </div>
     `;
+    const likeIcon = document.querySelector('.fa-thumbs-up');
+    const dislikeIcon = document.querySelector('.fa-thumbs-down');
+    likeIcon.addEventListener('click', () => handleReaction(post.id, 'like', likeIcon));
+    dislikeIcon.addEventListener('click', () => handleReaction(post.id, 'dislike', dislikeIcon));
 
     // Load comments
     try {
         const token = localStorage.getItem('token');
         const comments = await getComments(post.id, 1, token);
-        console.log("hello");
-        
+
         renderComments(comments);
         setupCommentForm(post.id);
     } catch (error) {
@@ -93,7 +97,7 @@ const setupCommentForm = (postId) => {
 
         try {
             const token = localStorage.getItem('token');
-            const commentData = {post_id: postId, content: content};
+            const commentData = { post_id: postId, content: content };
 
             const response = await createComment(commentData, token);
             if (response.status === 200) {

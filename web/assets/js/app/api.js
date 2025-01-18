@@ -71,4 +71,14 @@ export const createComment = async (commentData, token) => {
     return response.json();
 };
 
-
+export const reactToPost = async (reactionData, token) => {
+    const response = await fetch(`api/posts/react`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(reactionData),
+    });
+    return response.json();
+};
