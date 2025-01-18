@@ -5,10 +5,11 @@ improve errors handling (backend)
 handle no script
 
 ----- yassine ---
+DONE - add nickname of the user on header
+DONE - remove token if the status is 401 and redirect the user to login page
+
 update notifications handling
 improve errors handling
 handling not found routes
 pagination (poosts, commnets, mesages)
-add the name of the logged in user
-remove token if the status is 403
 display little part of the past title and content

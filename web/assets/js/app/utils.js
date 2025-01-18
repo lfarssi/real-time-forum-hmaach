@@ -1,3 +1,5 @@
+import { showAuth } from "./auth.js";
+
 // get FormData and convert it to an object
 export const getFormData = (form) => {
     const formData = new FormData(form);
@@ -69,3 +71,36 @@ export const showNotification = (type, message) => {
         notification.remove();
     });
 }
+
+export const handleUnauthorized = (response) => {
+    if (response.status === 401) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        
+        // Create and show popup
+        const popup = document.createElement('div');
+        popup.className = 'popup-container';
+        
+        const message = response.message === "Session expired"
+            ? "Your session has expired"
+            : "You've been logged out";
+            
+        popup.innerHTML = `
+            <div class="popup">
+                <i class="fa-solid fa-circle-exclamation popup-icon"></i>
+                <span class="popup-message">${message}</span>
+                <span class="popup-subtext">Redirecting to login page...</span>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            document.body.style.overflow = '';
+            showAuth();
+        }, 3000);
+        return true;
+    }
+    return false;
+};

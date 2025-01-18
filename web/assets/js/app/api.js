@@ -1,3 +1,5 @@
+import { handleUnauthorized } from "./utils.js";
+
 export const authUser = async (formData, path) => {
     const response = await fetch(path, {
         method: 'POST',
@@ -6,7 +8,9 @@ export const authUser = async (formData, path) => {
         },
         body: JSON.stringify(formData),
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const logoutUser = async (token) => {
@@ -16,7 +20,9 @@ export const logoutUser = async (token) => {
             'Authorization': `Bearer ${token}`,
         },
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const getUsers = async (token) => {
@@ -25,7 +31,9 @@ export const getUsers = async (token) => {
             'Authorization': `Bearer ${token}`,
         }
     })
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const getPosts = async (page = 1, token) => {
@@ -34,7 +42,9 @@ export const getPosts = async (page = 1, token) => {
             'Authorization': `Bearer ${token}`,
         }
     })
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const getComments = async (postId, page = 1, token) => {
@@ -43,7 +53,9 @@ export const getComments = async (postId, page = 1, token) => {
             'Authorization': `Bearer ${token}`,
         }
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const createPost = async (postData, token) => {
@@ -55,7 +67,9 @@ export const createPost = async (postData, token) => {
         },
         body: JSON.stringify(postData),
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const createComment = async (commentData, token) => {
@@ -67,7 +81,9 @@ export const createComment = async (commentData, token) => {
         },
         body: JSON.stringify(commentData),
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const reactToPost = async (reactionData, token) => {
@@ -79,7 +95,9 @@ export const reactToPost = async (reactionData, token) => {
         },
         body: JSON.stringify(reactionData),
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
 
 export const getConvertation = async (senderId, token) => {
@@ -88,5 +106,7 @@ export const getConvertation = async (senderId, token) => {
             'Authorization': `Bearer ${token}`,
         }
     });
-    return response.json();
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
 };
