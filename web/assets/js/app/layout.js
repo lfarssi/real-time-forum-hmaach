@@ -3,7 +3,7 @@ import { handleLogout } from "./auth.js";
 import { showDirectMessages } from "./chat.js";
 import { showCreatePost } from "./create_post.js";
 import { showFeed } from "./feed.js";
-import { updateUserStatus } from "./utils.js";
+import { showErrorPage, updateUserStatus } from "./utils.js";
 
 export const setupLayout = () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -88,9 +88,10 @@ const loadUsers = async () => {
         const response = await getUsers(token);
         const userListContainer = document.querySelector(".members-list");
         userListContainer.innerHTML = "";
+        if (response.status !== 200) throw response
 
         if (!response.users || response.users.length === 0) {
-            userListContainer.innerText = "No response.users to display";
+            userListContainer.innerText = "No users to display";
             return;
         }
 
@@ -116,6 +117,6 @@ const loadUsers = async () => {
             updateUserStatus(response.connected);
         }
     } catch (error) {
-        console.error("Error loading users:", error);
+        showErrorPage(error.status, error.response)
     }
 }

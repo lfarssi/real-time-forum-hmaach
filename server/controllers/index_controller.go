@@ -56,7 +56,7 @@ func IndexUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{"users": users, "connected": connectedIDs})
+	json.NewEncoder(w).Encode(map[string]interface{}{"users": users, "connected": connectedIDs, "status": http.StatusOK})
 }
 
 // ServeStaticFiles returns a handler function for serving static files

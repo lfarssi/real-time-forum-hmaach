@@ -1,4 +1,5 @@
 import { showAuth } from "./auth.js";
+import { closeWebsocket } from "./websocket.js";
 
 // get FormData and convert it to an object
 export const getFormData = (form) => {
@@ -12,10 +13,6 @@ export const getFormData = (form) => {
         }
     });
     return formObject
-}
-
-export const showErrorPage = (error) => {
-    showNotification('error', error)
 }
 
 export const formatTime = (time) => {
@@ -55,22 +52,65 @@ export const updateUserStatus = (connectedUsers) => {
     });
 };
 
+export const showErrorPage = (status, message) => {
+    if (status === 404 || status === 500) {
+        const mainContainer = document.querySelector('main') || document.body;
+        mainContainer.innerHTML = `
+            <div class="error-page">
+                <div class="error-content">
+                    <i class="fa-solid ${status === 404 ? 'fa-circle-question' : 'fa-triangle-exclamation'} error-icon"></i>
+                    <h1>${status === 404 ? '404' : '500'}</h1>
+                    <h2>${status === 404 ? 'Page Not Found' : 'Internal Server Error'}</h2>
+                    <p>${status === 404 
+                        ? 'The page you are looking for unavailable.' 
+                        : 'Something went wrong. Please try again later.'}</p>
+                    <button class="error-btn" onclick="window.location.reload()">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh Page
+                    </button>
+                </div>
+            </div>
+        `;
+    } else {
+        showNotification('error', message || 'An error occurred. Please try again.');
+    }
+};
+
 export const showNotification = (type, message) => {
+    const existingNotifications = document.querySelectorAll(`.notification.${type}`);
+    if (existingNotifications) existingNotifications.forEach(notification => notification.remove());
+
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
 
+    const icon = type === 'error' ? 'fa-circle-exclamation' :
+                type === 'success' ? 'fa-circle-check' :
+                'fa-circle-info';
+
     notification.innerHTML = `
-        <span class="notification-message">${message}</span>
-        <button class="notification-close">&times;</button>
+        <div class="notification-content">
+            <i class="fa-solid ${icon}"></i>
+            <span class="notification-message">${message}</span>
+        </div>
+        <button class="notification-close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     `;
 
     document.body.appendChild(notification);
 
+    // Add show class after a small delay (for animation)
+    setTimeout(() => notification.classList.add('show'), 10);
+
     const closeButton = notification.querySelector('.notification-close');
-    closeButton.addEventListener('click', () => {
-        notification.remove();
-    });
-}
+    const closeNotification = () => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    };
+
+    closeButton.addEventListener('click', closeNotification);
+
+    setTimeout(closeNotification, 5000);
+};
 
 export const handleUnauthorized = (response) => {
     if (response.status === 401) {
@@ -98,6 +138,7 @@ export const handleUnauthorized = (response) => {
         
         setTimeout(() => {
             document.body.style.overflow = '';
+            closeWebsocket();
             showAuth();
         }, 3000);
         return true;

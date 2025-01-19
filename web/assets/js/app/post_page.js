@@ -1,6 +1,6 @@
 // post_detail.js
 import { getComments, createComment } from './api.js';
-import { showErrorPage, formatTime } from './utils.js';
+import { showErrorPage, formatTime, showNotification } from './utils.js';
 import { handleReaction } from './feed.js'
 
 export const showPostDetail = async (post) => {
@@ -58,12 +58,13 @@ export const showPostDetail = async (post) => {
     // Load comments
     try {
         const token = localStorage.getItem('token');
-        const comments = await getComments(post.id, 1, token);
+        const response = await getComments(post.id, 1, token);
+        if (response.status !== 200) throw response;
 
-        renderComments(comments);
+        renderComments(response.comments);
         setupCommentForm(post.id);
     } catch (error) {
-        showErrorPage(error);
+        showErrorPage(error.status, error.message);
     }
 };
 
@@ -93,26 +94,26 @@ const setupCommentForm = (postId) => {
 
     commentBtn.addEventListener('click', async () => {
         const content = commentInput.value.trim();
-        if (!content) return;
+        if (!content) return showNotification('error', 'please write a comment');
 
         try {
             const token = localStorage.getItem('token');
             const commentData = { post_id: postId, content: content };
 
             const response = await createComment(commentData, token);
-            if (response.status === 200) {
-                const comments = await getComments(postId, 1, token);
-                document.querySelector('.comments-list').innerHTML = '';
-                renderComments(comments);
-                commentInput.value = '';
+            if (response.status !== 200) throw response;
 
-                const totalComments = document.querySelector('.main-post').querySelector('.fa-comment-dots').nextElementSibling;
-                totalComments.textContent = parseInt(totalComments.textContent) + 1;
-            } else {
-                throw response;
-            }
+            const resp = await getComments(postId, 1, token);
+            if (resp.status !== 200) throw response;
+            
+            document.querySelector('.comments-list').innerHTML = '';
+            renderComments(resp.comments);
+            commentInput.value = '';
+
+            const totalComments = document.querySelector('.main-post').querySelector('.fa-comment-dots').nextElementSibling;
+            totalComments.textContent = parseInt(totalComments.textContent) + 1;
         } catch (error) {
-            showErrorPage(error);
+            showErrorPage(error.status, error.message);
         }
     });
 };
