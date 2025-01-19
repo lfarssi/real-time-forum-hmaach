@@ -102,7 +102,7 @@ func GetUsers(userID int) ([]User, error) {
 		FROM
 			last_messages
 		ORDER BY
-			user_created_at, sort_time DESC;
+			sort_time DESC;
 `
 	rows, err := DB.Query(query, userID, userID, userID)
 	if err != nil {

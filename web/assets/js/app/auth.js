@@ -8,7 +8,7 @@ export const showAuth = () => {
     document.body.innerHTML = ``;
     const formContainer = document.createElement('div');
     formContainer.id = 'form-container';
-    formContainer.innerHTML = `
+    formContainer.innerHTML = /*html*/`
     <div class="container">
         <div class="register">
             <h2>Register</h2>
@@ -25,7 +25,7 @@ export const showAuth = () => {
                     <input class="split" id="age-input" type="number" name="age" placeholder="Age" min="18"
                         max="120" required title="You must be at least 18 years old">
                     <select class="split" name="gender" required>
-                        <option value="">Select Gender</option>
+                        <option value="" selected disabled>Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                     </select>

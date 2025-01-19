@@ -41,7 +41,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	ConnectedUsers[userID] = connection
 	mu.Unlock()
 
-	broadcastUserList()
+	broadcastOnlineUserList()
 
 	for {
 		err = handleChat(userID, conn)
@@ -56,7 +56,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	delete(ConnectedUsers, userID)
 	mu.Unlock()
 
-	broadcastUserList()
+	broadcastOnlineUserList()
 }
 
 func handleChat(userID int, conn *websocket.Conn) error {
@@ -156,7 +156,7 @@ func broadcastMessage(message string) {
 	}
 }
 
-func broadcastUserList() {
+func broadcastOnlineUserList() {
 	mu.Lock()
 	defer mu.Unlock()
 

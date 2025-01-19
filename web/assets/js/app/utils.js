@@ -48,7 +48,6 @@ export const updateUserStatus = (connectedUsers) => {
         const userID = userElement.getAttribute('data-user-id');
         if (userID) {
             if (connectedUsers.includes(parseInt(userID))) {
-                console.log(parseInt(userID))
                 userElement.querySelector('div .user-status').classList.add('online')
             } else {
                 userElement.querySelector('div .user-status').classList.remove('online')
