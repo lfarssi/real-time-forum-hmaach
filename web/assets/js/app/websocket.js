@@ -62,6 +62,10 @@ export const sendMessage = (receiver, message) => {
     ws.send(JSON.stringify(data));
 }
 
+export const getOnlineUsers = () => {
+    ws.send("status")
+}
+
 export const closeWebsocket = () => {
     ws.close();
 }

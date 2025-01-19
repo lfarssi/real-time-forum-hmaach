@@ -67,6 +67,11 @@ func handleChat(userID int, conn *websocket.Conn) error {
 			return fmt.Errorf("WebSocket read message failed: %v", err)
 		}
 
+		if string(data) == "status" {
+			broadcastOnlineUserList()
+			continue
+		}
+
 		// Validate the chat message
 		message, err := validators.ChatMessageRequest(userID, data)
 		if err != nil {
@@ -159,27 +164,17 @@ func broadcastMessage(message string) {
 func broadcastOnlineUserList() {
 	mu.Lock()
 	defer mu.Unlock()
-
-	// Prepare a list of all user IDs
-	userIDs := make([]int, 0, len(ConnectedUsers))
-	for userID := range ConnectedUsers {
-		userIDs = append(userIDs, userID)
+	connectedIDs := make([]int, 0, len(ConnectedUsers))
+	for id := range ConnectedUsers {
+		connectedIDs = append(connectedIDs, id)
 	}
 
 	// Broadcast to all connections
 	for userID, connection := range ConnectedUsers {
-		// Use a single loop to prepare a filtered list excluding the current user's ID
-		filteredUserIDs := make([]int, 0, len(userIDs)-1)
-		for _, id := range userIDs {
-			if id != userID {
-				filteredUserIDs = append(filteredUserIDs, id)
-			}
-		}
-
 		// Marshal the filtered list into JSON format and send it to the current connection
 		data := map[string]interface{}{
 			"type":  "users-status",
-			"users": filteredUserIDs,
+			"users": connectedIDs,
 		}
 		message, err := json.Marshal(data)
 		if err != nil {

@@ -3,7 +3,8 @@ import { handleLogout } from "./auth.js";
 import { showDirectMessages } from "./chat.js";
 import { showCreatePost } from "./create_post.js";
 import { showFeed } from "./feed.js";
-import { showErrorPage, updateUserStatus, formatTime, trimString } from "./utils.js";
+import { showErrorPage, formatTime, trimString } from "./utils.js";
+import { getOnlineUsers } from "./websocket.js";
 
 export const setupLayout = () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -118,9 +119,7 @@ export const loadUsers = async () => {
             userElement.addEventListener('click', () => showDirectMessages(user.id))
         });
 
-        if (response.connected && Array.isArray(response.connected) && response.connected.length > 0) {
-            updateUserStatus(response.connected);
-        }
+        getOnlineUsers()
     } catch (error) {
         console.log(error);
         showErrorPage(error.status, error.response)
