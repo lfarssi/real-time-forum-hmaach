@@ -37,6 +37,7 @@ export const formatTime = (time) => {
         return date.toLocaleDateString();
     }
 }
+
 export const trimString = (string, width) => {
     if (!string || string.length <= width) return string
     return string.slice(0, width) + "..."

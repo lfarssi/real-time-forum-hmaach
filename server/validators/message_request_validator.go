@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"forum/server/models"
 )
@@ -26,8 +27,12 @@ func ChatMessageRequest(userID int, data []byte) (models.Message, error) {
 	if len(message.Content) == 0 {
 		return models.Message{}, fmt.Errorf("message content cannot be empty")
 	}
-	if len(message.Content) > 1000 {
-		return models.Message{}, fmt.Errorf("message must not exceed 1000 characters")
+	if len(message.Content) > 200 {
+		return models.Message{}, fmt.Errorf("message must not exceed 200 characters")
+	}
+	messageLines := strings.Count(message.Content, "\n") + 1
+	if messageLines > 3 {
+		return models.Message{}, fmt.Errorf("message cannot exceed 3 lines")
 	}
 
 	// validate message receiver id

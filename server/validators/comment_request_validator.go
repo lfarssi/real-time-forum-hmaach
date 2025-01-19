@@ -70,9 +70,15 @@ func CreateCommentRequest(r *http.Request) (models.CommentRequest, int, string) 
 	if comment.Content == "" {
 		return models.CommentRequest{}, http.StatusBadRequest, "Comment content cannot be empty"
 	}
-	if len(comment.Content) > 1800 {
-		return models.CommentRequest{}, http.StatusBadRequest, "Comment content exceeds the maximum allowed length of 1800 characters"
+
+	if len(comment.Content) > 300 {
+		return models.CommentRequest{}, http.StatusBadRequest, "Comment content exceeds the maximum allowed length of 300 characters"
 	}
+
+	commentLines := strings.Count(comment.Content, "\n") + 1
+    if commentLines > 5 {
+        return models.CommentRequest{}, http.StatusBadRequest, "Comment cannot exceed 5 lines"
+    }
 
 	// Validate Post ID
 	if comment.PostID <= 0 {

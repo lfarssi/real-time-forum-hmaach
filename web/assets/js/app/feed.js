@@ -1,5 +1,5 @@
 import { getPosts, reactToPost } from './api.js';
-import { showErrorPage, formatTime, trimString } from './utils.js';
+import { showErrorPage, formatTime } from './utils.js';
 import { showPostDetail } from './post_page.js';
 
 export const showFeed = async () => {
@@ -34,8 +34,8 @@ const renderPosts = (posts) => {
             </div>
         </div>
         <div class="post-content">
-            <h3>${trimString(post.title, 40)}</h3>
-            <p><pre>${trimString(post.content, 100)}</pre></p>
+            <h3>${post.title}</h3>
+            <p><pre>${post.content}</pre></p>
         </div>
         <div class="tags-reactions">
             <div class="tags">

@@ -86,11 +86,8 @@ const setupFormSubmission = () => {
             const token = localStorage.getItem('token');
             const response = await createPost(postData, token);
 
-            if (response.status === 200) {
-                showFeed();
-            } else {
-                throw response;
-            }
+            if (response.status !== 200) throw response
+            showFeed();
         } catch (error) {
             showErrorPage(error.status, error.message)
         }

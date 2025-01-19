@@ -67,8 +67,8 @@ func CreatePostRequest(r *http.Request) (models.PostRequest, int, string) {
 	if post.Title == "" {
 		return models.PostRequest{}, http.StatusBadRequest, "The title field is required and cannot be empty"
 	}
-	if len(post.Title) > 100 {
-		return models.PostRequest{}, http.StatusBadRequest, "The title must not exceed 100 characters"
+	if len(post.Title) > 70 {
+		return models.PostRequest{}, http.StatusBadRequest, "The title must not exceed 70 characters"
 	}
 
 	// Sanitize and validate content
@@ -76,9 +76,13 @@ func CreatePostRequest(r *http.Request) (models.PostRequest, int, string) {
 	if post.Content == "" {
 		return models.PostRequest{}, http.StatusBadRequest, "The content field is required and cannot be empty"
 	}
-	if len(post.Content) > 3000 {
-		return models.PostRequest{}, http.StatusBadRequest, "The content must not exceed 3000 characters"
+	if len(post.Content) > 1000 {
+		return models.PostRequest{}, http.StatusBadRequest, "The content must not exceed 1000 characters"
 	}
+	contentLines := strings.Count(post.Content, "\n") + 1
+    if contentLines > 5 {
+        return models.PostRequest{}, http.StatusBadRequest, "Content cannot exceed 5 lines"
+    }
 
 	// Validate categories
 	if len(post.Categories) == 0 {
