@@ -32,7 +32,6 @@ export const showAuth = () => {
                 </div>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <p id="register-error" ></p>
                 <input type="submit" value="Register">
             </form>
         </div>
@@ -42,7 +41,6 @@ export const showAuth = () => {
             <form id="login-form" name="formLogin" action="/api/login" method="post">
                 <input type="text" name="identifier" placeholder="Email or nickname" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <p id="login-error" ></p>
                 <input type="submit" value="Login">
             </form>
         </div>
@@ -71,14 +69,10 @@ const setupFormToggle = () => {
 const FormSubmission = () => {
     const registerForm = document.querySelector('#register-form');
     const loginForm = document.querySelector('#login-form');
-    const loginMsg = document.querySelector('#login-error');
-    const registerMsg = document.querySelector('#register-error');
 
     [registerForm, loginForm].forEach(form => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            loginMsg.textContent = '';
-            registerMsg.textContent = '';
 
             const formData = getFormData(form)
             try {
@@ -97,17 +91,7 @@ const FormSubmission = () => {
                     throw response;
                 }
             } catch (error) {
-                if (form.id === 'register-form' && error.status === 400) {
-                    registerMsg.textContent = error.message
-                } else if (form.id === 'login-form') {
-                    if (error.status === 500) {
-                        showErrorPage(error)
-                    } else {
-                        loginMsg.textContent = error.message
-                    }
-                } else {
-                    showErrorPage(error)
-                }
+                showErrorPage(error.status, error.message)
             }
         });
     });
@@ -116,12 +100,16 @@ const FormSubmission = () => {
 export const handleLogout = async () => {
     try {
         const token = localStorage.getItem('token');
-        await logoutUser(token);
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        showAuth();
-        closeWebsocket()
+        const response = await logoutUser(token);
+        if (response.status === 200) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            showAuth();
+            closeWebsocket()
+        } else {
+            throw response
+        }
     } catch (error) {
-        showErrorPage(error);
+        showErrorPage(error.status, error.message)
     }
 };

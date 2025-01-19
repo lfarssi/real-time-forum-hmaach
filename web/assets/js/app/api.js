@@ -8,9 +8,7 @@ export const authUser = async (formData, path) => {
         },
         body: JSON.stringify(formData),
     });
-    const data = await response.json();
-    if (handleUnauthorized(data)) return null;
-    return data;
+    return response.json();
 };
 
 export const logoutUser = async (token) => {

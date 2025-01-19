@@ -10,11 +10,11 @@ export const showFeed = async () => {
 
     try {
         const token = localStorage.getItem('token');
-        const posts = await getPosts(1, token);
-        renderPosts(posts);
+        const response = await getPosts(1, token);
+        if (response.status === 200) renderPosts(response.posts);
+        else throw response
     } catch (error) {
-        showErrorPage(error);
-
+        showErrorPage(error.status, error.response);
     }
 };
 
@@ -100,6 +100,6 @@ export const handleReaction = async (postId, type, icon) => {
             throw response;
         }
     } catch (error) {
-        showErrorPage(error);
+        showErrorPage(error.status, error.message);
     }
 };

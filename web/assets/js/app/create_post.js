@@ -1,7 +1,7 @@
 // create_post.js
 import { createPost } from './api.js';
 import { showFeed } from './feed.js';
-import { showErrorPage, getFormData } from './utils.js';
+import { showErrorPage, getFormData, showNotification } from './utils.js';
 
 export const showCreatePost = () => {
     const mainContainer = document.querySelector('main')
@@ -75,7 +75,7 @@ const setupFormSubmission = () => {
             .map(cat => parseInt(cat.getAttribute('data-id')));
         
         if (selectedCategories.length === 0) {
-            alert('Please select at least one category');
+            showNotification('error', 'Please select at least one category');
             return;
         }
 
@@ -92,7 +92,7 @@ const setupFormSubmission = () => {
                 throw response;
             }
         } catch (error) {
-            showErrorPage(error);
+            showErrorPage(error.status, error.message)
         }
     });
 };

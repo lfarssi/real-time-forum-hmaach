@@ -32,7 +32,7 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(comments)
+	json.NewEncoder(w).Encode(map[string]any{"message": message, "status": http.StatusOK, "comments": comments})
 }
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
