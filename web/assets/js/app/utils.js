@@ -19,6 +19,7 @@ export const showErrorPage = (error) => {
 }
 
 export const formatTime = (time) => {
+    if (!time) return ""
     const date = new Date(time);
     const diff = Date.now() - date;
 
@@ -27,7 +28,9 @@ export const formatTime = (time) => {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 60) {
+    if (minutes < 1) {
+        return `seconds ago`;
+    } else if (minutes < 60) {
         return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
     } else if (hours < 24) {
         return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
@@ -39,6 +42,7 @@ export const formatTime = (time) => {
 }
 
 export const updateUserStatus = (connectedUsers) => {
+    if (!Array.isArray(connectedUsers)) return
     const userListContainer = document.getElementById("user-list");
     const allUserElements = userListContainer.querySelectorAll('.user');
 
@@ -46,7 +50,6 @@ export const updateUserStatus = (connectedUsers) => {
         const userID = userElement.getAttribute('data-user-id');
         if (userID) {
             if (connectedUsers.includes(parseInt(userID))) {
-                console.log(parseInt(userID))
                 userElement.querySelector('div .user-status').classList.add('online')
             } else {
                 userElement.querySelector('div .user-status').classList.remove('online')

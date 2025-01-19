@@ -202,7 +202,7 @@ select:focus {
 }
 
 .notification.error {
-    background-color: #dc3545; 
+    background-color: #dc3545;
 }
 
 .notification.message {
@@ -374,7 +374,8 @@ main {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 15px;
+    margin: 5px 15px;
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -386,7 +387,7 @@ main {
 
 .user>div {
     height: 40px;
-    width: 40px;
+    /* width: 40px; */
     position: relative;
 }
 
@@ -406,6 +407,20 @@ main {
 
 .user-status {
     background-color: var(--offline-color);
+}
+
+.user-list-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.last-message {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 
 /* -------- posts ------- */
@@ -513,6 +528,47 @@ main {
 .reactions i.like {
     color: #0084ff;
 }
+
+#no-script {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+#no-script>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    color: black;
+    background-color: white;
+    border-radius: 20px;
+    width: 60%;
+    padding: 30px;
+}
+
+#no-script>div img {
+    width: 200px;
+    height: 200px;
+    border-radius: 0%;
+}
+
+#no-script>div h1 {
+    font-size: 25px;
+    font-weight: 700;
+}
+
+#no-script>div p {
+    font-size: 15px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+
+}
+
 
 @media screen and (max-width: 900px) {
     #body-container {
@@ -904,7 +960,7 @@ main {
     background-color: var(--bg-card);
     border: 1px solid var(--card-border);
     border-left: solid var(--main-green-hover);
-    
+
     border-radius: 8px;
     padding: 15px;
 }
@@ -914,7 +970,8 @@ main {
         padding: 10px;
     }
 
-    .main-post, .comment-form-container {
+    .main-post,
+    .comment-form-container {
         padding: 12px;
     }
 

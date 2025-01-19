@@ -1,8 +1,8 @@
 ----- hamza ---
-update users list if new user registered
-sort user's list based the last message
+update users list if new user registered -> done
+sort user's list based the last message -> done
 improve errors handling (backend)
-handle no script
+handle no script -> done
 
 ----- yassine ---
 DONE - add nickname of the user on header
