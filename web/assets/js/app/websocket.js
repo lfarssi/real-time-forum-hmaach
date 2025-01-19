@@ -14,13 +14,13 @@ export const setupWebSocket = () => {
     ws.onmessage = function (event) {
         try {
             const data = JSON.parse(event.data);
-    
+
             if (data.type === 'users-status' && Array.isArray(data.users)) {
                 updateUserStatus(data.users);
             } else if (data.type === 'message') {
                 // Check if we're in the chat with this sender
                 const currentChat = document.querySelector('.chat-main');
-                
+
                 if (currentChat && data.sender_id === chatID) {
                     appendMessage(data);
                 } else {

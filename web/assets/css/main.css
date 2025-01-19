@@ -202,7 +202,7 @@ select:focus {
 }
 
 .notification.error {
-    background-color: #dc3545; 
+    background-color: #dc3545;
 }
 
 .notification.message {
@@ -224,6 +224,7 @@ select:focus {
 .notification-close:hover {
     color: #ccc;
 }
+
 /* -------------------------------- */
 
 /* General Container */
@@ -420,7 +421,8 @@ main {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 15px;
+    margin: 5px 15px;
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -432,7 +434,7 @@ main {
 
 .user>div {
     height: 40px;
-    width: 40px;
+    /* width: 40px; */
     position: relative;
 }
 
@@ -452,6 +454,20 @@ main {
 
 .user-status {
     background-color: var(--offline-color);
+}
+
+.user-list-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.last-message {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 
 /* -------- posts ------- */
@@ -950,7 +966,7 @@ main {
     background-color: var(--bg-card);
     border: 1px solid var(--card-border);
     border-left: solid var(--main-green-hover);
-    
+
     border-radius: 8px;
     padding: 15px;
 }
@@ -960,7 +976,8 @@ main {
         padding: 10px;
     }
 
-    .main-post, .comment-form-container {
+    .main-post,
+    .comment-form-container {
         padding: 12px;
     }
 

@@ -3,7 +3,7 @@ import { handleLogout } from "./auth.js";
 import { showDirectMessages } from "./chat.js";
 import { showCreatePost } from "./create_post.js";
 import { showFeed } from "./feed.js";
-import { updateUserStatus } from "./utils.js";
+import { updateUserStatus, formatTime } from "./utils.js";
 
 export const setupLayout = () => {
     document.body.innerHTML = `
@@ -28,7 +28,6 @@ export const setupLayout = () => {
 
         <div id="body-container">
             <aside id="sidebar" class="sidebar">
-                <input type="search" placeholder="search for user...">
                 <div class="members-list" id="user-list"></div>
             </aside>
 
@@ -86,6 +85,7 @@ const setupEventListeners = () => {
 const loadUsers = async () => {
     try {
         const token = localStorage.getItem("token");
+        const userID = JSON.parse(localStorage.getItem('user')).id
         const response = await getUsers(token);
         const userListContainer = document.querySelector(".members-list");
         userListContainer.innerHTML = "";
@@ -99,13 +99,22 @@ const loadUsers = async () => {
             const userElement = document.createElement("div");
             userElement.classList.add("user");
             userElement.setAttribute("data-user-id", user.id);
-
+            var last_message = (user.last_message.sender_id == userID ? "You: " : "") + user.last_message.message
+            if (last_message.length > 25) {
+                last_message = last_message.slice(0, 25) + "..."
+            }
             userElement.innerHTML = `
                 <div>
-                    <img src="https://ui-avatars.com/api/?name=${user.first_name+user.last_name}" alt="profile">
+                    <img src="https://ui-avatars.com/api/?name=${user.first_name + user.last_name}" alt="profile">
                     <div class="user-status"></div>
                 </div>
-                <span>${user.nickname}</span>
+                <div class="user-list-info">
+                    <span>${user.nickname}</span>
+                    <div class="last-message">
+                        <span>${last_message}</span>
+                        <span>${formatTime(user.last_message.sent_at)}</span>
+                    </div>
+                </div>
             `;
 
             userListContainer.appendChild(userElement);

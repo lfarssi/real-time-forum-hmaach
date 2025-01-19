@@ -17,6 +17,7 @@ export const showErrorPage = (error) => {
 }
 
 export const formatTime = (time) => {
+    if (!time) return ""
     const date = new Date(time);
     const diff = Date.now() - date;
 
