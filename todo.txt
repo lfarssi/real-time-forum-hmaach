@@ -1,10 +1,8 @@
 ----- hamza ---
 update users list if new user registered -> done
 sort user's list based the last message -> done
-improve errors handling (backend)
 handle no script -> done
-
-display little part of the past title and content, notification
+display little part of the part title and content, notification -> done
 
 
 ----- yassine ---

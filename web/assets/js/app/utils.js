@@ -37,6 +37,10 @@ export const formatTime = (time) => {
         return date.toLocaleDateString();
     }
 }
+export const trimString = (string, width) => {
+    if (!string || string.length <= width) return string
+    return string.slice(0, width) + "..."
+}
 
 export const updateUserStatus = (connectedUsers) => {
     if (!Array.isArray(connectedUsers)) return
@@ -64,9 +68,9 @@ export const showErrorPage = (status, message) => {
                     <i class="fa-solid ${status === 404 ? 'fa-circle-question' : 'fa-triangle-exclamation'} error-icon"></i>
                     <h1>${status === 404 ? '404' : '500'}</h1>
                     <h2>${status === 404 ? 'Page Not Found' : 'Internal Server Error'}</h2>
-                    <p>${status === 404 
-                        ? 'The page you are looking for unavailable.' 
-                        : 'Something went wrong. Please try again later.'}</p>
+                    <p>${status === 404
+                ? 'The page you are looking for unavailable.'
+                : 'Something went wrong. Please try again later.'}</p>
                     <button class="error-btn" onclick="window.location.reload()">
                         <i class="fa-solid fa-rotate-right"></i> Refresh Page
                     </button>
@@ -86,8 +90,8 @@ export const showNotification = (type, message) => {
     notification.className = `notification ${type}`;
 
     const icon = type === 'error' ? 'fa-circle-exclamation' :
-                type === 'success' ? 'fa-circle-check' :
-                'fa-circle-info';
+        type === 'success' ? 'fa-circle-check' :
+            'fa-circle-info';
 
     notification.innerHTML = `
         <div class="notification-content">
@@ -119,15 +123,15 @@ export const handleUnauthorized = (response) => {
     if (response.status === 401) {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        
+
         // Create and show popup
         const popup = document.createElement('div');
         popup.className = 'popup-container';
-        
+
         const message = response.message === "Session expired"
             ? "Your session has expired"
             : "You've been logged out";
-            
+
         popup.innerHTML = `
             <div class="popup">
                 <i class="fa-solid fa-circle-exclamation popup-icon"></i>
@@ -135,10 +139,10 @@ export const handleUnauthorized = (response) => {
                 <span class="popup-subtext">Redirecting to login page...</span>
             </div>
         `;
-        
+
         document.body.appendChild(popup);
         document.body.style.overflow = 'hidden';
-        
+
         setTimeout(() => {
             document.body.style.overflow = '';
             closeWebsocket();

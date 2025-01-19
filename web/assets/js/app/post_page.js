@@ -5,7 +5,7 @@ import { handleReaction } from './feed.js'
 
 export const showPostDetail = async (post) => {
     const mainContainer = document.querySelector('main');
-    mainContainer.innerHTML = `
+    mainContainer.innerHTML = /*html*/`
         <div class="post-detail-container">
             <div class="post main-post">
                 <div class="user-info">
@@ -17,7 +17,7 @@ export const showPostDetail = async (post) => {
                 </div>
                 <div class="post-content-detailed">
                     <h3>${post.title}</h3>
-                    <p>${post.content}</p>
+                    <pre>${post.content}</pre>
                 </div>
                 <div class="tags-reactions">
                     <div class="tags">
@@ -82,7 +82,7 @@ const renderComments = (comments) => {
                 <div class="timestamp">${formatTime(comment.created_at)}</div>
             </div>
         </div>
-        <p>${comment.content}</p>
+        <pre>${comment.content}</pre>
         `
         commentsContainer.append(commentElement)
     });
@@ -105,7 +105,7 @@ const setupCommentForm = (postId) => {
 
             const resp = await getComments(postId, 1, token);
             if (resp.status !== 200) throw response;
-            
+
             document.querySelector('.comments-list').innerHTML = '';
             renderComments(resp.comments);
             commentInput.value = '';

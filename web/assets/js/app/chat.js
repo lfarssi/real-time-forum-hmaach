@@ -93,7 +93,7 @@ export const appendMessage = (message) => {
     messageDiv.className = `message ${message.sender_id === userId ? 'sent' : 'received'}`;
     messageDiv.innerHTML = `
         <div class="message-content">
-            <p>${message.content}</p>
+            <pre>${message.content}</pre>
             <span class="timestamp">${formatTime(message.sent_at)}</span>
         </div>
     `;

@@ -1,4 +1,4 @@
-import { showNotification, updateUserStatus } from "./utils.js";
+import { showNotification, updateUserStatus, trimString } from "./utils.js";
 import { appendMessage, chatID } from './chat.js';
 import { loadUsers } from './layout.js';
 
@@ -23,7 +23,7 @@ export const setupWebSocket = () => {
                     if (currentChat && data.sender_id === chatID) {
                         appendMessage(data);
                     } else {
-                        const notification = `New message from ${data.sender}: ${data.content}`;
+                        const notification = `New message from ${trimString(data.sender, 10)}: ${trimString(data.content, 7)}`;
                         showNotification("message", notification);
                     }
                     break;

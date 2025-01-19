@@ -365,6 +365,12 @@ main {
     padding: 15px;
     padding: clamp(10px, 3vw, 18px);
     margin-bottom: 15px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+pre {
+    white-space: break-spaces;
 }
 
 .user-info {
@@ -726,11 +732,15 @@ main {
 .message.received .message-content {
     background-color: var(--bg-dark);
     border-bottom-left-radius: 5px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .message.sent .message-content {
     background-color: var(--main-green);
     border-bottom-right-radius: 5px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .message-content p {
@@ -888,7 +898,7 @@ main {
     background-color: var(--bg-card);
     border: 1px solid var(--card-border);
     border-left: solid var(--main-green-hover);
-
+    word-wrap: break-word;
     border-radius: 8px;
     padding: 15px;
 }

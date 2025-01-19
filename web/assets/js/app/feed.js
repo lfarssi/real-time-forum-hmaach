@@ -1,5 +1,5 @@
 import { getPosts, reactToPost } from './api.js';
-import { showErrorPage, formatTime } from './utils.js';
+import { showErrorPage, formatTime, trimString } from './utils.js';
 import { showPostDetail } from './post_page.js';
 
 export const showFeed = async () => {
@@ -14,6 +14,7 @@ export const showFeed = async () => {
         if (response.status === 200) renderPosts(response.posts);
         else throw response
     } catch (error) {
+        console.log(error);
         showErrorPage(error.status, error.response);
     }
 };
@@ -24,7 +25,7 @@ const renderPosts = (posts) => {
     posts.forEach(post => {
         const postDiv = document.createElement('div');
         postDiv.className = 'post';
-        postDiv.innerHTML = `
+        postDiv.innerHTML =/*html*/`
         <div class="user-info">
             <img src="https://ui-avatars.com/api/?name=${post.nickname}" alt="profile">
             <div>
@@ -33,8 +34,8 @@ const renderPosts = (posts) => {
             </div>
         </div>
         <div class="post-content">
-            <h3>${post.title}</h3>
-            <p><pre>${post.content}</pre></p>
+            <h3>${trimString(post.title, 40)}</h3>
+            <p><pre>${trimString(post.content, 100)}</pre></p>
         </div>
         <div class="tags-reactions">
             <div class="tags">
