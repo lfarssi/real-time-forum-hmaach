@@ -51,7 +51,7 @@ func routes() http.Handler {
 	mux.HandleFunc("/api/logout", middlewares.IsAuth(controllers.Logout))
 
 	// WebSocket endpoint
-	mux.HandleFunc("/ws", middlewares.IsAuthWebSocket(controllers.HandleWebSocket))
+	mux.HandleFunc("/ws", middlewares.IsAuth(controllers.HandleWebSocket))
 
 	rateLimiter := middlewares.NewRateLimiter(100, 1*time.Minute)
 

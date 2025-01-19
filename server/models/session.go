@@ -37,7 +37,7 @@ func ValidSession(token string) (int, bool, string) {
 	// Scan the result into variables
 	err := row.Scan(&userID, &expiration)
 	if err == sql.ErrNoRows {
-		return 0, false, "Session not found"
+		return 0, false, "unauthorized"
 	} else if err != nil {
 		log.Println("Database error:", err)
 		return 0, false, "Internal Server Error"
@@ -45,11 +45,11 @@ func ValidSession(token string) (int, bool, string) {
 
 	// Check if the session is expired
 	if time.Now().After(expiration) {
-		return 0, false, "Session expired"
+		return 0, false, "unauthorized"
 	}
 
 	// Session is valid
-	return userID, true, "Success"
+	return userID, true, "success"
 }
 
 func DeleteUserSession(userID int) error {
