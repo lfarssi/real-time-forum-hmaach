@@ -1,5 +1,5 @@
 import { getConvertation } from './api.js';
-import { formatTime, showErrorPage } from './utils.js';
+import { formatTime, showErrorPage, showNotification } from './utils.js';
 import { sendMessage } from './websocket.js';
 
 export let chatID = null;
@@ -49,10 +49,13 @@ const setupMessageForm = () => {
             sendMessage(chatID, message);
 
             // Add message to UI
-            appendMessage({content: message, sender_id: JSON.parse(localStorage.getItem('user')).id, sent_at: new Date().toISOString()});
+            appendMessage({ content: message, sender_id: JSON.parse(localStorage.getItem('user')).id, sent_at: new Date().toISOString() });
 
             input.value = '';
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        } else {
+            if (!chatID) showNotification('error', 'something wrong happend, please try later')
+            if (!message) showNotification('error', 'please write a message first')
         }
     });
 };
@@ -61,6 +64,7 @@ export const loadConversation = async () => {
     try {
         const token = localStorage.getItem('token');
         const response = await getConvertation(chatID, token);
+        if (response.status !== 200) throw response
         if (response.sender) {
             // Update recipient info
             document.getElementById('recipient-name').textContent = response.sender.nickname;
@@ -70,21 +74,21 @@ export const loadConversation = async () => {
             // Clear and load messages
             const messagesContainer = document.querySelector('.messages-container');
             messagesContainer.innerHTML = '';
-            
+
             response.messages.reverse().forEach(message => {
                 appendMessage(message);
             });
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     } catch (error) {
-        showErrorPage(error);
+        showErrorPage(error.status, error.message);
     }
 };
 
 export const appendMessage = (message) => {
     const messagesContainer = document.querySelector('.messages-container');
     const userId = JSON.parse(localStorage.getItem('user')).id;
-    
+
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${message.sender_id === userId ? 'sent' : 'received'}`;
     messageDiv.innerHTML = `
@@ -93,7 +97,7 @@ export const appendMessage = (message) => {
             <span class="timestamp">${formatTime(message.sent_at)}</span>
         </div>
     `;
-    
+
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 };

@@ -22,7 +22,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	userID, hashedPassword, err := models.GetUserPassword(userRequest)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			utils.JSONResponse(w, http.StatusNotFound, "Invalid nickname or email")
+			utils.JSONResponse(w, http.StatusUnauthorized, "Invalid nickname or email")
 			return
 		}
 		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
