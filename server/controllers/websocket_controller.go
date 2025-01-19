@@ -85,12 +85,14 @@ func handleChat(userID int, conn *websocket.Conn) error {
 		message.SenderID = sender.ID
 		message.Sender = sender.Nickname
 
-		err = models.SendMessage(message)
+		err = models.StoreMessage(message)
 		if err != nil {
 			log.Println("Failed to save message in database: ", err)
 			utils.SendErrorMessage(conn, "Internal Server Srror")
 			continue
 		}
+
+		broadcastMessage("refresh-users")
 
 		// Send the message to the receiver
 		err = sendMessage(message)
@@ -130,6 +132,28 @@ func sendMessage(message models.Message) error {
 	}
 
 	return nil
+}
+
+func broadcastMessage(message string) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	// Broadcast to all connections
+	for userID, connection := range ConnectedUsers {
+		message, err := json.Marshal(map[string]interface{}{
+			"type": message,
+		})
+		if err != nil {
+			log.Printf("Error marshalling user list for user %d: %v\n", userID, err)
+			continue
+		}
+
+		err = connection.WriteMessage(websocket.TextMessage, message)
+		if err != nil {
+			connection.Close()
+			delete(ConnectedUsers, userID)
+		}
+	}
 }
 
 func broadcastUserList() {

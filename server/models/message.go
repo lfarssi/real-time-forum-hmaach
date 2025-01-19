@@ -62,10 +62,10 @@ func GetMessages(receiver, sender, limit, page int) ([]Message, error) {
 	return messages, nil
 }
 
-func SendMessage(message Message) error {
+func StoreMessage(message Message) error {
 	query := `
-        INSERT INTO messages (sender, receiver, message, sent_at) 
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP)`
+        INSERT INTO messages (sender, receiver, message) 
+        VALUES (?, ?, ?)`
 
 	_, err := DB.Exec(query, message.SenderID, message.ReceiverID, message.Content)
 	if err != nil {

@@ -6,7 +6,8 @@ import { showFeed } from "./feed.js";
 import { updateUserStatus, formatTime } from "./utils.js";
 
 export const setupLayout = () => {
-    document.body.innerHTML = `
+    document.body.innerHTML = /*html*/`
+        
         <div id="header-container">
             <header>
                 <button id="sidebar-toggle" class="sidebar-toggle">
@@ -82,7 +83,7 @@ const setupEventListeners = () => {
     // searchInput.addEventListener('input', handleSearch);
 };
 
-const loadUsers = async () => {
+export const loadUsers = async () => {
     try {
         const token = localStorage.getItem("token");
         const userID = JSON.parse(localStorage.getItem('user')).id

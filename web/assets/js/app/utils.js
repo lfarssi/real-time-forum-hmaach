@@ -26,7 +26,9 @@ export const formatTime = (time) => {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 60) {
+    if (minutes < 1) {
+        return `seconds ago`;
+    } else if (minutes < 60) {
         return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
     } else if (hours < 24) {
         return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
@@ -38,6 +40,7 @@ export const formatTime = (time) => {
 }
 
 export const updateUserStatus = (connectedUsers) => {
+    if (!Array.isArray(connectedUsers)) return
     const userListContainer = document.getElementById("user-list");
     const allUserElements = userListContainer.querySelectorAll('.user');
 

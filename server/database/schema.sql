@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS post_reactions (
     CHECK (reaction IN ('like', 'dislike'))
 );
 CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     sender INTEGER NOT NULL,
     receiver INTEGER NOT NULL,
     message text NOT NULL,

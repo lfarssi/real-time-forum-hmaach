@@ -1,6 +1,6 @@
 ----- hamza ---
 update users list if new user registered
-sort user's list based the last message
+sort user's list based the last message -> done
 improve errors handling (backend)
 handle no script
 

@@ -1,5 +1,6 @@
 import { showNotification, updateUserStatus } from "./utils.js";
 import { appendMessage, chatID } from './chat.js';
+import { loadUsers } from './layout.js';
 
 let ws
 
@@ -14,21 +15,36 @@ export const setupWebSocket = () => {
     ws.onmessage = function (event) {
         try {
             const data = JSON.parse(event.data);
+            switch (data.type) {
+                case 'message': {
+                    // Check if we're in the chat with this sender
+                    const currentChat = document.querySelector('.chat-main');
 
-            if (data.type === 'users-status' && Array.isArray(data.users)) {
-                updateUserStatus(data.users);
-            } else if (data.type === 'message') {
-                // Check if we're in the chat with this sender
-                const currentChat = document.querySelector('.chat-main');
-
-                if (currentChat && data.sender_id === chatID) {
-                    appendMessage(data);
-                } else {
-                    const notification = `New message from ${data.sender}: ${data.content}`;
-                    showNotification("message", notification);
+                    if (currentChat && data.sender_id === chatID) {
+                        appendMessage(data);
+                    } else {
+                        const notification = `New message from ${data.sender}: ${data.content}`;
+                        showNotification("message", notification);
+                    }
+                    break;
                 }
-            } else if (data.type === 'error') {
-                showNotification("error", data.message);
+
+                case 'users-status':
+                    updateUserStatus(data.users);
+                    break;
+
+                case 'refresh-users':
+                    loadUsers();
+                    break;
+
+                case 'error':
+                    showNotification("error", data.message);
+                    break;
+
+                default:
+                    showNotification("error", data.type);
+                    console.log(data.type);
+                    break;
             }
         } catch (error) {
             showNotification("error", error);
