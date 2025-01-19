@@ -100,9 +100,7 @@ const loadUsers = async () => {
             userElement.classList.add("user");
             userElement.setAttribute("data-user-id", user.id);
             var last_message = (user.last_message.sender_id == userID ? "You: " : "") + user.last_message.message
-            if (last_message.length > 25) {
-                last_message = last_message.slice(0, 25) + "..."
-            }
+            if (last_message.length > 25) last_message = last_message.slice(0, 25) + "..."
             userElement.innerHTML = `
                 <div>
                     <img src="https://ui-avatars.com/api/?name=${user.first_name + user.last_name}" alt="profile">
