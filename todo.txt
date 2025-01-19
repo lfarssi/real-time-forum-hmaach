@@ -2,7 +2,7 @@
 update users list if new user registered -> done
 sort user's list based the last message -> done
 improve errors handling (backend)
-handle no script
+handle no script -> done
 
 ----- yassine ---
 update notifications handling
