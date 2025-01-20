@@ -98,8 +98,8 @@ export const reactToPost = async (reactionData, token) => {
     return data;
 };
 
-export const getConvertation = async (senderId, token) => {
-    const response = await fetch(`api/conversation/${senderId}`, {
+export const getConvertation = async (senderId, page = 1, token) => {
+    const response = await fetch(`api/conversation/${senderId}?page=${page}`, {
         headers: {
             'Authorization': `Bearer ${token}`,
         }

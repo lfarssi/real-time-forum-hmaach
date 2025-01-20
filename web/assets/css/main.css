@@ -447,6 +447,10 @@ pre {
 
 }
 
+.reactions div span {
+    min-width: 10px;
+}
+
 .reactions i {
     font-size: 18px;
     cursor: pointer;
@@ -688,7 +692,7 @@ pre {
 .chat-main {
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-card);
+    background-image: url('/assets/images/chat.jpg');
     border: 1px solid var(--card-border);
     border-radius: 15px;
     overflow: hidden;
@@ -719,6 +723,8 @@ pre {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    scrollbar-color: var(--card-border) var(--bg-dark);
+    scrollbar-width: thin;
 }
 
 .message {

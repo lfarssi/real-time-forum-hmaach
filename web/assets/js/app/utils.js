@@ -78,7 +78,7 @@ export const showErrorPage = (status, message) => {
                                 <i class="fa-solid fa-home"></i> Go to Home
                            </button>`
                 : `<button class="error-btn" id="reload">
-                                <i class="fa-solid fa-rotate-right"></i> Refresh Page
+                                <i class="fa-solid fa-rotate-right"></i> Go to Home
                            </button>`}
                 </div>
             </div>
