@@ -1,5 +1,6 @@
 import { showAuth } from "./auth.js";
 import { closeWebsocket } from "./websocket.js";
+import { handleLoading } from "../main.js";
 
 // get FormData and convert it to an object
 export const getFormData = (form) => {
@@ -63,21 +64,40 @@ export const updateUserStatus = (connectedUsers) => {
 export const showErrorPage = (status, message) => {
     if (status === 404 || status === 500) {
         const mainContainer = document.querySelector('main') || document.body;
-        mainContainer.innerHTML = `
+        mainContainer.innerHTML = /*html*/ `
             <div class="error-page">
                 <div class="error-content">
                     <i class="fa-solid ${status === 404 ? 'fa-circle-question' : 'fa-triangle-exclamation'} error-icon"></i>
-                    <h1>${status === 404 ? '404' : '500'}</h1>
+                    <h1>${status}</h1>
                     <h2>${status === 404 ? 'Page Not Found' : 'Internal Server Error'}</h2>
                     <p>${status === 404
-                ? 'The page you are looking for unavailable.'
+                ? 'The page you are looking for is unavailable.'
                 : 'Something went wrong. Please try again later.'}</p>
-                    <button class="error-btn" onclick="window.location.reload()">
-                        <i class="fa-solid fa-rotate-right"></i> Refresh Page
-                    </button>
+                    ${status === 404
+                ? `<button class="error-btn" id="go-home">
+                                <i class="fa-solid fa-home"></i> Go to Home
+                           </button>`
+                : `<button class="error-btn" id="reload">
+                                <i class="fa-solid fa-rotate-right"></i> Refresh Page
+                           </button>`}
                 </div>
             </div>
         `;
+
+        const goHome = document.getElementById('go-home');
+        if (goHome) {
+            goHome.addEventListener('click', () => {
+                history.pushState({}, '', '/');
+                handleLoading();
+            });
+        }
+
+        const reload = document.getElementById('reload');
+        if (reload) {
+            reload.addEventListener('click', () => {
+                handleLoading();
+            });
+        }
     } else {
         showNotification('error', message || 'An error occurred. Please try again.');
     }

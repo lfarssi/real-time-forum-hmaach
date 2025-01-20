@@ -14,11 +14,6 @@ import (
 
 // Index handles the root route and serves the index.html template
 func Index(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		utils.JSONResponse(w, http.StatusNotFound, "Page Not Found")
-		return
-	}
-
 	if r.Method != http.MethodGet {
 		utils.JSONResponse(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 		return
