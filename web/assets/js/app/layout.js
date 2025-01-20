@@ -14,7 +14,7 @@ export const setupLayout = () => {
                 <button id="sidebar-toggle" class="sidebar-toggle">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="title">Forum</div>
+                <div class="title">forum <i class="fa-regular fa-comment-dots"></i></div>
                 <div class="header-btns">
                     <div class="new-post-btn">
                         <i class="fa-sharp fa-solid fa-plus"></i>
