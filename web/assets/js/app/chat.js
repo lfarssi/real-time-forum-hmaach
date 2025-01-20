@@ -13,7 +13,7 @@ export const showDirectMessages = async (id) => {
     hasMoreMessages = true;
 
     const mainContainer = document.querySelector('main');
-    mainContainer.innerHTML = `
+    mainContainer.innerHTML = /*html*/`
         <div class="chat-main">
             <div class="chat-header">
                 <div class="chat-user-info">
@@ -112,7 +112,7 @@ const renderMessages = (messages) => {
     messages.forEach(message => {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${message.sender_id === userId ? 'sent' : 'received'}`;
-        messageDiv.innerHTML = `
+        messageDiv.innerHTML = /*html*/`
             <div class="message-content">
                 <pre>${message.content}</pre>
                 <span class="timestamp">${formatTime(message.sent_at)}</span>

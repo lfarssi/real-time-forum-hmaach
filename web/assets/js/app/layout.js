@@ -100,7 +100,7 @@ export const loadUsers = async () => {
             userElement.classList.add("user");
             userElement.setAttribute("data-user-id", user.id);
             var last_message = (user.last_message.sender_id == userID ? "You: " : "") + user.last_message.message
-            userElement.innerHTML = `
+            userElement.innerHTML = /*html*/`
                 <div>
                     <img src="https://ui-avatars.com/api/?name=${user.first_name + user.last_name}" alt="profile">
                     <div class="user-status"></div>

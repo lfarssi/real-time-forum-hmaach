@@ -19,7 +19,7 @@ export const showFeed = async () => {
     const loadingIndicator = document.createElement('div');
     loadingIndicator.className = 'loading-indicator';
     loadingIndicator.style.display = 'none';
-    loadingIndicator.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading more posts...';
+    loadingIndicator.innerHTML = /*html*/`<i class="fa-solid fa-spinner fa-spin"></i> Loading more posts...`;
     postContainer.append(loadingIndicator);
 
     try {
@@ -47,7 +47,7 @@ const renderPosts = (posts) => {
     posts.forEach(post => {
         const postDiv = document.createElement('div');
         postDiv.className = 'post';
-        postDiv.innerHTML = `
+        postDiv.innerHTML = /*html*/`
         <div class="user-info">
             <img src="https://ui-avatars.com/api/?name=${post.nickname}" alt="profile">
             <div>

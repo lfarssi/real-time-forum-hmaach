@@ -5,7 +5,7 @@ import { showErrorPage, getFormData, showNotification } from './utils.js';
 
 export const showCreatePost = () => {
     const mainContainer = document.querySelector('main')
-    mainContainer.innerHTML = `
+    mainContainer.innerHTML = /*html*/`
     <form id="new-post-form" class="create-post-form">
         <h2>Create New Post</h2>
         <div class="form-section">

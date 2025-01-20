@@ -14,7 +14,7 @@ export const showPostDetail = async (post) => {
     postId = post.id;    
 
     const mainContainer = document.querySelector('main');
-    mainContainer.innerHTML = `
+    mainContainer.innerHTML = /*html*/`
         <div class="post-detail-container">
             <div class="post main-post">
                 <div class="user-info">
@@ -97,7 +97,7 @@ const renderComments = (comments) => {
     comments.forEach(comment => {
         const commentElement = document.createElement('div')
         commentElement.className = 'comment'
-        commentElement.innerHTML = `
+        commentElement.innerHTML = /*html*/`
         <div class="user-info">
             <img src="https://ui-avatars.com/api/?name=${comment.nickname}" alt="profile">
             <div>
@@ -167,7 +167,7 @@ const setupCommentForm = () => {
 
             // Reset comments list and pagination
             const commentsContainer = document.querySelector('.comments-list');
-            commentsContainer.innerHTML = '<div class="loading-indicator" style="display: none"><i class="fa-solid fa-spinner fa-spin"></i> Loading more comments...</div>';
+            commentsContainer.innerHTML = /*html*/`<div class="loading-indicator" style="display: none"><i class="fa-solid fa-spinner fa-spin"></i> Loading more comments...</div>`;
 
             currentCommentPage = 1;
             hasMoreComments = true;

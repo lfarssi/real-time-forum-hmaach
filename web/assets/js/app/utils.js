@@ -114,7 +114,7 @@ export const showNotification = (type, message) => {
         type === 'success' ? 'fa-circle-check' :
             'fa-circle-info';
 
-    notification.innerHTML = `
+    notification.innerHTML = /*html*/`
         <div class="notification-content">
             <i class="fa-solid ${icon}"></i>
             <span class="notification-message">${message}</span>
@@ -153,7 +153,7 @@ export const handleUnauthorized = (response) => {
             ? "Your session has expired"
             : "You've been logged out";
 
-        popup.innerHTML = `
+        popup.innerHTML = /*html*/`
             <div class="popup">
                 <i class="fa-solid fa-circle-exclamation popup-icon"></i>
                 <span class="popup-message">${message}</span>
