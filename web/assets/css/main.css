@@ -258,7 +258,7 @@ header .title:hover {
 
 main {
     flex: 1;
-    height: 91vh;
+    height: 90vh;
     overflow-y: auto;
     scrollbar-color: var(--card-border) var(--bg-dark);
     scrollbar-width: thin;
@@ -267,7 +267,7 @@ main {
 /* -------- side bar ------- */
 #sidebar {
     width: var(--sidebar-width);
-    height: 88vh;
+    height: 90vh;
     display: flex;
     flex-direction: column;
     background-color: var(--bg-dark-second);
@@ -354,8 +354,8 @@ main {
 
 /* -------- posts ------- */
 .post-container {
-    height: 90vh;
     padding-right: 5px;
+    padding-bottom: 20px;
 }
 
 .post {
@@ -462,6 +462,16 @@ pre {
 
 .reactions i.like {
     color: #0084ff;
+}
+
+.loading-indicator {
+    text-align: center;
+    color: var(--main-green);
+    font-size: 17px;
+}
+
+.loading-indicator i {
+    margin-right: 8px;
 }
 
 #no-script {

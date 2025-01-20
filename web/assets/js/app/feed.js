@@ -1,18 +1,33 @@
 import { getPosts, reactToPost } from './api.js';
-import { showErrorPage, formatTime } from './utils.js';
+import { showErrorPage, formatTime, debounce } from './utils.js';
 import { showPostDetail } from './post_page.js';
 
+let currentPage = 1;
+let isLoading = false;
+let hasMorePosts = true;
+
 export const showFeed = async () => {
+    currentPage = 1;
+    isLoading = false;
+    hasMorePosts = true;
+
     document.querySelector('main').innerHTML = ''
     const postContainer = document.createElement('div')
     postContainer.className = 'post-container'
     document.querySelector('main').append(postContainer)
 
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'loading-indicator';
+    loadingIndicator.style.display = 'none';
+    loadingIndicator.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading more posts...';
+    postContainer.append(loadingIndicator);
+
     try {
         const token = localStorage.getItem('token');
-        const response = await getPosts(1, token);
-        if (response.status === 200) renderPosts(response.posts);
-        else throw response
+        const response = await getPosts(currentPage, token);
+        if (response.status !== 200) throw response;
+        renderPosts(response.posts);
+        setupInfiniteScroll();
     } catch (error) {
         console.log(error);
         showErrorPage(error.status, error.response);
@@ -20,12 +35,18 @@ export const showFeed = async () => {
 };
 
 const renderPosts = (posts) => {
-    if (!posts) return
+    const loadingIndicator = document.querySelector('.loading-indicator')
     const postContainer = document.querySelector('.post-container');
+    if (!posts || posts.length === 0) {
+        loadingIndicator.style.display = 'none';
+        hasMorePosts = false;
+        return;
+    }
+
     posts.forEach(post => {
         const postDiv = document.createElement('div');
         postDiv.className = 'post';
-        postDiv.innerHTML =/*html*/`
+        postDiv.innerHTML = `
         <div class="user-info">
             <img src="https://ui-avatars.com/api/?name=${post.nickname}" alt="profile">
             <div>
@@ -69,8 +90,9 @@ const renderPosts = (posts) => {
         title.addEventListener('click', () => showPostDetail(post));
         commentIcon.addEventListener('click', () => showPostDetail(post));
 
-        postContainer.append(postDiv)
+        postContainer.insertBefore(postDiv, loadingIndicator)
     });
+    loadingIndicator.style.display = 'block';
 };
 
 export const handleReaction = async (postId, type, icon) => {
@@ -104,3 +126,33 @@ export const handleReaction = async (postId, type, icon) => {
         showErrorPage(error.status, error.message);
     }
 };
+
+const setupInfiniteScroll = () => {
+    const main = document.querySelector('main');
+
+    // debounce scroll handler to prevent excessive calls
+    const scrollFunc = debounce(async () => {
+        if (isLoading || !hasMorePosts) return;
+
+        // Load more when user scrolls to bottom with 100px threshold
+        if (main.scrollHeight - (main.clientHeight + main.scrollTop) <= 100) {
+            isLoading = true;
+
+            try {
+                currentPage++;
+                const token = localStorage.getItem('token');
+                const response = await getPosts(currentPage, token);
+
+                if (response.status !== 200) throw response;
+                renderPosts(response.posts);
+            } catch (error) {
+                showErrorPage(error.status, error.message);
+            } finally {
+                isLoading = false;
+            }
+        }
+    }, 800);
+
+    main.removeEventListener('scroll', scrollFunc);
+    main.addEventListener('scroll', scrollFunc);
+}
