@@ -1,11 +1,20 @@
-// post_detail.js
 import { getComments, createComment } from './api.js';
-import { showErrorPage, formatTime, showNotification } from './utils.js';
+import { showErrorPage, formatTime, showNotification, debounce } from './utils.js';
 import { handleReaction } from './feed.js'
 
+let currentCommentPage = 1;
+let isLoadingComments = false;
+let hasMoreComments = true;
+let postId
+
 export const showPostDetail = async (post) => {
+    currentCommentPage = 1;
+    isLoadingComments = false;
+    hasMoreComments = true;
+    postId = post.id;    
+
     const mainContainer = document.querySelector('main');
-    mainContainer.innerHTML = /*html*/`
+    mainContainer.innerHTML = `
         <div class="post-detail-container">
             <div class="post main-post">
                 <div class="user-info">
@@ -47,7 +56,11 @@ export const showPostDetail = async (post) => {
                 </div>
             </div>
 
-            <div class="comments-list"></div>
+            <div class="comments-list">
+                <div class="loading-indicator">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Loading more comments...
+                </div>
+            </div>
         </div>
     `;
     const likeIcon = document.querySelector('.fa-thumbs-up');
@@ -55,14 +68,17 @@ export const showPostDetail = async (post) => {
     likeIcon.addEventListener('click', () => handleReaction(post.id, 'like', likeIcon));
     dislikeIcon.addEventListener('click', () => handleReaction(post.id, 'dislike', dislikeIcon));
 
-    // Load comments
+    setupCommentForm();
+    await loadComments();
+    setupCommentScroll();
+};
+
+const loadComments = async () => {
     try {
         const token = localStorage.getItem('token');
-        const response = await getComments(post.id, 1, token);
+        const response = await getComments(postId, currentCommentPage, token);
         if (response.status !== 200) throw response;
-
         renderComments(response.comments);
-        setupCommentForm(post.id);
     } catch (error) {
         showErrorPage(error.status, error.message);
     }
@@ -70,7 +86,14 @@ export const showPostDetail = async (post) => {
 
 const renderComments = (comments) => {
     const commentsContainer = document.querySelector('.comments-list');
-    if (!comments) return
+    const loadingIndicator = commentsContainer.querySelector('.loading-indicator');
+
+    if (!comments || comments.length === 0) {
+        loadingIndicator.style.display = 'none';
+        hasMoreComments = false;
+        return;
+    }
+
     comments.forEach(comment => {
         const commentElement = document.createElement('div')
         commentElement.className = 'comment'
@@ -84,11 +107,48 @@ const renderComments = (comments) => {
         </div>
         <pre>${comment.content}</pre>
         `
-        commentsContainer.append(commentElement)
+        commentsContainer.insertBefore(commentElement, loadingIndicator);
     });
+
+    if (comments.length < 10) {
+        loadingIndicator.style.display = 'none';
+        hasMoreComments = false;
+        return
+    }
+    loadingIndicator.style.display = 'block';
+
 };
 
-const setupCommentForm = (postId) => {
+const setupCommentScroll = () => {
+    const main = document.querySelector('main')
+    const scrollCommentFunc = debounce(async () => {
+        if (isLoadingComments || !hasMoreComments) return;
+        console.log(main.scrollHeight, main.clientHeight, main.scrollTop);
+        
+        // Load more when scrolled near bottom (100px threshold)
+        if (main.scrollHeight - (main.clientHeight + main.scrollTop) <= 100) {
+            isLoadingComments = true;
+
+            try {
+                currentCommentPage++;
+                const token = localStorage.getItem('token');
+                const response = await getComments(postId, currentCommentPage, token);
+
+                if (response.status !== 200) throw response;
+                renderComments(response.comments);
+            } catch (error) {
+                showErrorPage(error.status, error.message);
+            } finally {
+                isLoadingComments = false;
+            }
+        }
+    }, 800);
+
+    main.removeEventListener('scroll', scrollCommentFunc);
+    main.addEventListener('scroll', scrollCommentFunc);
+};
+
+const setupCommentForm = () => {
     const commentInput = document.getElementById('comment-input');
     const commentBtn = document.querySelector('.comment-btn');
 
@@ -103,11 +163,15 @@ const setupCommentForm = (postId) => {
             const response = await createComment(commentData, token);
             if (response.status !== 200) throw response;
 
-            const resp = await getComments(postId, 1, token);
-            if (resp.status !== 200) throw response;
-
             document.querySelector('.comments-list').innerHTML = '';
-            renderComments(resp.comments);
+
+            // Reset comments list and pagination
+            const commentsContainer = document.querySelector('.comments-list');
+            commentsContainer.innerHTML = '<div class="loading-indicator" style="display: none"><i class="fa-solid fa-spinner fa-spin"></i> Loading more comments...</div>';
+
+            currentCommentPage = 1;
+            hasMoreComments = true;
+            await loadComments(postId);
             commentInput.value = '';
 
             const totalComments = document.querySelector('.main-post').querySelector('.fa-comment-dots').nextElementSibling;

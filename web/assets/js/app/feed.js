@@ -37,6 +37,7 @@ export const showFeed = async () => {
 const renderPosts = (posts) => {
     const loadingIndicator = document.querySelector('.loading-indicator')
     const postContainer = document.querySelector('.post-container');
+    if (!postContainer) return;
     if (!posts || posts.length === 0) {
         loadingIndicator.style.display = 'none';
         hasMorePosts = false;
@@ -92,6 +93,12 @@ const renderPosts = (posts) => {
 
         postContainer.insertBefore(postDiv, loadingIndicator)
     });
+
+    if (posts.length < 10) {
+        loadingIndicator.style.display = 'none';
+        hasMorePosts = false;
+        return
+    }
     loadingIndicator.style.display = 'block';
 };
 
