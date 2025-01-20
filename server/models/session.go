@@ -5,7 +5,29 @@ import (
 	"log"
 	"strings"
 	"time"
+
+	"forum/server/utils"
 )
+
+func GenerateSession(userId int) (User, string, error) {
+	var user User
+	token, err := utils.GenerateToken()
+	if err != nil {
+		return User{}, "", err
+	}
+
+	err = StoreSession(userId, token, time.Now().Add(10*time.Hour))
+	if err != nil {
+		return User{}, "", err
+	}
+
+	user, err = GetUserInfo(userId)
+	if err != nil {
+		return User{}, "", err
+	}
+
+	return user, token, nil
+}
 
 func StoreSession(userID int, tokenID string, expires_at time.Time) error {
 	query := `INSERT OR REPLACE INTO sessions (user_id, token, expires_at) VALUES (?,?,?)`

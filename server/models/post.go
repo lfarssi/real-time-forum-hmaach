@@ -143,22 +143,6 @@ func StorePost(post PostRequest) (int64, error) {
 	return postID, nil
 }
 
-func StorePostCategory(postID int64, categoryID int) (int64, error) {
-	query := `INSERT INTO posts_categories (post_id, category_id) VALUES (?,?)`
-
-	result, err := DB.Exec(query, postID, categoryID)
-	if err != nil {
-		return 0, err
-	}
-
-	postcatID, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	return postcatID, nil
-}
-
 func ReactToPost(reaction Reaction) error {
 	var oldReaction string
 

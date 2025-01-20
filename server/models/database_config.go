@@ -43,7 +43,7 @@ func CreateTables() error {
 	}
 
 	var catCount int
-	if err = DB.QueryRow(`SELECT COUNT(*) FROM categories`).Scan(&catCount); err != nil {
+	if err = DB.QueryRow(`SELECT COUNT(id) FROM categories`).Scan(&catCount); err != nil {
 		return fmt.Errorf("failed to get the count of categories: %v", err)
 	}
 

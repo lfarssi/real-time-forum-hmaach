@@ -7,9 +7,8 @@ import (
 )
 
 type Category struct {
-	ID         int    `json:"id"`
-	Label      string `json:"label"`
-	PostsCount int    `json:"posts_count"`
+	ID    int    `json:"id"`
+	Label string `json:"label"`
 }
 
 func FetchCategories() ([]Category, error) {
@@ -18,14 +17,6 @@ func FetchCategories() ([]Category, error) {
 		SELECT
 			c.id,
 			c.label,
-			(
-				SELECT
-					COUNT(id)
-				FROM
-					post_category pc
-				WHERE
-					pc.category_id = c.id
-			) as posts_count
 		FROM categories c
 		ORDER BY posts_count DESC;
 	`
@@ -36,7 +27,7 @@ func FetchCategories() ([]Category, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var category Category
-		rows.Scan(&category.ID, &category.Label, &category.PostsCount)
+		rows.Scan(&category.ID, &category.Label)
 		categories = append(categories, category)
 	}
 	return categories, nil
@@ -46,12 +37,7 @@ func FetchCategoriesByPostID(postID int) ([]Category, error) {
 	query := `
 	SELECT 
 		c.id,
-		c.label,
-		(
-			SELECT COUNT(pc.post_id)
-			FROM posts_categories pc
-			WHERE pc.category_id = c.id
-		) AS post_count
+		c.label
 	FROM
 		categories c
 	INNER JOIN posts_categories pc ON pc.category_id = c.id
@@ -70,7 +56,6 @@ func FetchCategoriesByPostID(postID int) ([]Category, error) {
 		err := rows.Scan(
 			&category.ID,
 			&category.Label,
-			&category.PostsCount,
 		)
 		if err != nil {
 			log.Println("Error scanning row:", err)
@@ -114,4 +99,20 @@ func CheckCategoriesExist(ids []int) error {
 	}
 
 	return nil
+}
+
+func StorePostCategory(postID int64, categoryID int) (int64, error) {
+	query := `INSERT INTO posts_categories (post_id, category_id) VALUES (?,?)`
+
+	result, err := DB.Exec(query, postID, categoryID)
+	if err != nil {
+		return 0, err
+	}
+
+	postcatID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return postcatID, nil
 }
