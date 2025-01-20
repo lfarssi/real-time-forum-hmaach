@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"forum/server/utils"
 )
 
@@ -37,26 +35,6 @@ type LastMessage struct {
 	Content  string `json:"message"`
 	SenderID string `json:"sender_id"`
 	SentAt   string `json:"sent_at"`
-}
-
-func GenerateSession(userId int) (User, string, error) {
-	var user User
-	token, err := utils.GenerateToken()
-	if err != nil {
-		return User{}, "", err
-	}
-
-	err = StoreSession(userId, token, time.Now().Add(10*time.Hour))
-	if err != nil {
-		return User{}, "", err
-	}
-
-	user, err = GetUserInfo(userId)
-	if err != nil {
-		return User{}, "", err
-	}
-
-	return user, token, nil
 }
 
 func GetUsers(userID int) ([]User, error) {
@@ -102,7 +80,12 @@ func GetUsers(userID int) ([]User, error) {
 		FROM
 			last_messages
 		ORDER BY
-			sort_time DESC;
+			CASE
+				WHEN sort_time = "" THEN 1 
+				ELSE 0
+			END,
+			sort_time DESC,
+			nickname ASC; 
 `
 	rows, err := DB.Query(query, userID, userID, userID)
 	if err != nil {
