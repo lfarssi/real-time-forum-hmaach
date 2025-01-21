@@ -23,17 +23,24 @@ func ChatMessageRequest(userID int, data []byte) (models.Message, error) {
 		return models.Message{}, fmt.Errorf("invalid receiver ID")
 	}
 
-	// validate message content
-	if len(message.Content) == 0 {
-		return models.Message{}, fmt.Errorf("message content cannot be empty")
-	}
-	if len(message.Content) > 200 {
-		return models.Message{}, fmt.Errorf("message must not exceed 200 characters")
-	}
-	messageLines := strings.Count(message.Content, "\n") + 1
-	if messageLines > 3 {
-		return models.Message{}, fmt.Errorf("message cannot exceed 3 lines")
-	}
+	switch message.Type {
+    case "message":
+        // validate message content
+        if len(message.Content) == 0 {
+            return models.Message{}, fmt.Errorf("message content cannot be empty")
+        }
+        if len(message.Content) > 200 {
+            return models.Message{}, fmt.Errorf("message must not exceed 200 characters")
+        }
+        messageLines := strings.Count(message.Content, "\n") + 1
+        if messageLines > 3 {
+            return models.Message{}, fmt.Errorf("message cannot exceed 3 lines")
+        }
+    case "typing-start", "typing-stop":
+        message.Content = ""
+    default:
+        return models.Message{}, fmt.Errorf("invalid message type")
+    }
 
 	// validate message receiver id
 	if message.ReceiverID < 0 {
@@ -43,8 +50,6 @@ func ChatMessageRequest(userID int, data []byte) (models.Message, error) {
 	if err != nil {
 		return models.Message{}, fmt.Errorf("invalid receiver ID")
 	}
-
-	message.Type = "message"
 
 	return message, nil
 }

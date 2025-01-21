@@ -87,15 +87,16 @@ func handleChat(userID int, conn *websocket.Conn) error {
 		message.SenderID = sender.ID
 		message.Sender = sender.Nickname
 
-		err = models.StoreMessage(message)
-		if err != nil {
-			log.Println("Failed to save message in database: ", err)
-			utils.SendErrorMessage(conn, "Internal Server Srror")
-			continue
-		}
-
-		broadcastMessage("refresh-users")
-
+		if message.Type == "message" {
+            err = models.StoreMessage(message)
+            if err != nil {
+                log.Println("Failed to save message in database: ", err)
+                utils.SendErrorMessage(conn, "Internal Server Error")
+                continue
+            }
+            broadcastMessage("refresh-users")
+        }
+		
 		// Send the message to the receiver
 		err = sendMessage(message)
 		if err != nil {

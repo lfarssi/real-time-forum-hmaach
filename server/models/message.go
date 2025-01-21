@@ -63,6 +63,10 @@ func GetMessages(receiver, sender, limit, page int) ([]Message, error) {
 }
 
 func StoreMessage(message Message) error {
+	if message.Type == "typing-start" || message.Type == "typing-stop" {
+        return nil
+    }
+	
 	query := `
         INSERT INTO messages (sender, receiver, message) 
         VALUES (?, ?, ?)`
