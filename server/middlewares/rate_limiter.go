@@ -38,6 +38,7 @@ func (rl *RateLimiter) isAllowed(clientIP string) bool {
 
 	// Check if the client already exists
 	if client, exists := rl.clients[clientIP]; exists {
+		// if the window expires then reset the requests count
 		if now.Sub(client.LastRequest) > rl.window {
 			client.Requests = 1
 			client.LastRequest = now

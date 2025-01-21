@@ -34,11 +34,8 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Context().Value("user_id").(int)
 
-	// Register the connection
-	var connection *websocket.Conn = conn
-
 	mu.Lock()
-	ConnectedUsers[userID] = connection
+	ConnectedUsers[userID] = conn
 	mu.Unlock()
 
 	broadcastOnlineUserList()
