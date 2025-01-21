@@ -141,7 +141,7 @@ export const showNotification = (type, message) => {
 };
 
 export const handleUnauthorized = (response) => {
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 429) {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
 
