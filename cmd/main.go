@@ -43,6 +43,7 @@ func routes() http.Handler {
 	// Routes that require authentication
 	mux.HandleFunc("/api/users", middlewares.IsAuth(controllers.IndexUsers))
 	mux.HandleFunc("/api/posts", middlewares.IsAuth(controllers.IndexPosts))
+	mux.HandleFunc("/api/posts/{id}", middlewares.IsAuth(controllers.GetPostById))
 	mux.HandleFunc("/api/posts/{id}/comments", middlewares.IsAuth(controllers.GetComments))
 	mux.HandleFunc("/api/posts/create", middlewares.IsAuth(controllers.CreatePost))
 	mux.HandleFunc("/api/posts/react", middlewares.IsAuth(controllers.ReactToPost))

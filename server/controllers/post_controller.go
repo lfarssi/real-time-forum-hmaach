@@ -22,7 +22,7 @@ func IndexPosts(w http.ResponseWriter, r *http.Request) {
 		err    error
 		userID = r.Context().Value("user_id").(int)
 	)
-	
+
 	limit := 10
 	posts, err = models.FetchPosts(userID, limit, page)
 	if err != nil {
@@ -33,6 +33,27 @@ func IndexPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]any{"message": "success", "status": http.StatusOK, "posts": posts})
+}
+
+func GetPostById(w http.ResponseWriter, r *http.Request) {
+	statusCode, message, postID := validators.GetPostByIdRequest(r)
+	if statusCode != http.StatusOK {
+		utils.JSONResponse(w, statusCode, message)
+		return
+	}
+
+	userID := r.Context().Value("user_id").(int)
+
+	post, err := models.GetPostById(userID, postID)
+	if err != nil {
+		log.Println(err)
+		utils.JSONResponse(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{"message": "success", "post": post, "status": 200})
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {

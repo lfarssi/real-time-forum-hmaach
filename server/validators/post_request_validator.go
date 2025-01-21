@@ -39,6 +39,29 @@ func IndexPostsRequest(r *http.Request) (int, string, int) {
 	return http.StatusOK, "success", page
 }
 
+// validates a request for post info.
+// returns:
+// - int: HTTP status code.
+// - string: Error or success message.
+// - int: post's ID
+func GetPostByIdRequest(r *http.Request) (int, string, int) {
+	if r.Method != http.MethodGet {
+		return http.StatusMethodNotAllowed, "Invalid HTTP method", 0
+	}
+
+	postID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || postID < 1 {
+		return http.StatusBadRequest, "Invalid post ID", 0
+	}
+
+	err = models.CheckPostExist(postID)
+	if err != nil {
+		return http.StatusBadRequest, "Invalid post ID", 0
+	}
+
+	return http.StatusOK, "success", postID
+}
+
 // validates a request to create a new post.
 // Returns:
 // - models.PostRequest: The validated post request structure.
@@ -80,9 +103,9 @@ func CreatePostRequest(r *http.Request) (models.PostRequest, int, string) {
 		return models.PostRequest{}, http.StatusBadRequest, "The content must not exceed 1000 characters"
 	}
 	contentLines := strings.Count(post.Content, "\n") + 1
-    if contentLines > 5 {
-        return models.PostRequest{}, http.StatusBadRequest, "Content cannot exceed 5 lines"
-    }
+	if contentLines > 5 {
+		return models.PostRequest{}, http.StatusBadRequest, "Content cannot exceed 5 lines"
+	}
 
 	// Validate categories
 	if len(post.Categories) == 0 {

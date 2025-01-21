@@ -117,6 +117,71 @@ func FetchPosts(userID, limit, page int) ([]Post, error) {
 	return posts, nil
 }
 
+func GetPostById(userID, postID int) (Post, error) {
+	var post Post
+	query := `
+	SELECT 
+		p.id,
+		p.user_id,
+		u.first_name,
+		u.last_name,
+		u.nickname,
+		p.title,
+		p.content,
+		p.created_at,
+		COALESCE(reactions.like_count, 0) AS likes_count,
+		COALESCE(reactions.dislike_count, 0) AS dislikes_count,
+		COALESCE(reactions.is_reacted, 0) AS is_reacted,
+		COALESCE(comments.comments_count, 0) AS comments_count
+	FROM posts p
+	LEFT JOIN users u ON p.user_id = u.id
+	LEFT JOIN (
+				SELECT 
+					post_id, 
+					SUM(reaction = 'like') AS like_count,
+					SUM(reaction = 'dislike') AS dislike_count,
+					MAX(CASE 
+							WHEN user_id = ? AND reaction = 'like' THEN 1
+							WHEN user_id = ? AND reaction = 'dislike' THEN -1
+							ELSE 0 
+						END) AS is_reacted
+				FROM post_reactions
+				GROUP BY post_id
+			  ) reactions ON reactions.post_id = p.id
+	LEFT JOIN (
+				SELECT post_id, COUNT(id) AS comments_count
+				FROM comments
+				GROUP BY post_id
+			  ) comments ON comments.post_id = p.id
+	WHERE p.id = ?;`
+
+	err := DB.QueryRow(query, userID, userID, postID).
+		Scan(&post.ID,
+			&post.UserID,
+			&post.UserFirstName,
+			&post.UserLastName,
+			&post.UserNickname,
+			&post.Title,
+			&post.Content,
+			&post.CreatedAt,
+			&post.LikesCount,
+			&post.DislikesCount,
+			&post.IsReacted,
+			&post.CommentsCount)
+	if err != nil {
+		return Post{}, err
+	}
+
+	// Fetch categories for the post
+	post.Categories, err = FetchCategoriesByPostID(post.ID)
+	if err != nil {
+		log.Println("Error fetching categories for post:", post.ID, err)
+		return Post{}, err
+	}
+
+	return post, nil
+}
+
 func CheckPostExist(postID int) error {
 	var id int
 	err := DB.QueryRow("SELECT id FROM posts WHERE id = ?", postID).Scan(&id)
