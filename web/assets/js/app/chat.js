@@ -2,6 +2,8 @@ import { getConvertation } from './api.js';
 import { formatTime, showErrorPage, showNotification, debounce } from './utils.js';
 import { sendMessage } from './websocket.js';
 
+let typingTimeout = null;
+let isTyping = false;
 let currentPage = 1;
 let isLoadingMessages = false;
 let hasMoreMessages = true;
@@ -20,6 +22,12 @@ export const showDirectMessages = async (id) => {
                     <img src="" alt="profile" id="recipient-avatar">
                     <div>
                         <span class="username" id="recipient-name"></span>
+                        <div class="typing-indicator" style="display: none">
+                            <span class="typing-text"></span>
+                            <div class="typing-dots">
+                                <span>.</span><span>.</span><span>.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,16 +59,37 @@ export const showDirectMessages = async (id) => {
 
 const setupMessageForm = () => {
     const messageForm = document.getElementById('message-form');
+    const input = messageForm.querySelector('input');
     const messagesContainer = document.querySelector('.messages-container');
+
+    input.addEventListener('input', () => {
+        if (!isTyping) {
+            isTyping = true;
+            sendMessage(chatID, 'typing-start', '');
+        }
+
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+        }
+
+        typingTimeout = setTimeout(() => {
+            isTyping = false;
+            sendMessage(chatID, 'typing-stop', '');
+        }, 1000);
+    });
 
     messageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const input = messageForm.querySelector('input');
         const message = input.value.trim();
 
         if (message && chatID) {
+            if (isTyping) {
+                isTyping = false;
+                clearTimeout(typingTimeout);
+                sendMessage(chatID, 'typing-stop', '');
+            }
             // Send message via WebSocket
-            sendMessage(chatID, message);
+            sendMessage(chatID, 'message', message);
 
             currentPage = 1;
             isLoadingMessages = false;
@@ -76,6 +105,21 @@ const setupMessageForm = () => {
             if (!message) showNotification('error', 'please write a message first')
         }
     });
+};
+
+export const showTypingIndicator = (isTyping, username) => {
+    const typingIndicator = document.querySelector('.typing-indicator');
+    if (!typingIndicator) return;
+    const typingText = document.querySelector('.typing-text');
+
+    if (!typingIndicator || !typingText) return;
+
+    if (isTyping) {
+        typingText.textContent = `${username} is typing`;
+        typingIndicator.style.display = 'flex';
+    } else {
+        typingIndicator.style.display = 'none';
+    }
 };
 
 export const loadConversation = async () => {

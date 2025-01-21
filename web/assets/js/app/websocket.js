@@ -1,5 +1,5 @@
 import { showNotification, updateUserStatus, trimString } from "./utils.js";
-import { appendMessage, chatID } from './chat.js';
+import { appendMessage, chatID, showTypingIndicator } from './chat.js';
 import { loadUsers } from './layout.js';
 
 let ws
@@ -29,6 +29,16 @@ export const setupWebSocket = () => {
                     break;
                 }
 
+                case 'typing-start': {
+                    handleTypingStatus(data)
+                    break;
+                }
+
+                case 'typing-stop': {
+                    handleTypingStatus(data)
+                    break;
+                }
+
                 case 'users-status':
                     updateUserStatus(data.users);
                     break;
@@ -53,10 +63,18 @@ export const setupWebSocket = () => {
     };
 };
 
-export const sendMessage = (receiver, message) => {
+const handleTypingStatus = (data) => {
+    const currentChat = document.querySelector('.chat-main');
+    if (currentChat && data.sender_id === chatID) {
+        const isTyping = data.type === 'typing-start';
+        showTypingIndicator(isTyping, data.sender);
+    }
+};
+
+export const sendMessage = (receiver, type, message) => {
     const data = {
         receiver_id: receiver,
-        type: 'message',
+        type: type,
         content: message
     }
     ws.send(JSON.stringify(data));
