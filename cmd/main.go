@@ -54,7 +54,7 @@ func routes() http.Handler {
 	// WebSocket endpoint
 	mux.HandleFunc("/ws", middlewares.IsAuth(controllers.HandleWebSocket))
 
-	rateLimiter := middlewares.NewRateLimiter(100, 1*time.Minute)
+	rateLimiter := middlewares.NewRateLimiter(20, 1*time.Minute)
 
 	return middlewares.Recovery(rateLimiter.Middleware(mux))
 }

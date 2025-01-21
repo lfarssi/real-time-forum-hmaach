@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"sync"
 	"time"
+
+	"forum/server/utils"
 )
 
 type ClientRate struct {
@@ -66,7 +68,7 @@ func (rl *RateLimiter) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clientIP := r.RemoteAddr // Extract the client IP
 		if !rl.isAllowed(clientIP) {
-			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
+			utils.JSONResponse(w, http.StatusTooManyRequests, "Too Many Requests")
 			return
 		}
 		next.ServeHTTP(w, r)
