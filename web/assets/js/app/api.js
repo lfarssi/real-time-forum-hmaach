@@ -45,6 +45,17 @@ export const getPosts = async (page = 1, token) => {
     return data;
 };
 
+export const getPost = async (postID, token) => {
+    const response = await fetch(`api/posts/${postID}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    const data = await response.json();
+    if (handleUnauthorized(data)) return null;
+    return data;
+}
+
 export const getComments = async (postId, page = 1, token) => {
     const response = await fetch(`api/posts/${postId}/comments?page=${page}`, {
         headers: {

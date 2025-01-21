@@ -420,7 +420,7 @@ pre {
     color: var(--main-green-hover);
 }
 
-.post-content p {
+.post-content pre {
     letter-spacing: 0.5px;
     line-height: 1.5;
     font-size: clamp(14px, 3vw, 16px);
@@ -866,7 +866,7 @@ pre {
     color: var(--text-primary);
 }
 
-.post-content-detailed p {
+.post-content-detailed pre {
     letter-spacing: 0.5px;
     line-height: 1.5;
     font-size: clamp(14px, 3vw, 16px);

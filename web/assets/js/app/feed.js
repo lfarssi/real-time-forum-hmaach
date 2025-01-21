@@ -57,7 +57,7 @@ const renderPosts = (posts) => {
         </div>
         <div class="post-content">
             <h3>${post.title}</h3>
-            <p><pre>${post.content}</pre></p>
+            <pre>${post.content}</pre>
         </div>
         <div class="tags-reactions">
             <div class="tags">
@@ -88,8 +88,8 @@ const renderPosts = (posts) => {
         // add events to show post detail
         const title = postDiv.querySelector('.post-content h3');
         const commentIcon = postDiv.querySelector('.fa-comment-dots');
-        title.addEventListener('click', () => showPostDetail(post));
-        commentIcon.addEventListener('click', () => showPostDetail(post));
+        title.addEventListener('click', () => showPostDetail(post.id));
+        commentIcon.addEventListener('click', () => showPostDetail(post.id));
 
         postContainer.insertBefore(postDiv, loadingIndicator)
     });
@@ -107,29 +107,28 @@ export const handleReaction = async (postId, type, icon) => {
         const token = localStorage.getItem('token');
         const response = await reactToPost({ post_id: postId, reaction: type }, token);
 
-        if (response.status === 200) {
-            // Update reaction counts and styles
-            const isLike = type === 'like';
-            const otherIcon = icon.closest('.reactions').querySelector(isLike ? '.fa-thumbs-down' : '.fa-thumbs-up');
+        if (response.status !== 200) throw response
 
-            // Toggle current reaction
-            if (icon.classList.contains(type)) {
-                icon.classList.remove(type);
-                icon.nextElementSibling.textContent = parseInt(icon.nextElementSibling.textContent) - 1;
-            } else {
-                icon.classList.add(type);
-                icon.nextElementSibling.textContent = parseInt(icon.nextElementSibling.textContent) + 1;
+        // Update reaction counts and styles
+        const isLike = type === 'like';
+        const otherIcon = icon.closest('.reactions').querySelector(isLike ? '.fa-thumbs-down' : '.fa-thumbs-up');
 
-                // Remove other reaction if exists
-                if (otherIcon.classList.contains(isLike ? 'dislike' : 'like')) {
-                    otherIcon.classList.remove(isLike ? 'dislike' : 'like');
-                    otherIcon.nextElementSibling.textContent = parseInt(otherIcon.nextElementSibling.textContent) - 1;
-                }
-            }
+        // Toggle current reaction
+        if (icon.classList.contains(type)) {
+            icon.classList.remove(type);
+            icon.nextElementSibling.textContent = parseInt(icon.nextElementSibling.textContent) - 1;
         } else {
-            throw response;
+            icon.classList.add(type);
+            icon.nextElementSibling.textContent = parseInt(icon.nextElementSibling.textContent) + 1;
+
+            // Remove other reaction if exists
+            if (otherIcon.classList.contains(isLike ? 'dislike' : 'like')) {
+                otherIcon.classList.remove(isLike ? 'dislike' : 'like');
+                otherIcon.nextElementSibling.textContent = parseInt(otherIcon.nextElementSibling.textContent) - 1;
+            }
         }
     } catch (error) {
+        console.error(error);
         showErrorPage(error.status, error.message);
     }
 };

@@ -1,4 +1,4 @@
-import { getComments, createComment } from './api.js';
+import { getComments, createComment, getPost } from './api.js';
 import { showErrorPage, formatTime, showNotification, debounce } from './utils.js';
 import { handleReaction } from './feed.js'
 
@@ -7,11 +7,13 @@ let isLoadingComments = false;
 let hasMoreComments = true;
 let postId
 
-export const showPostDetail = async (post) => {
+export const showPostDetail = async (id) => {
+    const post = await loadPostDetail(id);
+    
     currentCommentPage = 1;
     isLoadingComments = false;
     hasMoreComments = true;
-    postId = post.id;    
+    postId = post.id;
 
     const mainContainer = document.querySelector('main');
     mainContainer.innerHTML = /*html*/`
@@ -73,6 +75,18 @@ export const showPostDetail = async (post) => {
     setupCommentScroll();
 };
 
+const loadPostDetail = async (postID) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await getPost(postID, token);
+        if (response.status !== 200) throw response;
+        return response.post;
+    } catch (error) {
+        console.error(error);        
+        showErrorPage(error.status, error.message);
+    }
+}
+
 const loadComments = async () => {
     try {
         const token = localStorage.getItem('token');
@@ -80,6 +94,7 @@ const loadComments = async () => {
         if (response.status !== 200) throw response;
         renderComments(response.comments);
     } catch (error) {
+        console.error(error);        
         showErrorPage(error.status, error.message);
     }
 };
