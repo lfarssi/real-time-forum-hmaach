@@ -111,6 +111,12 @@ export const loadUsers = async () => {
                         <span>${trimString(last_message, 15)}</span>
                         <span>${formatTime(user.last_message.sent_at)}</span>
                     </div>
+                    <div class="typing-indicator-userlist" style="display: none">
+                            <span class="typing-text-userlist"></span>
+                            <div class="typing-dots">
+                                <span>.</span><span>.</span><span>.</span>
+                            </div>
+                    </div>
                 </div>
             `;
 

@@ -107,18 +107,38 @@ const setupMessageForm = () => {
     });
 };
 
-export const showTypingIndicator = (isTyping, username) => {
+export const showTypingInHeaderChat = (isTyping) => {
     const typingIndicator = document.querySelector('.typing-indicator');
-    if (!typingIndicator) return;
     const typingText = document.querySelector('.typing-text');
 
     if (!typingIndicator || !typingText) return;
 
     if (isTyping) {
-        typingText.textContent = `${username} is typing`;
+        typingText.textContent = `is typing`;
+        typingIndicator.style.display = 'flex';
+    } else {
+        typingText.textContent = '';
+        typingIndicator.style.display = 'none';
+
+    }
+};
+
+export const showTypingInUserList = (isTyping, senderID) => {
+    const senderElement = document.querySelector(`.user[data-user-id="${senderID}"]`);
+    console.log(senderElement);
+    const lastMsgElement = senderElement?.querySelector('.last-message');
+    const typingIndicator = senderElement?.querySelector('.typing-indicator-userlist');
+    const typingText = senderElement?.querySelector('.typing-text-userlist');
+
+    if (!typingIndicator || !typingText || !senderElement) return;
+
+    if (isTyping) {
+        typingText.textContent = `is typing`;
+        lastMsgElement.style.display = 'none';
         typingIndicator.style.display = 'flex';
     } else {
         typingIndicator.style.display = 'none';
+        lastMsgElement.style.display = 'flex';
     }
 };
 

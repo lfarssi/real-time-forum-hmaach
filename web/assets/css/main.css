@@ -728,6 +728,7 @@ pre {
 
 .chat-user-info .username {
     font-weight: 600;
+    font-size: 14px;
     letter-spacing: 0.5px;
 }
 
@@ -840,7 +841,15 @@ pre {
     display: none;
     align-items: center;
     gap: 5px;
-    font-size: 14px;
+    font-size: 10px;
+    color: var(--main-green-hover);
+}
+
+.typing-indicator-userlist {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
     color: var(--main-green-hover);
 }
 
@@ -855,8 +864,6 @@ pre {
 
 .typing-dots span {
     animation: typingDot 1.4s infinite;
-    font-size: 20px;
-    line-height: 1;
 }
 
 .typing-dots span:nth-child(2) {

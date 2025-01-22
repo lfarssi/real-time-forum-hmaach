@@ -1,5 +1,5 @@
 import { showNotification, updateUserStatus, trimString } from "./utils.js";
-import { appendMessage, chatID, showTypingIndicator } from './chat.js';
+import { appendMessage, chatID, showTypingInHeaderChat, showTypingInUserList } from './chat.js';
 import { loadUsers } from './layout.js';
 
 let ws
@@ -65,10 +65,11 @@ export const setupWebSocket = () => {
 
 const handleTypingStatus = (data) => {
     const currentChat = document.querySelector('.chat-main');
+    const isTyping = data.type === 'typing-start';
     if (currentChat && data.sender_id === chatID) {
-        const isTyping = data.type === 'typing-start';
-        showTypingIndicator(isTyping, data.sender);
+        showTypingInHeaderChat(isTyping);
     }
+    showTypingInUserList(isTyping, data.sender_id)
 };
 
 export const sendMessage = (receiver, type, message) => {
