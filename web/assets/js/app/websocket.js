@@ -6,7 +6,7 @@ let ws
 
 export const setupWebSocket = () => {
     const token = localStorage.getItem('token');
-    ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
+    ws = new WebSocket(`ws://${window.location.host}/ws?token=${token}`);
 
     ws.onopen = function () {
         console.log('WebSocket is open');
