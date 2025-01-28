@@ -61,11 +61,11 @@ func FetchPosts(userID, limit, page int) ([]Post, error) {
 						post_id, 
 						SUM(reaction = 'like') AS like_count,
 						SUM(reaction = 'dislike') AS dislike_count,
-						MAX(CASE 
-								WHEN user_id = ? AND reaction = 'like' THEN 1
-								WHEN user_id = ? AND reaction = 'dislike' THEN -1
-								ELSE 0 
-							END) AS is_reacted
+						CASE 
+							WHEN SUM(CASE WHEN user_id = ? AND reaction = 'like' THEN 1 ELSE 0 END) > 0 THEN 1
+							WHEN SUM(CASE WHEN user_id = ? AND reaction = 'dislike' THEN 1 ELSE 0 END) > 0 THEN -1
+							ELSE 0 
+						END AS is_reacted
 					FROM post_reactions
 					GROUP BY post_id
 				  ) reactions ON reactions.post_id = p.id
