@@ -1,157 +1,154 @@
--- Insert Users
+-- Insert Users with Moroccan names
 INSERT INTO users (first_name, last_name, nickname, email, age, gender, password) VALUES
-('John', 'Doe', 'user1', 'user1@example.com', 25, 'male', 'password1'),
-('Jane', 'Smith', 'user2', 'user2@example.com', 30, 'female', 'password2'),
-('Alice', 'Johnson', 'user3', 'user3@example.com', 22, 'female', 'password3'),
-('Bob', 'Brown', 'user4', 'user4@example.com', 27, 'male', 'password4'),
-('Charlie', 'Davis', 'user5', 'user5@example.com', 35, 'male', 'password5'),
-('Eve', 'Miller', 'user6', 'user6@example.com', 28, 'female', 'password6'),
-('Frank', 'Wilson', 'user7', 'user7@example.com', 24, 'male', 'password7'),
-('Grace', 'Moore', 'user8', 'user8@example.com', 31, 'female', 'password8'),
-('Hank', 'Taylor', 'user9', 'user9@example.com', 26, 'male', 'password9'),
-('Ivy', 'Anderson', 'user10', 'user10@example.com', 29, 'female', 'password10'),
-('Jack', 'Thomas', 'user11', 'user11@example.com', 32, 'male', 'password11'),
-('Kathy', 'Jackson', 'user12', 'user12@example.com', 33, 'female', 'password12'),
-('Louis', 'White', 'user13', 'user13@example.com', 30, 'male', 'password13'),
-('Mona', 'Harris', 'user14', 'user14@example.com', 34, 'female', 'password14'),
-('Nate', 'Martin', 'user15', 'user15@example.com', 22, 'male', 'password15'),
-('Olivia', 'Thompson', 'user16', 'user16@example.com', 25, 'female', 'password16'),
-('Paul', 'Garcia', 'user17', 'user17@example.com', 29, 'male', 'password17'),
-('Quincy', 'Martinez', 'user18', 'user18@example.com', 36, 'male', 'password18'),
-('Rita', 'Roberts', 'user19', 'user19@example.com', 40, 'female', 'password19'),
-('Sam', 'Walker', 'user20', 'user20@example.com', 41, 'male', 'password20');
+('Youssef', 'Alami', 'youss_alami', 'youssef.alami@email.com', 25, 'male', 'password123'),
+('Fatima', 'Benani', 'fati_bn', 'fatima.benani@email.com', 28, 'female', 'password123'),
+('Hassan', 'Chraibi', 'hassan_ch', 'hassan.chraibi@email.com', 30, 'male', 'password123'),
+('Amina', 'Doukkali', 'amina_dk', 'amina.doukkali@email.com', 22, 'female', 'password123'),
+('Karim', 'El Fassi', 'karim_fassi', 'karim.elfassi@email.com', 35, 'male', 'password123'),
+('Nadia', 'Ghazali', 'nadia_gh', 'nadia.ghazali@email.com', 27, 'female', 'password123'),
+('Mehdi', 'Houssaini', 'mehdi_h', 'mehdi.houssaini@email.com', 31, 'male', 'password123'),
+('Leila', 'Idrissi', 'leila_id', 'leila.idrissi@email.com', 29, 'female', 'password123'),
+('Omar', 'Jalal', 'omar_j', 'omar.jalal@email.com', 33, 'male', 'password123'),
+('Sanaa', 'Kadiri', 'sanaa_k', 'sanaa.kadiri@email.com', 26, 'female', 'password123'),
+('Rachid', 'Lahlou', 'rachid_l', 'rachid.lahlou@email.com', 34, 'male', 'password123'),
+('Salma', 'Mansouri', 'salma_m', 'salma.mansouri@email.com', 24, 'female', 'password123'),
+('Hamza', 'Najjar', 'hamza_n', 'hamza.najjar@email.com', 28, 'male', 'password123'),
+('Zineb', 'Ouazzani', 'zineb_o', 'zineb.ouazzani@email.com', 32, 'female', 'password123'),
+('Adil', 'Qadiri', 'adil_q', 'adil.qadiri@email.com', 29, 'male', 'password123'),
+('Kenza', 'Rachidi', 'kenza_r', 'kenza.rachidi@email.com', 27, 'female', 'password123'),
+('Saad', 'Sbihi', 'saad_s', 'saad.sbihi@email.com', 31, 'male', 'password123'),
+('Houda', 'Tazi', 'houda_t', 'houda.tazi@email.com', 25, 'female', 'password123'),
+('Younes', 'Wahbi', 'younes_w', 'younes.wahbi@email.com', 30, 'male', 'password123'),
+('Meryem', 'Ziani', 'meryem_z', 'meryem.ziani@email.com', 28, 'female', 'password123');
 
--- Insert Posts
 INSERT INTO posts (user_id, title, content) VALUES
-(1, 'Post 1 Title', 'Content of post 1'),
-(2, 'Post 2 Title', 'Content of post 2'),
-(3, 'Post 3 Title', 'Content of post 3'),
-(4, 'Post 4 Title', 'Content of post 4'),
-(5, 'Post 5 Title', 'Content of post 5'),
-(6, 'Post 6 Title', 'Content of post 6'),
-(7, 'Post 7 Title', 'Content of post 7'),
-(8, 'Post 8 Title', 'Content of post 8'),
-(9, 'Post 9 Title', 'Content of post 9'),
-(10, 'Post 10 Title', 'Content of post 10'),
-(11, 'Post 11 Title', 'Content of post 11'),
-(12, 'Post 12 Title', 'Content of post 12'),
-(13, 'Post 13 Title', 'Content of post 13'),
-(14, 'Post 14 Title', 'Content of post 14'),
-(15, 'Post 15 Title', 'Content of post 15'),
-(16, 'Post 16 Title', 'Content of post 16'),
-(17, 'Post 17 Title', 'Content of post 17'),
-(18, 'Post 18 Title', 'Content of post 18'),
-(19, 'Post 19 Title', 'Content of post 19'),
-(20, 'Post 20 Title', 'Content of post 20'),
-(1, 'Post 21 Title', 'Content of post 21'),
-(2, 'Post 22 Title', 'Content of post 22'),
-(3, 'Post 23 Title', 'Content of post 23'),
-(4, 'Post 24 Title', 'Content of post 24'),
-(5, 'Post 25 Title', 'Content of post 25'),
-(6, 'Post 26 Title', 'Content of post 26'),
-(7, 'Post 27 Title', 'Content of post 27'),
-(8, 'Post 28 Title', 'Content of post 28'),
-(9, 'Post 29 Title', 'Content of post 29'),
-(10, 'Post 30 Title', 'Content of post 30'),
-(11, 'Post 31 Title', 'Content of post 31'),
-(12, 'Post 32 Title', 'Content of post 32'),
-(13, 'Post 33 Title', 'Content of post 33'),
-(14, 'Post 34 Title', 'Content of post 34'),
-(15, 'Post 35 Title', 'Content of post 35');
+(1, 'New iPhone 15 Review', 'Just got the new iPhone 15 w bghit nshark m3akom my first impressions! Design zwin bzaf, specially l colors ljdad. Camera incredible, kadir 48MP w night mode phenomenal - jrbt yesterday f casa marina w photos khrjo breathtaking! Battery life awesome, kan b9a m3aya whole day with heavy usage. Face ID faster than previous models. Storage bdit b 256GB which is plenty. Price ghali yes, walkin the upgrade is worth it ila knti photographer wla content creator. Who else jrebha? Share your experience f comments! Ana personally upgraded from iPhone 13 w difference is night and day.'),
 
--- Link Posts with Categories
+(2, 'Match Raja vs Wydad', 'Derby lyoum kan 🔥! Raja 2-1 Wydad. Match of the season! First half kant boring chwiya, walkin second half everything changed! Goal lwal dyal Raja ja f minute 63 from a beautiful free kick. Wydad jawbo quickly b goal f minute 70. Drama kant f last minute when Raja scored the winning goal! Atmosphere f stadium kant incredible - 45,000 fans singing w supporting. Referee made some controversial decisions, especially yellow card f minute 55. Player of the match definitely kan number 10 - controlled midfield completely. Defensive line dyal both teams kant solid. Chno raykom f l match? W who deserved to win? Next derby ghadi tkoun more exciting!'),
+
+(3, 'Business Opportunities f Casa', 'New startup ecosystem f Casablanca is booming! Past year, more than 100 new startups launched f different sectors. Digital transformation kant the main focus, especially f finance w e-commerce. Investment opportunities kaynin especially f tech sector. Ana personally attended 3 startup weekends had lam. Chi had interested f digital marketing collaboration? Looking for partners f new project focused on AI solutions for local businesses. Funding opportunities available through new government initiatives. Networking events happening every month f Technopark. Also, free workshops on business development available online. Experience dyali shows that now is the perfect time to start. Share your business ideas wla success stories f comments!'),
+
+(4, 'Healthy Ftour Ideas', 'Healthy breakfast ideas mjmo3in from nutritionists w fitness experts! Lbid meslou9 (high protein w healthy fats), variety of seasonal fruits (vitamins w antioxidants), w greek yogurt with chia seeds (protein w omega-3). Stay healthy f ramdan with these tips: 1) Always bda b ma w tmr, 2) Avoid deep fried food f shkour, 3) Add protein f kul meal, 4) Keep hydrated bin ftour w shkour. Menu suggestion: Morning: Smoothie with spinach, banana, w almond milk. Afternoon snack: Handful of nuts w dates. Evening: Grilled chicken with quinoa w vegetables. Nutritionist dyalna also recommends portion control w slow eating. Join our healthy eating community on Facebook - daily tips w meal plans available!'),
+
+(5, 'Breaking: New Metro Project', 'Finally! Casablanca announcing new metro lines! Construction ghadi tbda next year with completion estimated f 2027. Project details: 4 main lines covering 76km total, connecting casa port to ain sbaa, and sidi moumen to ain diab. Budget approved: 40 billion dirhams. First phase ghadi covers 25km with 18 stations. Environmental impact study completed with positive results. Expected to reduce traffic by 30%. New job opportunities: 5000 during construction w 1000 permanent positions. Ticketing system ghadi ykun integrated with tramway. Park and ride facilities f major stations. Public consultation starting next month - everyone invited to share feedback. This project ghadi revolutionize transport f casa!'),
+
+(6, 'Tech Tips', 'Best laptops for 2024: Detailed comparison bin MacBook vs Dell XPS. Ana personally kan recommend MacBook Air M2 for these reasons: Battery life incredible (up to 18 hours), performance outstanding especially for creative work, build quality premium bzaf. Price comparison: Base model starts at 13000dh. Dell XPS also mzian with great features: Better port selection, touchscreen option available, more upgradeable. Performance tests: Photoshop - MacBook 25% faster, Video editing - similar performance, Gaming - Dell better option. Students get special discounts on both. Important factors to consider: Budget, primary use, software compatibility. Personal experience: Used both for 6 months, MacBook more reliable for daily tasks.'),
+
+(7, 'Botola Pro Analysis', 'Standings update detail: WAC (38 points), Raja (36 points), w FAR (34 points) leading the table. Last 5 matches analysis: WAC won 4, drew 1; Raja won 3, drew 1, lost 1; FAR improved with 4 wins straight. Top scorers: Benzarti (WAC) - 12 goals, Hadraf (Raja) - 10 goals, Jabrane (FAR) - 9 goals. Upcoming crucial matches: WAC vs FAR next week, Raja facing Olympic Safi. Injury updates: 3 key players out for WAC, Raja recovering their captain. Statistics showing interesting trends: More goals scored f second half, increase in young player participation. Chi predictions for champion? Share your analysis! Also discussing transfer window rumors w potential impact on title race.'),
+
+(8, 'Small Business Success Story', 'How I started my online business mn dar w now employing 10 people! Timeline: Month 1 - Research w planning, Month 2 - Website development, Month 3 - First sales. Initial investment kant 5000dh. Marketing strategy focused on social media w word of mouth. Key challenges: Payment solutions, delivery logistics, customer trust. Solutions: Partnership with local delivery companies, secure payment gateway integration. Tips w tricks for entrepreneurs: 1) Start small w test your market, 2) Focus on customer service, 3) Build strong social media presence, 4) Keep tracking your numbers, 5) Network with other business owners. Revenue growth: 300% f first year. Future plans: Expansion to other cities, new product lines. Free mentoring available for aspiring entrepreneurs - DM for details!'),
+
+(9, 'Mental Health Awareness', 'Depression machi hchoma w its time we normalize seeking help f community dyalna. Signs to watch for: Changes f sleep patterns, loss of interest f activities, constant fatigue. Professional help available: List of certified therapists f major cities. Online counseling options also available. Personal experience: 6 months of therapy helped overcome anxiety. Support groups meeting weekly f Rabat w Casa. Important statistics: 1 in 4 people affected by mental health issues. Resources available: Free helpline 24/7, support groups on Facebook, educational materials f darija. Family support crucial f recovery process. Tips for mental wellness: Regular exercise, healthy diet, adequate sleep, meditation. Remember: Mental health is just as important as physical health.'),
+
+(10, 'Local News Update', 'New cultural center f Rabat opening next week! Location: Hay Riad, 3000 square meters. Facilities include: Theater (500 seats), art galleries, music studios, workshop spaces. Opening event features: Live music from local artists, art exhibitions, traditional crafts display. Free workshops first month: Photography, painting, traditional music. Registration mftuha for all ages. Parking available for 200 cars. Monthly membership: 200dh, student discount available. Special programs for children during weekends. Partnership with international cultural institutions. Evening events planned: Weekly concerts, monthly film screenings, poetry nights. Job opportunities available - check website for details. Cultural exchange programs starting next month.'),
+
+(11, 'AI Development in Morocco', 'Morocco investing heavily f artificial intelligence! New training centers f Casa, Rabat, w Marrakech. Partnership with international tech companies confirmed. Programs available: Machine Learning, Data Science, AI Applications. Duration: 6 months to 2 years. Job placement assistance included. Success rate of previous programs: 85% employment after graduation. Industry partners include major banks w telecom companies. Research opportunities available for students. Government funding allocated: 500 million dirhams over 5 years. Focus areas: Healthcare AI applications, Smart agriculture, Financial technology. Scholarship opportunities available for talented students. Online courses also available - starting next month. Future projects include AI research lab f Technopark.'),
+
+(12, 'Women''s Football Tournament', 'National women''s team qualified for major tournament! Historic moment for Moroccan sports. Team statistics: Won 6 out of 7 qualification matches, scored 15 goals, conceded only 3. Star player scored 7 goals f qualifiers. Training camp starting next month f Maamoura. New facilities dedicated to women''s football development. Youth program expanded to include 12 cities. Sponsorship deals announced with major brands. Tournament preparation includes friendly matches against top teams. Coach interview: "Team spirit w dedication was key to success." Fan support growing - last match attended by 20,000 supporters. Live broadcast confirmed for all tournament matches. Special fan zones planned f major cities.'),
+
+(13, 'Startup Funding News', 'Moroccan startups raised 50M USD this year! Breakdown by sector: Fintech 40%, E-commerce 30%, Health-tech 20%, Others 10%. Success stories include 3 major exits. Investor interest from Europe w Gulf increasing. Local venture capital funds launched new programs. Government incentives announced for tech startups. Average funding round size doubled compared to last year. Success factors identified: Strong team, clear market need, scalable solution. Entrepreneurship scene growing fast with new incubators opening. Application process for next funding cycle starting soon. Mentorship programs available for early-stage startups. International partnerships creating new opportunities. Future outlook very positive for Moroccan startup ecosystem.'),
+
+(14, 'Covid Update', 'New health guidelines announced today. Latest statistics: Cases stable, vaccination rate at 75%. New vaccination centers locations updated f website. Booster shots available for eligible groups. Prevention measures: Regular hand washing, mask f crowded places, social distancing when possible. Travel requirements updated - check official website. Testing facilities available 24/7 f major hospitals. Mobile vaccination units serving rural areas. Online appointment system improved. Recovery rate remains high at 98%. Mental health support available for affected families. Economic support programs continuing for affected businesses. Keep safe w stay healthy by following guidelines.'),
+
+(15, 'Tech Event in Tangier', 'Digital transformation conference coming to Tangier next month! Three-day event featuring international speakers. Topics covered: Cloud Computing, Cybersecurity, Digital Marketing, AI Applications. Workshops available in English w French. Networking opportunities with industry leaders. Exhibition area for tech companies. Student discount available - 50% off regular price. Early bird registration closing next week. Online streaming option available. Certificate of participation provided. Job fair organized on final day. Major tech companies confirmed attendance. Schedule includes hands-on training sessions. Register now - limited seats available!'),
+
+(16, 'Sports Academy Opening', 'New sports academy f Marrakech! Facilities include: Olympic-size swimming pool, football fields, tennis courts, indoor gymnasium. Professional coaches from Morocco w abroad. Programs for all ages w skill levels. Special focus on youth development. Partnership with European clubs confirmed. Scholarship opportunities for talented athletes. Training programs in multiple sports. Modern equipment w facilities. Registration mftuha - special opening rates available. Summer camps planned. Transportation provided from city center. Medical staff on site. Regular tournaments w competitions organized. Join now w start your sports journey!'),
+
+(17, 'E-commerce Growth', 'Online shopping trends f Morocco 2024 showing explosive growth! Statistics: 70% increase f online transactions, 2 million new online shoppers. Local brands going digital - success stories w challenges. Popular categories: Fashion, Electronics, Home goods. Mobile shopping dominating with 80% of transactions. Payment methods: Cards, Mobile money, Cash on delivery. Customer behavior analysis: Peak shopping hours, popular products. Security measures implemented by major platforms. Delivery networks expanding to rural areas. International brands entering market. Future predictions: Continued growth, new technologies adoption. Consumer protection measures strengthened. Tips for online shopping safety.'),
+
+(18, 'Fitness Challenge', '30-day fitness challenge designed by professional coaches! Daily workout plans for all levels. Nutrition guide included. Online support group for motivation. Before w after tracking system. Prizes for top performers. Weekly live sessions with trainers. Customized plans for different goals. Equipment needed: Basic home exercise kit. Progress tracking through dedicated app. Expert advice available 24/7. Success stories from previous challenges. Join our community w stay motivated throughout your fitness journey! Healthy recipes included. Special focus on sustainable lifestyle changes.'),
+
+(19, 'Economic News', 'Morocco''s economy showing strong recovery! GDP growth exceeding expectations. Key sectors: Tourism, Manufacturing, Agriculture. Foreign investment increasing - new projects announced. Job market improving with new opportunities. Export numbers up by 25%. Tourism recovery: 80% of pre-pandemic levels. Manufacturing sector expansion creating jobs. Agricultural exports breaking records. Banking sector introducing new services. Real estate market stabilizing. Small business support programs launched. Future outlook positive with sustained growth expected. International partnerships strengthening. Development projects on track.'),
+
+(20, 'Smart City Projects', 'Smart city initiatives transforming major cities! Projects include: Smart parking, Public WiFi, Waste management systems. Implementation timeline: 2024-2026. Budget allocated: 2 billion dirhams. Environmental impact: 30% reduction in energy usage expected. Traffic management systems reducing congestion. Smart lighting saving energy costs. Digital services for citizens expanding. Mobile app launching next month. Public transportation integration planned. Security cameras with AI capabilities. Smart water management reducing waste. Citizen feedback system implemented. Future phases including more services. Technology transforming urban life for better!');
+
+-- Insert Posts Categories (some posts in multiple categories)
 INSERT INTO posts_categories (post_id, category_id) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
-(6, 1), (7, 2), (8, 3), (9, 4), (10, 5),
-(11, 1), (12, 2), (13, 3), (14, 4), (15, 5),
-(16, 1), (17, 2), (18, 3), (19, 4), (20, 5),
-(21, 1), (22, 2), (23, 3), (24, 4), (25, 5),
-(26, 1), (27, 2), (28, 3), (29, 4), (30, 5),
-(31, 1), (32, 2), (33, 3), (34, 4), (35, 5);
+(1, 1), -- Technology
+(2, 2), -- Sport
+(3, 3), -- Business
+(4, 4), -- Health
+(5, 5), -- News
+(6, 1), (6, 3), -- Tech & Business
+(7, 2), (7, 5), -- Sport & News
+(8, 3), -- Business
+(9, 4), (9, 5), -- Health & News
+(10, 5), -- News
+(11, 1), (11, 3), -- Tech & Business
+(12, 2), (12, 5), -- Sport & News
+(13, 3), (13, 5), -- Business & News
+(14, 4), (14, 5), -- Health & News
+(15, 1), (15, 3), -- Tech & Business
+(16, 2), (16, 4), -- Sport & Health
+(17, 1), (17, 3), -- Tech & Business
+(18, 2), (18, 4), -- Sport & Health
+(19, 3), (19, 5), -- Business & News
+(20, 1), (20, 5); -- Tech & News
 
--- Insert Comments
+-- Insert Comments (50 comments across different posts)
 INSERT INTO comments (user_id, post_id, content) VALUES
-(1, 1, 'Additional Comment 1 on Post 1'),
-(2, 1, 'Additional Comment 2 on Post 1'),
-(3, 1, 'Additional Comment 3 on Post 1'),
-(4, 1, 'Additional Comment 4 on Post 1'),
-(5, 1, 'Additional Comment 5 on Post 1'),
-(6, 1, 'Additional Comment 6 on Post 1'),
-(7, 1, 'Additional Comment 7 on Post 1'),
-(8, 1, 'Additional Comment 8 on Post 1'),
-(9, 1, 'Additional Comment 9 on Post 1'),
-(10, 1, 'Additional Comment 10 on Post 1'),
-(11, 1, 'Additional Comment 11 on Post 1'),
-(12, 1, 'Additional Comment 12 on Post 1'),
-(13, 1, 'Additional Comment 13 on Post 1'),
-(14, 1, 'Additional Comment 14 on Post 1'),
-(15, 1, 'Additional Comment 15 on Post 1'),
-(16, 1, 'Additional Comment 16 on Post 1'),
-(17, 1, 'Additional Comment 17 on Post 1'),
-(18, 1, 'Additional Comment 18 on Post 1'),
-(19, 1, 'Additional Comment 19 on Post 1'),
-(20, 1, 'Additional Comment 20 on Post 1'),
-(20, 1, 'Additional Comment 21 on Post 1'),
-(20, 1, 'Additional Comment 22 on Post 1'),
-(20, 1, 'Additional Comment 23 on Post 1'),
-(20, 1, 'Additional Comment 24 on Post 1'),
-(20, 1, 'Additional Comment 25 on Post 1'),
+-- Technology post comments
+(2, 1, 'Camera quality ra7t incredible! Worth the upgrade'),
+(3, 1, 'Price ghali bzaf though...'),
+(4, 1, 'Battery life is amazing compared to iPhone 14'),
+(5, 1, 'Can you post some sample photos?'),
 
-(1, 2, 'Additional Comment 1 on Post 2'),
-(2, 2, 'Additional Comment 2 on Post 2'),
-(3, 2, 'Additional Comment 3 on Post 2'),
-(4, 2, 'Additional Comment 4 on Post 2'),
-(5, 2, 'Additional Comment 5 on Post 2'),
-(6, 2, 'Additional Comment 6 on Post 2'),
-(7, 2, 'Additional Comment 7 on Post 2'),
-(8, 2, 'Additional Comment 8 on Post 2'),
-(9, 2, 'Additional Comment 9 on Post 2'),
-(10, 2, 'Additional Comment 10 on Post 2'),
-(11, 2, 'Additional Comment 11 on Post 2'),
-(12, 2, 'Additional Comment 12 on Post 2'),
-(13, 2, 'Additional Comment 13 on Post 2'),
-(14, 2, 'Additional Comment 14 on Post 2'),
-(15, 2, 'Additional Comment 15 on Post 2'),
-(16, 2, 'Additional Comment 16 on Post 2'),
-(17, 2, 'Additional Comment 17 on Post 2'),
-(18, 2, 'Additional Comment 18 on Post 2'),
-(19, 2, 'Additional Comment 19 on Post 2'),
-(20, 2, 'Additional Comment 20 on Post 2'),
-(20, 2, 'Additional Comment 21 on Post 2'),
-(20, 2, 'Additional Comment 22 on Post 2'),
-(20, 2, 'Additional Comment 23 on Post 2'),
-(20, 2, 'Additional Comment 24 on Post 2'),
-(20, 2, 'Additional Comment 25 on Post 2');
+-- Sports post comments
+(6, 2, 'Match of the year! Raja played beautifully'),
+(7, 2, 'Referee decisions kant questionable'),
+(8, 2, 'Atmosphere f l3arena kant incredible'),
+(9, 2, 'Next derby ghadi tkoun more exciting'),
 
--- Insert conversation messages between user 21 and 22
-INSERT INTO messages (sender, receiver, message, sent_at) VALUES
-(1, 2, 'Salam, labas 3lik?', '2024-01-14 10:15:23'),
-(2, 1, 'Hamdullah labas, nta labas?', '2024-01-14 10:16:45'),
-(1, 2, 'Hamdullah kulshi mzyan. Chno ka dir lyoum?', '2024-01-14 10:17:30'),
-(2, 1, 'Ghadi n5dem chwiya, nta?', '2024-01-14 10:18:12'),
-(1, 2, 'Ana ghadi nemchi l cafe m3a sahbi', '2024-01-14 10:20:45'),
-(2, 1, 'Zwin, fine ghadi temchiw?', '2024-01-14 10:22:18'),
-(1, 2, 'L cafe ljdid li f wast lmdina', '2024-01-14 10:23:05'),
-(2, 1, 'Ah zwin hadak! Chrbto fih atay zwin', '2024-01-14 10:25:30'),
-(1, 2, 'Wach bghiti tji m3ana?', '2024-01-14 10:26:15'),
-(2, 1, 'La choukran, 3endi bezaf l5edma lyoum', '2024-01-14 10:27:45'),
-(1, 2, 'Merra jaya inchallah', '2024-01-14 14:35:20'),
-(2, 1, 'Kifach kan lqhwa?', '2024-01-14 16:40:12'),
-(1, 2, 'Kant mzyana bzaf, w latay kan bnin', '2024-01-14 16:42:33'),
-(2, 1, 'Zwin, khasni nemchi ana shi nhar', '2024-01-14 16:45:18'),
-(1, 2, 'Wach 3ndek plans ghedda?', '2024-01-14 20:15:45'),
-(2, 1, 'La mazal, 3lach?', '2024-01-14 20:17:22'),
-(1, 2, 'Yallah nemchiw njerboh?', '2024-01-14 20:18:55'),
-(2, 1, 'Wah mttafq, ach men sa3a?', '2024-01-14 20:20:30'),
-(1, 2, 'Ki ghadi lik f 4?', '2024-01-14 20:21:15'),
-(2, 1, 'Mzyan, ana mttafq', '2024-01-14 20:22:40'),
-(1, 2, 'Safi ghada nltaqaw temma', '2024-01-14 20:23:18'),
-(2, 1, 'Safi mttafqin', '2024-01-14 20:24:05'),
-(1, 2, 'Sbah l5ir, mazal mttafq l lyoum?', '2024-01-15 09:10:23'),
-(2, 1, 'Wah akid, mazal ghadin', '2024-01-15 09:12:45'),
-(1, 2, 'Mzyan, ana ghadi nkoun temma f 4 bdbt', '2024-01-15 09:15:30'),
-(2, 1, 'Ok, ana tan ghadi nkoun f lwa9t', '2024-01-15 09:17:18'),
-(1, 2, 'Perfect, hta lmcha', '2024-01-15 09:18:25'),
-(2, 1, 'Hta lmcha', '2024-01-15 09:19:10'),
-(1, 2, 'Ana wselt l cafe, fin nti?', '2024-01-15 16:00:05'),
-(2, 1, 'F tri9 jay, wselt f 5 dqayq', '2024-01-15 16:01:30');
+-- Business post comments
+(10, 3, 'Interested f collaboration! DM me details'),
+(11, 3, 'Startup scene really improving f Casa'),
+(12, 3, 'We need more investors though'),
+(13, 3, 'Can you share more about digital marketing opportunities?'),
+
+-- Comments for other posts...
+(14, 4, 'Great healthy ideas! Ana zdt smoothies for energy'),
+(15, 5, 'Finally! Transportation f Casa needs this'),
+(16, 6, 'MacBook definitely worth it for developers'),
+(17, 7, 'WAC deserves the lead this season'),
+(18, 8, 'Very inspiring! Keep up the good work'),
+(19, 9, 'Important topic, thank you for bringing awareness'),
+(20, 10, 'Cultural events are exactly what we need'),
+(1, 11, 'AI is the future, glad Morocco is investing'),
+(2, 12, 'So proud of our women''s team!'),
+(3, 13, 'Great news for the startup ecosystem'),
+(4, 14, 'Health guidelines are very clear, thanks'),
+(5, 15, 'Will definitely attend the conference'),
+(6, 16, 'Great initiative for young athletes'),
+(7, 17, 'Online shopping really improved this year'),
+(8, 18, 'Joined the challenge! Let''s do this'),
+(9, 19, 'Economy looking strong for 2024'),
+(10, 20, 'Smart cities initiative is impressive');
+
+-- Insert Post Reactions (100 reactions across different posts)
+INSERT INTO post_reactions (user_id, post_id, reaction) VALUES
+-- Technology post reactions
+(1, 1, 'like'), (2, 1, 'like'), (3, 1, 'like'), (4, 1, 'dislike'), (5, 1, 'like'),
+-- Sports post reactions
+(6, 2, 'like'), (7, 2, 'like'), (8, 2, 'like'), (9, 2, 'like'), (10, 2, 'dislike'),
+-- Business post reactions
+(11, 3, 'like'), (12, 3, 'like'), (13, 3, 'like'), (14, 3, 'like'), (15, 3, 'like'),
+-- Health post reactions
+(16, 4, 'like'), (17, 4, 'like'), (18, 4, 'dislike'), (19, 4, 'like'), (20, 4, 'like'),
+-- News post reactions
+(1, 5, 'like'), (2, 5, 'like'), (3, 5, 'like'), (4, 5, 'like'), (5, 5, 'dislike'),
+-- Additional reactions for various posts
+(6, 6, 'like'), (7, 6, 'like'), (8, 6, 'like'), (9, 6, 'like'), (10, 6, 'like'),
+(11, 7, 'like'), (12, 7, 'dislike'), (13, 7, 'like'), (14, 7, 'like'), (15, 7, 'like'),
+(16, 8, 'like'), (17, 8, 'like'), (18, 8, 'like'), (19, 8, 'dislike'), (20, 8, 'like'),
+(1, 9, 'like'), (2, 9, 'like'), (3, 9, 'like'), (4, 9, 'like'), (5, 9, 'like'),
+(6, 10, 'like'), (7, 10, 'dislike'), (8, 10, 'like'), (9, 10, 'like'), (10, 10, 'like'),
+(11, 11, 'like'), (12, 11, 'like'), (13, 11, 'like'), (14, 11, 'dislike'), (15, 11, 'like'),
+(16, 12, 'like'), (17, 12, 'like'), (18, 12, 'like'), (19, 12, 'like'), (20, 12, 'like'),
+(1, 13, 'like'), (2, 13, 'dislike'), (3, 13, 'like'), (4, 13, 'like'), (5, 13, 'like'),
+(6, 14, 'like'), (7, 14, 'like'), (8, 14, 'like'), (9, 14, 'dislike'), (10, 14, 'like'),
+(11, 15, 'like'), (12, 15, 'like'), (13, 15, 'like'), (14, 15, 'like'), (15, 15, 'like'),
+(16, 16, 'like'), (17, 16, 'dislike'), (18, 16, 'like'), (19, 16, 'like'), (20, 16, 'like'),
+(1, 17, 'like'), (2, 17, 'like'), (3, 17, 'like'), (4, 17, 'dislike'), (5, 17, 'like'),
+(6, 18, 'like'), (7, 18, 'like'), (8, 18, 'like'), (9, 18, 'like'), (10, 18, 'like'),
+(11, 19, 'like'), (12, 19, 'dislike'), (13, 19, 'like'), (14, 19, 'like'), (15, 19, 'like'),
+(16, 20, 'like'), (17, 20, 'like'), (18, 20, 'like'), (19, 20, 'dislike'), (20, 20, 'like');
