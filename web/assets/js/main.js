@@ -1,7 +1,7 @@
 import { showAuth } from './app/auth.js';
 import { showFeed } from './app/feed.js';
 import { setupLayout } from './app/layout.js';
-import { showErrorPage } from './app/utils.js';
+import { showErrorPage, showInfomessage } from './app/utils.js';
 import { setupWebSocket } from './app/websocket.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,6 +19,7 @@ export const handleLoading = () => {
     if (user && token) {
         setupWebSocket();
         setupLayout();
+        showInfomessage();
         showFeed(user);
     } else {
         localStorage.removeItem("user");

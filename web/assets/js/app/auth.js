@@ -1,7 +1,7 @@
 import { authUser, logoutUser } from './api.js'
 import { showFeed } from './feed.js';
 import { setupLayout } from './layout.js';
-import { getFormData, showErrorPage } from './utils.js'
+import { getFormData, showErrorPage, showInfomessage } from './utils.js'
 import { closeWebsocket, setupWebSocket } from './websocket.js';
 
 export const showAuth = () => {
@@ -86,6 +86,7 @@ const FormSubmission = () => {
                     localStorage.setItem("token", response.token);
                     setupWebSocket();
                     setupLayout();
+                    showInfomessage()
                     showFeed();
                 } else {
                     throw response;

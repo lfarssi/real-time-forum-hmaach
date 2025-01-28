@@ -181,3 +181,29 @@ export const debounce = (func, delay) => {
         timer = setTimeout(() => func(...args), delay)
     }
 }
+
+// tell him that its just a demo version with demo data and the posts and comments that he will create it will be inserted to the data base but not shown in the feed cause of the content and curs words, tell the user is he found an error or has feedback to post it and the developpemnt team will look in it and make the message short as possible .the card must be with styel based on what I will give you
+export const showInfomessage = () => {
+    const container = document.createElement('div')
+    container.classList.add('info-message');
+    container.innerHTML = /*html*/`
+        <div class="info-message-content">
+          <p class="info-message-text">
+            This is a demo version with sample data. 
+            Posts and comments you create will be stored but may not appear in the feed due to content filtering. 
+            If you found a bug or have feedback? Please report it by posting it - our dev team will review it!
+          </p>
+          <button
+            id="confirm"
+            class="info-message-button"
+          >
+            Got it
+          </button>
+        </div>
+    `;
+    document.body.appendChild(container);
+
+    document.getElementById("confirm")?.addEventListener("click", () => {
+        container.remove();
+    });
+}
