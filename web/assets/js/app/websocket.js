@@ -6,9 +6,9 @@ let ws
 
 export const setupWebSocket = () => {
     const token = localStorage.getItem('token');
-    
+
     // Check if the environment is local or production (Heroku)
-    const protocol = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'ws' : 'wss';
+    const protocol = window.location.protocol === "http:" ? 'ws' : 'wss';
 
     // Use the correct protocol based on the environment
     ws = new WebSocket(`${protocol}://${window.location.host}/ws?token=${token}`);

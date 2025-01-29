@@ -774,7 +774,7 @@ pre {
     border: 1px solid var(--card-border);
     border-radius: 15px;
     overflow: hidden;
-    height: 97%;
+    height: 85vh;
 }
 
 .chat-header {
@@ -964,6 +964,10 @@ pre {
 
     .message-input-container button {
         padding: 0 15px;
+    }
+
+    .chat-main {
+        height: 80vh;
     }
 }
 

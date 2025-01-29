@@ -8,10 +8,10 @@ import (
 type RegistrationRequest struct {
 	FirstName string
 	LastName  string
-	Email     string
 	Nickname  string
-	Gender    string
+	Email     string
 	Age       int
+	Gender    string
 	Password  string
 }
 

@@ -62,17 +62,34 @@ func CreateTables() error {
 
 // CreateDemoData generates and inserts fake data into the database
 func CreateDemoData() error {
-	// Insert two users
-	if err := InsertUser(DB,1, "Hamza", "Maach", "hamza123", "hamza@example.com", "male", "123456789"); err != nil {
-		log.Println(err)
+	users := []RegistrationRequest{
+		{"Hamza", "Maach", "hmaach", "hmaach@email.com", 25, "male", "123456789"},
+		{"Mohammed", "Elfarssi", "melfarss", "melfarss@email.com", 28, "male", "123456789"},
+		{"Fahd", "Agnouz", "fagnou", "fagnou@email.com", 30, "male", "123456789"},
+		{"Yassine", "Elmach", "yelmach", "yelmach@email.com", 22, "male", "123456789"},
+		{"Karim", "El Fassi", "karim_fassi", "karim.elfassi@email.com", 35, "male", "123456789"},
+		{"Nadia", "Ghazali", "nadia_gh", "nadia.ghazali@email.com", 27, "female", "123456789"},
+		{"Mehdi", "Houssaini", "mehdi_h", "mehdi.houssaini@email.com", 31, "male", "123456789"},
+		{"Leila", "Idrissi", "leila_id", "leila.idrissi@email.com", 29, "female", "123456789"},
+		{"Omar", "Jalal", "omar_j", "omar.jalal@email.com", 33, "male", "123456789"},
+		{"Sanaa", "Kadiri", "sanaa_k", "sanaa.kadiri@email.com", 26, "female", "123456789"},
+		{"Rachid", "Lahlou", "rachid_l", "rachid.lahlou@email.com", 34, "male", "123456789"},
+		{"Salma", "Mansouri", "salma_m", "salma.mansouri@email.com", 24, "female", "123456789"},
+		{"Hamza", "Najjar", "hamza_n", "hamza.najjar@email.com", 28, "male", "123456789"},
+		{"Zineb", "Ouazzani", "zineb_o", "zineb.ouazzani@email.com", 32, "female", "123456789"},
+		{"Adil", "Qadiri", "adil_q", "adil.qadiri@email.com", 29, "male", "123456789"},
+		{"Kenza", "Rachidi", "kenza_r", "kenza.rachidi@email.com", 27, "female", "123456789"},
+		{"Saad", "Sbihi", "saad_s", "saad.sbihi@email.com", 31, "male", "123456789"},
+		{"Houda", "Tazi", "houda_t", "houda.tazi@email.com", 25, "female", "123456789"},
+		{"Younes", "Wahbi", "younes_w", "younes.wahbi@email.com", 30, "male", "123456789"},
+		{"Meryem", "Ziani", "meryem_z", "meryem.ziani@email.com", 28, "female", "123456789"},
 	}
+	
 
-	if err := InsertUser(DB, 2, "Sarah", "Doe", "sarah123", "sarah@example.com", "female", "123456789"); err != nil {
-		log.Println(err)
-	}
-
-	if err := InsertUser(DB, 3, "Yassine", "Elmach", "yassine123", "yassine@example.com", "male", "123456789"); err != nil {
-		log.Println(err)
+	for _, user := range users {
+		if err := InsertUser(user); err != nil {
+			log.Println(err)
+		}
 	}
 
 	content, err := os.ReadFile(seedPath)
@@ -89,17 +106,16 @@ func CreateDemoData() error {
 }
 
 // InsertUser inserts a user into the users table
-func InsertUser(db *sql.DB, id int, firstName, lastName, nickname, email, gender, password string) error {
+func InsertUser(user RegistrationRequest) error {
 	// Hash the password before inserting
-	hashedPassword, err := utils.HashPassword(password)
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return fmt.Errorf("could not hash password: %v", err)
 	}
 
-	// Prepare the SQL query
-	query := `INSERT INTO users (id, first_name, last_name, nickname, email, age, gender, password) 
-			  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	_, err = db.Exec(query, id, firstName, lastName, nickname, email, 30, gender, hashedPassword)
+	query := `INSERT INTO users (first_name, last_name, nickname, email, age, gender, password) 
+			  VALUES (?, ?, ?, ?, ?, ?, ?)`
+	_, err = DB.Exec(query, user.FirstName, user.LastName, user.Nickname, user.Email, user.Age, user.Gender, hashedPassword)
 	if err != nil {
 		return fmt.Errorf("could not insert user: %v", err)
 	}

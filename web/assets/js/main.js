@@ -15,12 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
 export const handleLoading = () => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const token = localStorage.getItem("token");
+    const userInformed = localStorage.getItem("user-informed");
 
     if (user && token) {
         setupWebSocket();
         setupLayout();
-        showInfomessage();
         showFeed(user);
+        if (!userInformed) showInfomessage();
     } else {
         localStorage.removeItem("user");
         localStorage.removeItem("token");

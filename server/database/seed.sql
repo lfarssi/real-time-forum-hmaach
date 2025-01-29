@@ -1,28 +1,5 @@
--- Insert Users with Moroccan names
-INSERT INTO users (first_name, last_name, nickname, email, age, gender, password) VALUES
-('Youssef', 'Alami', 'youss_alami', 'youssef.alami@email.com', 25, 'male', 'password123'),
-('Fatima', 'Benani', 'fati_bn', 'fatima.benani@email.com', 28, 'female', 'password123'),
-('Hassan', 'Chraibi', 'hassan_ch', 'hassan.chraibi@email.com', 30, 'male', 'password123'),
-('Amina', 'Doukkali', 'amina_dk', 'amina.doukkali@email.com', 22, 'female', 'password123'),
-('Karim', 'El Fassi', 'karim_fassi', 'karim.elfassi@email.com', 35, 'male', 'password123'),
-('Nadia', 'Ghazali', 'nadia_gh', 'nadia.ghazali@email.com', 27, 'female', 'password123'),
-('Mehdi', 'Houssaini', 'mehdi_h', 'mehdi.houssaini@email.com', 31, 'male', 'password123'),
-('Leila', 'Idrissi', 'leila_id', 'leila.idrissi@email.com', 29, 'female', 'password123'),
-('Omar', 'Jalal', 'omar_j', 'omar.jalal@email.com', 33, 'male', 'password123'),
-('Sanaa', 'Kadiri', 'sanaa_k', 'sanaa.kadiri@email.com', 26, 'female', 'password123'),
-('Rachid', 'Lahlou', 'rachid_l', 'rachid.lahlou@email.com', 34, 'male', 'password123'),
-('Salma', 'Mansouri', 'salma_m', 'salma.mansouri@email.com', 24, 'female', 'password123'),
-('Hamza', 'Najjar', 'hamza_n', 'hamza.najjar@email.com', 28, 'male', 'password123'),
-('Zineb', 'Ouazzani', 'zineb_o', 'zineb.ouazzani@email.com', 32, 'female', 'password123'),
-('Adil', 'Qadiri', 'adil_q', 'adil.qadiri@email.com', 29, 'male', 'password123'),
-('Kenza', 'Rachidi', 'kenza_r', 'kenza.rachidi@email.com', 27, 'female', 'password123'),
-('Saad', 'Sbihi', 'saad_s', 'saad.sbihi@email.com', 31, 'male', 'password123'),
-('Houda', 'Tazi', 'houda_t', 'houda.tazi@email.com', 25, 'female', 'password123'),
-('Younes', 'Wahbi', 'younes_w', 'younes.wahbi@email.com', 30, 'male', 'password123'),
-('Meryem', 'Ziani', 'meryem_z', 'meryem.ziani@email.com', 28, 'female', 'password123');
-
 INSERT INTO posts (user_id, hidden, title, content) VALUES
-(1, 0, 'Zone 01 Oujda: Empowering the Future of Technology', 'Zone 01 Oujda is a cutting-edge coding education center located in northeastern Morocco. Opened in 2024, it offers a transformative program designed to equip individuals with in-demand digital skills. The center’s curriculum spans 18 months, during which students work on over 60 projects, learning programming languages like JavaScript, Go, Python, and more. What makes Zone 01 unique is its hands-on, peer-driven learning approach and its 24/7 access to the campus, fostering an environment of collaboration and innovation. With a focus on youth empowerment, Zone 01 guarantees employment for its graduates, ensuring a smooth transition into the tech industry. This initiative is part of Morocco’s broader push to enhance digital literacy and create opportunities for economic growth. Zone 01 Oujda is not just a learning space—it’s a community dedicated to shaping the future of technology in Morocco!'),
+(1, 0, 'Zone 01 Oujda: Empowering the Future of Technology', 'Zone 01 Oujda is a cutting-edge coding education center located in Oujda, Morocco. Opened in 2024, it offers a transformative program designed to equip individuals with in-demand digital skills. The center’s curriculum spans 18 months, during which students work on over 60 projects, learning programming languages like GO, JavaScript, Rust, and more. What makes Zone 01 Oujda unique is its hands-on, peer-driven learning approach and its 24/7 access to the campus, fostering an environment of collaboration and innovation. With a focus on youth empowerment, Zone 01 guarantees employment for its graduates, ensuring a smooth transition into the tech industry. This initiative is part of Morocco’s broader push to enhance digital literacy and create opportunities for economic growth. Zone 01 Oujda is not just a learning space—it’s a community dedicated to shaping the future of technology in Morocco!'),
 (11, 0, 'Berkane is the best city in the world', 'Berkane, a charming city in northeastern Morocco, is known for its welcoming people, rich history, and beautiful landscapes. Nestled between the Mediterranean coast and the Atlas Mountains, it offers a unique blend of urban life and nature. The vibrant culture, delicious local cuisine, and historic sites make Berkane a must-visit. Whether you’re exploring the bustling souks or relaxing in the serene countryside, Berkane has something for everyone. Truly, it’s one of the hidden gems of Morocco!'),
 (2, 0, 'Match Raja vs Wydad', 'Derby lyoum kan 🔥! Raja 2-1 Wydad. Match of the season! First half kant boring chwiya, walkin second half everything changed! Goal lwal dyal Raja ja f minute 63 from a beautiful free kick. Wydad jawbo quickly b goal f minute 70. Drama kant f last minute when Raja scored the winning goal! Atmosphere f stadium kant incredible - 45,000 fans singing w supporting. Referee made some controversial decisions, especially yellow card f minute 55. Player of the match definitely kan number 10 - controlled midfield completely. Defensive line dyal both teams kant solid. Chno raykom f l match? W who deserved to win? Next derby ghadi tkoun more exciting!'),
 (3, 0, 'Business Opportunities f Casa', 'New startup ecosystem f Casablanca is booming! Past year, more than 100 new startups launched f different sectors. Digital transformation kant the main focus, especially f finance w e-commerce. Investment opportunities kaynin especially f tech sector. Ana personally attended 3 startup weekends had lam. Chi had interested f digital marketing collaboration? Looking for partners f new project focused on AI solutions for local businesses. Funding opportunities available through new government initiatives. Networking events happening every month f Technopark. Also, free workshops on business development available online. Experience dyali shows that now is the perfect time to start. Share your business ideas wla success stories f comments!'),
