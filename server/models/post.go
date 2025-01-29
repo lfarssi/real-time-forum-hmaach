@@ -74,6 +74,7 @@ func FetchPosts(userID, limit, page int) ([]Post, error) {
 					FROM comments
 					GROUP BY post_id
 				  ) comments ON comments.post_id = p.id
+		WHERE p.hidden = 0
 		ORDER BY p.created_at DESC
 		LIMIT ? OFFSET ?;`
 

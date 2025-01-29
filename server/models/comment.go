@@ -36,7 +36,7 @@ func FetchCommentsByPostID(postID, limit, page int) ([]Comment, error) {
 		comments c
 	INNER JOIN users u 	ON c.user_id = u.id
 	WHERE
-		c.post_id = ?
+		c.post_id = ? AND c.hidden = 0 
 	ORDER BY
 		c.created_at DESC
 	LIMIT ? OFFSET ?;

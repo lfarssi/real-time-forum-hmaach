@@ -138,7 +138,7 @@ const setupCommentScroll = () => {
     const main = document.querySelector('main')
     const scrollCommentFunc = debounce(async () => {
         if (isLoadingComments || !hasMoreComments) return;
-        console.log(main.scrollHeight, main.clientHeight, main.scrollTop);
+        // console.log(main.scrollHeight, main.clientHeight, main.scrollTop);
         
         // Load more when scrolled near bottom (100px threshold)
         if (main.scrollHeight - (main.clientHeight + main.scrollTop) <= 100) {

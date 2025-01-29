@@ -188,17 +188,15 @@ export const showInfomessage = () => {
     container.classList.add('info-message');
     container.innerHTML = /*html*/`
         <div class="info-message-content">
-          <p class="info-message-text">
-            This is a demo version with sample data. 
-            Posts and comments you create will be stored but may not appear in the feed due to content filtering. 
-            If you found a bug or have feedback? Please report it by posting it - our dev team will review it!
-          </p>
-          <button
-            id="confirm"
-            class="info-message-button"
-          >
-            Got it
-          </button>
+            <p class="info-message-text">
+                This is a demo version with demo data. Posts and comments you create will be saved in the database, but they won't appear in the feed due to content filters. If you encounter an error or have feedback, please submit it, and the development team will review it.
+            </p>
+            <button
+                id="confirm"
+                class="info-message-button"
+            >
+                Got it
+            </button>
         </div>
     `;
     document.body.appendChild(container);
